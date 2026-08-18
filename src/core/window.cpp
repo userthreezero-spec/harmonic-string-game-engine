@@ -5,7 +5,7 @@
 
 namespace hse {
 
-static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     auto* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
     if (win) {
         win->m_width = width;
