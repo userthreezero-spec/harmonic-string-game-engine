@@ -44,6 +44,9 @@ target_link_libraries(hse_bridge PUBLIC hse_core)
 add_executable(hse_bridge_app src/bridge_main.cpp)
 target_link_libraries(hse_bridge_app PRIVATE hse_bridge)
 
+add_executable(hse_workspace_app src/workspace_main.cpp)
+target_link_libraries(hse_workspace_app PRIVATE hse_bridge)
+
 enable_testing()
 add_test(NAME MathTests COMMAND hse_test_math)
 add_test(NAME SceneTests COMMAND hse_test_scene)

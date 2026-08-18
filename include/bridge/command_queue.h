@@ -23,6 +23,8 @@ struct Command {
         CMD_OBSERVE_CAMERA,
         CMD_OBSERVE_HEALTH,
         CMD_CAPTURE_FRAME,
+        CMD_SAVE_PROJECT,
+        CMD_LOAD_PROJECT,
         CMD_HEALTH
     };
 

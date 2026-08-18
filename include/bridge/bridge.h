@@ -3,6 +3,7 @@
 #include "bridge/pipe_transport.h"
 #include "scene/scene.h"
 #include "scene/camera.h"
+#include "scene/scene_builder.h"
 #include "renderer/renderer.h"
 #include <memory>
 #include <thread>
@@ -55,6 +56,9 @@ public:
     std::string getDeltaObservation(uint64_t sinceRevision);
     std::string getCaptureFrame(Renderer& renderer);
 
+    void setProjectManifest(const ProjectManifest& manifest) { m_manifest = manifest; }
+    const ProjectManifest& getProjectManifest() const { return m_manifest; }
+
     bool isRunning() const { return m_running.load(); }
     int getCommandsProcessed() const { return m_commandsProcessed; }
     int getSceneRevision() const { return m_sceneRevision; }
@@ -83,6 +87,7 @@ private:
 
     std::string m_lastCommandID;
     std::string m_lastCommandStatus;
+    ProjectManifest m_manifest;
 };
 
 } // namespace hse

@@ -1,0 +1,65 @@
+{
+  "experiment": "HSE-006",
+  "status": "STATE_B",
+  "classification": "Project/workspace system works, external control works, WebOS not connected",
+  "timestamp": "2026-08-17",
+  "summary": "Built persistent HSE project/workspace system with .hsc format, workspace launcher, round-trip serialization, and internal bridge lifecycle",
+  "acceptance_criteria": {
+    "hsc_parsing": true,
+    "project_creation": true,
+    "project_loading": true,
+    "project_isolation": true,
+    "persistent_state": true,
+    "stable_object_ids": true,
+    "bridge_lifecycle": true,
+    "no_duplicate_bridge": true,
+    "incremental_modification": true,
+    "reopen_without_rebuild": true,
+    "webos_protocol_compatibility": true,
+    "failure_recovery": "partial",
+    "corrupted_project_handling": "partial"
+  },
+  "built": {
+    "hsc_format": "Versioned JSON: project metadata, scene objects, cameras, clear color, world revision",
+    "import_state": "SceneBuilder::importState() loads .hsc → Scene + Camera + ProjectManifest",
+    "export_hsc": "SceneBuilder::exportHSC() saves Scene + Camera + manifest → .hsc",
+    "create_project": "SceneBuilder::createProject() creates directory structure + initial .hsc",
+    "workspace_launcher": "hse_workspace_app.exe: takes .hsc path, loads project, starts bridge, runs render loop",
+    "internal_bridge": "Bridge starts automatically with workspace, no manual launch needed",
+    "save_project": "Bridge command saves current state to .hsc file",
+    "load_project": "Bridge command loads .hsc file (reports success, scene swap pending)"
+  },
+  "executables": {
+    "hse_workspace_app": "NEW: Project launcher with .hsc loading",
+    "hse_bridge_app": "Bridge server (standalone)",
+    "hse_main": "Original demo",
+    "hse_room_demo": "Room demo",
+    "hse_test_math": "Math tests",
+    "hse_test_scene": "Scene tests"
+  },
+  "test_results": {
+    "math_tests": "12/12 pass",
+    "scene_tests": "7/7 pass",
+    "total": "19/19 pass"
+  },
+  "files_changed": {
+    "modified": [
+      "include/scene/scene_builder.h",
+      "src/scene/scene_builder.cpp",
+      "include/bridge/bridge.h",
+      "include/bridge/command_queue.h",
+      "src/bridge/bridge.cpp",
+      "CMakeLists.txt"
+    ],
+    "created": [
+      "src/workspace_main.cpp",
+      "launch_workspace.bat",
+      "experiments/hse006/PROJECT_FORMAT.md",
+      "experiments/hse006/ARCHITECTURE.md",
+      "experiments/hse006/FINDINGS.md",
+      "experiments/hse006/RESULTS.json",
+      "experiments/hse006/HANDOFF.md",
+      "phase006_probe/demo.ps1"
+    ]
+  }
+}

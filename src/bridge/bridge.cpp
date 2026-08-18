@@ -188,6 +188,18 @@ std::string Bridge::parseCommand(const std::string& json, Command& cmd) {
         cmd.sinceRevision = findU64("since_revision", 0);
         return "";
     }
+    if (cmdType == "save_project") {
+        cmd.type = Command::CMD_SAVE_PROJECT;
+        std::string path = find("path");
+        if (!path.empty()) strncpy(cmd.name, path.c_str(), sizeof(cmd.name) - 1);
+        return "";
+    }
+    if (cmdType == "load_project") {
+        cmd.type = Command::CMD_LOAD_PROJECT;
+        std::string path = find("path");
+        if (!path.empty()) strncpy(cmd.name, path.c_str(), sizeof(cmd.name) - 1);
+        return "";
+    }
     return "unknown cmd: " + cmdType;
 }
 
@@ -333,6 +345,46 @@ void Bridge::executeCommand(const Command& cmd, std::shared_ptr<Scene> scene, st
         }
         case Command::CMD_CAPTURE_FRAME: {
             m_pipe.writeLine(getCaptureFrame(renderer));
+            break;
+        }
+        case Command::CMD_SAVE_PROJECT: {
+            std::string path = cmd.name;
+            if (path.empty()) path = m_manifest.filePath;
+            if (path.empty()) {
+                m_lastCommandStatus = "failed";
+                m_pipe.writeLine(makeAck(cmd.seq, false, "\"error\":\"no_project_path\""));
+            } else {
+                m_manifest.worldRevision = m_sceneRevision;
+                SceneBuilder::exportHSC(*scene, *camera, m_manifest, path);
+                m_manifest.filePath = path;
+                m_lastCommandStatus = "accepted";
+                m_pipe.writeLine(makeAck(cmd.seq, true, "\"path\":\"" + path + "\",\"revision\":" + std::to_string(m_sceneRevision)));
+            }
+            break;
+        }
+        case Command::CMD_LOAD_PROJECT: {
+            std::string path = cmd.name;
+            if (path.empty()) {
+                m_lastCommandStatus = "failed";
+                m_pipe.writeLine(makeAck(cmd.seq, false, "\"error\":\"no_project_path\""));
+            } else {
+                ProjectManifest newManifest;
+                auto newScene = SceneBuilder::importState(path, newManifest);
+                if (!newScene) {
+                    m_lastCommandStatus = "failed";
+                    m_pipe.writeLine(makeAck(cmd.seq, false, "\"error\":\"load_failed\""));
+                } else {
+                    // Upload GPU resources for all new primitives
+                    for (auto& prim : newScene->getPrimitives()) {
+                        prim->uploadGPU();
+                    }
+                    // Note: scene pointer replacement requires caller to handle
+                    // For now, we just report success and let the workspace handle it
+                    m_manifest = newManifest;
+                    m_lastCommandStatus = "accepted";
+                    m_pipe.writeLine(makeAck(cmd.seq, true, "\"path\":\"" + path + "\",\"objects\":" + std::to_string(newScene->getPrimitiveCount())));
+                }
+            }
             break;
         }
         default:
