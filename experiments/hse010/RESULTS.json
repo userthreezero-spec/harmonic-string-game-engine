@@ -1,0 +1,192 @@
+{
+  "experiment": "HSE-010",
+  "title": "Knowledge Saturation and Diminishing Returns Retest",
+  "date": "2026-08-17",
+  "repository": "C:\\Users\\Rico\\HarmonicStringEngine",
+  "branch": "harmonic-string-game-engine",
+  "commit": "9837936",
+  "status": "in_progress",
+
+  "hse007_baseline": {
+    "source": "HSE-007 RESULTS.json",
+    "corpus_size_words": 1200,
+    "benchmark_missions": 5,
+    "knowledge_levels": 5,
+    "scores": { "L1": 3.8, "L2": 5.6, "L3": 7.4, "L4": 9.1, "L5": 10 },
+    "diminishing_returns_at": "L3",
+    "known_errors": [
+      "m_normals does not exist in Primitive",
+      "renderer_state.cpp does not exist",
+      "UV VBO lifecycle not analyzed",
+      "TextureManager over-engineered"
+    ],
+    "assessment": "Self-assessed, not independently verified"
+  },
+
+  "hse010_corpus": {
+    "layers": [
+      {
+        "id": "L0",
+        "name": "Repository Ground Truth",
+        "size": "2,373 lines",
+        "source_type": "Repository code",
+        "cumulative_size": "2,373 lines"
+      },
+      {
+        "id": "L1",
+        "name": "Basic C++ Engineering",
+        "size": "~5,000 words",
+        "source_type": "Technical documentation",
+        "cumulative_size": "+5,000 words"
+      },
+      {
+        "id": "L2",
+        "name": "Software Architecture Fundamentals",
+        "size": "~8,000 words",
+        "source_type": "Architecture texts",
+        "cumulative_size": "+13,000 words"
+      },
+      {
+        "id": "L3",
+        "name": "C++ Implementation Engineering",
+        "size": "~10,000 words",
+        "source_type": "Implementation guides",
+        "cumulative_size": "+23,000 words"
+      },
+      {
+        "id": "L4",
+        "name": "3D Mathematics",
+        "size": "~8,000 words",
+        "source_type": "Math references",
+        "cumulative_size": "+31,000 words"
+      },
+      {
+        "id": "L5",
+        "name": "Rendering Engineering",
+        "size": "~15,000 words",
+        "source_type": "Rendering documentation",
+        "cumulative_size": "+46,000 words"
+      },
+      {
+        "id": "L6",
+        "name": "Game Engine Architecture",
+        "size": "~10,000 words",
+        "source_type": "Engine architecture texts",
+        "cumulative_size": "+56,000 words"
+      },
+      {
+        "id": "L7",
+        "name": "Tooling and Editor Architecture",
+        "size": "~8,000 words",
+        "source_type": "Editor development guides",
+        "cumulative_size": "+64,000 words"
+      },
+      {
+        "id": "L8",
+        "name": "Existing Engine Architecture Studies",
+        "size": "~50,000 lines",
+        "source_type": "Open-source engine source code",
+        "cumulative_size": "+50,000 lines"
+      },
+      {
+        "id": "L9",
+        "name": "Production Software Construction",
+        "size": "~5,000 words",
+        "source_type": "DevOps guides",
+        "cumulative_size": "+69,000 words + 50K lines"
+      },
+      {
+        "id": "L10",
+        "name": "Architecture-to-Implementation Practice",
+        "size": "~15,000 words",
+        "source_type": "Implementation case studies",
+        "cumulative_size": "+84,000 words + 50K lines"
+      }
+    ],
+    "hse007_corpus_size": "~1,200 words",
+    "hse010_corpus_size": "~84,000 words + 50,000 lines of source",
+    "size_ratio": "~70x larger"
+  },
+
+  "benchmark": {
+    "total_missions": 25,
+    "tiers": {
+      "A_simple": 5,
+      "B_intermediate": 5,
+      "C_complex": 5,
+      "D_cross_domain": 5,
+      "E_novel": 5
+    },
+    "scoring": {
+      "dimensions": ["symbol_accuracy", "architecture_quality", "implementation_readiness", "acceptance_criteria", "verification_plan"],
+      "scale": "0-2 per dimension",
+      "max_per_mission": 10
+    }
+  },
+
+  "ablation_results": {
+    "status": "pending",
+    "layers_completed": 0,
+    "scores": {},
+    "marginal_gains": {},
+    "architecture_changes": {},
+    "symbol_accuracy": {}
+  },
+
+  "diminishing_returns_analysis": {
+    "status": "pending",
+    "classification": "UNKNOWN",
+    "confidence": "LOW",
+    "criteria": {
+      "performance_plateau": "NOT_YET_TESTED",
+      "knowledge_gap_closure": "NOT_YET_TESTED",
+      "architecture_stability": "NOT_YET_TESTED"
+    }
+  },
+
+  "false_diminishing_returns": {
+    "status": "documented",
+    "identified_causes": [
+      "corpus_too_small",
+      "poor_source_quality",
+      "insufficient_implementation_examples",
+      "poor_grounding",
+      "evaluator_bias"
+    ]
+  },
+
+  "verifier": {
+    "tool": "HSE-009 v2",
+    "accuracy": "100% on HSE-008 regression",
+    "claim_types": 10,
+    "known_limitations": ["Architecture quality is manual", "No automated design evaluation"]
+  },
+
+  "deliverables": [
+    "BASELINE_REPRODUCTION.md",
+    "CURRENT_KNOWLEDGE_AUDIT.md",
+    "KNOWLEDGE_DEPTH_LADDER.md",
+    "KNOWLEDGE_GAP_MAP.md",
+    "EXPANDED_BENCHMARK.md",
+    "ABLATION_RESULTS.md",
+    "DIMINISHING_RETURNS_RETEST.md",
+    "FALSE_DIMINISHING_RETURNS.md",
+    "NOVELTY_RESULTS.md",
+    "SYMBOL_VERIFICATION_RESULTS.md",
+    "ARCHITECTURE_CHANGE_MATRIX.md",
+    "SATURATION_DECISION.md",
+    "HSE010_FINDINGS.md",
+    "HSE010_HANDOFF.md",
+    "RESULTS.json",
+    "HSE-010_KNOWLEDGE_WIRING_MAP.json"
+  ],
+
+  "unresolved_questions": [
+    "Does the ~70x larger corpus actually change architectural decisions?",
+    "Does knowledge beyond rendering engineering provide value for HSE?",
+    "Is HSE-007's diminishing returns conclusion an artifact of the small corpus?",
+    "Can the AI handle novel concepts (Tier E) with more knowledge?",
+    "Does architecture stabilize after a certain knowledge layer?",
+    "What is the real optimal ingestion point for HSE?"
+  ]
+}

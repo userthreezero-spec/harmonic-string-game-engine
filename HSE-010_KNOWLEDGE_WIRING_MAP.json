@@ -1,0 +1,215 @@
+{
+  "experiment": "HSE-010",
+  "version": "1.0",
+  "corpus_levels": [
+    {
+      "id": "L0",
+      "name": "Repository Ground Truth",
+      "sources": [
+        { "type": "repository", "path": ".", "files": 27, "lines": 2373 }
+      ],
+      "domains": ["hse_source"],
+      "estimated_concepts": 200,
+      "estimated_implementation_patterns": 0,
+      "estimated_architectures": 0
+    },
+    {
+      "id": "L1",
+      "name": "Basic C++ Engineering",
+      "sources": [
+        { "type": "documentation", "name": "C++ Core Guidelines", "authority": "high" },
+        { "type": "documentation", "name": "cppreference.com", "authority": "high" },
+        { "type": "text", "name": "Effective Modern C++ (Scott Meyers)", "authority": "high" }
+      ],
+      "domains": ["cpp", "modern_cpp"],
+      "estimated_concepts": 50,
+      "estimated_implementation_patterns": 15,
+      "estimated_architectures": 0
+    },
+    {
+      "id": "L2",
+      "name": "Software Architecture Fundamentals",
+      "sources": [
+        { "type": "text", "name": "Design Patterns (GoF)", "authority": "high" },
+        { "type": "text", "name": "Clean Architecture (Robert Martin)", "authority": "medium" },
+        { "type": "text", "name": "Pattern-Oriented Software Architecture", "authority": "medium" }
+      ],
+      "domains": ["architecture", "design_patterns"],
+      "estimated_concepts": 40,
+      "estimated_implementation_patterns": 10,
+      "estimated_architectures": 5
+    },
+    {
+      "id": "L3",
+      "name": "C++ Implementation Engineering",
+      "sources": [
+        { "type": "code", "name": "GLFW source code", "authority": "high" },
+        { "type": "code", "name": "GLEW source code", "authority": "medium" },
+        { "type": "text", "name": "OpenGL Programming Guide", "authority": "high" },
+        { "type": "code", "name": "LearnOpenGL.com examples", "authority": "medium" }
+      ],
+      "domains": ["cpp_implementation", "gl_resources", "threading"],
+      "estimated_concepts": 60,
+      "estimated_implementation_patterns": 25,
+      "estimated_architectures": 3
+    },
+    {
+      "id": "L4",
+      "name": "3D Mathematics",
+      "sources": [
+        { "type": "text", "name": "3D Math Primer (Fletcher Dunn)", "authority": "high" },
+        { "type": "text", "name": "Real-Time Rendering (Akenine-Moller)", "authority": "high" },
+        { "type": "text", "name": "Graphics Gems series", "authority": "high" }
+      ],
+      "domains": ["3d_math", "linear_algebra", "geometry"],
+      "estimated_concepts": 80,
+      "estimated_implementation_patterns": 10,
+      "estimated_architectures": 0
+    },
+    {
+      "id": "L5",
+      "name": "Rendering Engineering",
+      "sources": [
+        { "type": "specification", "name": "OpenGL 3.3 Core Profile", "authority": "high" },
+        { "type": "text", "name": "Real-Time Rendering (4th Edition)", "authority": "high" },
+        { "type": "text", "name": "OpenGL Superbible", "authority": "high" },
+        { "type": "code", "name": "LearnOpenGL.com full tutorial", "authority": "medium" }
+      ],
+      "domains": ["rendering", "opengl", "shaders", "textures", "lighting"],
+      "estimated_concepts": 100,
+      "estimated_implementation_patterns": 30,
+      "estimated_architectures": 5
+    },
+    {
+      "id": "L6",
+      "name": "Game Engine Architecture",
+      "sources": [
+        { "type": "text", "name": "Game Engine Architecture (Jason Gregory)", "authority": "high" },
+        { "type": "text", "name": "Game Programming Patterns (Robert Nystrom)", "authority": "high" },
+        { "type": "text", "name": "Component Entity Systems surveys", "authority": "medium" }
+      ],
+      "domains": ["game_engine", "ecs", "scene_graph", "resource_management"],
+      "estimated_concepts": 70,
+      "estimated_implementation_patterns": 20,
+      "estimated_architectures": 8
+    },
+    {
+      "id": "L7",
+      "name": "Tooling and Editor Architecture",
+      "sources": [
+        { "type": "code", "name": "Dear ImGui source code", "authority": "high" },
+        { "type": "text", "name": "Immediate Mode GUI Design", "authority": "medium" },
+        { "type": "code", "name": "Hazel editor implementation", "authority": "medium" }
+      ],
+      "domains": ["editor", "ui", "tooling"],
+      "estimated_concepts": 40,
+      "estimated_implementation_patterns": 15,
+      "estimated_architectures": 3
+    },
+    {
+      "id": "L8",
+      "name": "Existing Engine Architecture Studies",
+      "sources": [
+        { "type": "code", "name": "Godot Engine source", "authority": "high" },
+        { "type": "code", "name": "bgfx source", "authority": "high" },
+        { "type": "code", "name": "Hazel engine source", "authority": "medium" },
+        { "type": "code", "name": "Filament source", "authority": "high" },
+        { "type": "code", "name": "raylib source", "authority": "high" },
+        { "type": "code", "name": "OGRE source", "authority": "medium" },
+        { "type": "code", "name": "EnTT source", "authority": "high" },
+        { "type": "code", "name": "Dear ImGui source", "authority": "high" }
+      ],
+      "domains": ["engine_architecture", "rendering_abstraction", "ecs", "resource_management"],
+      "estimated_concepts": 150,
+      "estimated_implementation_patterns": 80,
+      "estimated_architectures": 20
+    },
+    {
+      "id": "L9",
+      "name": "Production Software Construction",
+      "sources": [
+        { "type": "text", "name": "CMake documentation", "authority": "high" },
+        { "type": "text", "name": "GitHub Actions docs", "authority": "high" },
+        { "type": "text", "name": "Clang-Tidy documentation", "authority": "high" },
+        { "type": "text", "name": "Tracy profiler docs", "authority": "medium" }
+      ],
+      "domains": ["build_system", "ci_cd", "profiling", "debugging", "logging"],
+      "estimated_concepts": 30,
+      "estimated_implementation_patterns": 15,
+      "estimated_architectures": 2
+    },
+    {
+      "id": "L10",
+      "name": "Architecture-to-Implementation Practice",
+      "sources": [
+        { "type": "case_study", "name": "Texture mapping implementation", "authority": "high" },
+        { "type": "case_study", "name": "Scene hierarchy implementation", "authority": "high" },
+        { "type": "case_study", "name": "Resource management implementation", "authority": "high" },
+        { "type": "case_study", "name": "Undo/redo implementation", "authority": "high" },
+        { "type": "case_study", "name": "Instanced rendering implementation", "authority": "high" },
+        { "type": "case_study", "name": "Job system implementation", "authority": "high" },
+        { "type": "case_study", "name": "Serialization implementation", "authority": "high" },
+        { "type": "case_study", "name": "Material system implementation", "authority": "high" },
+        { "type": "case_study", "name": "Editor implementation", "authority": "high" },
+        { "type": "case_study", "name": "GPU profiling implementation", "authority": "high" }
+      ],
+      "domains": ["implementation_practice", "end_to_end", "case_studies"],
+      "estimated_concepts": 50,
+      "estimated_implementation_patterns": 40,
+      "estimated_architectures": 5
+    }
+  ],
+
+  "benchmark_missions": {
+    "tier_A": [
+      { "id": "A1", "name": "Add PrimitiveType Pyramid", "difficulty": "LOW", "novelty": "LOW", "domains": ["scene", "enum"] },
+      { "id": "A2", "name": "Modify default color", "difficulty": "TRIVIAL", "novelty": "TRIVIAL", "domains": ["scene"] },
+      { "id": "A3", "name": "Add GET_PRIMITIVE_COUNT command", "difficulty": "LOW", "novelty": "LOW", "domains": ["bridge", "command"] },
+      { "id": "A4", "name": "Add camera reset command", "difficulty": "LOW", "novelty": "LOW", "domains": ["bridge", "camera"] },
+      { "id": "A5", "name": "Add primitive name query", "difficulty": "LOW", "novelty": "LOW", "domains": ["bridge", "scene"] }
+    ],
+    "tier_B": [
+      { "id": "B1", "name": "Add texture mapping", "difficulty": "MEDIUM", "novelty": "MEDIUM", "domains": ["rendering", "textures", "shaders"] },
+      { "id": "B2", "name": "Add point light", "difficulty": "MEDIUM", "novelty": "MEDIUM", "domains": ["rendering", "lighting", "shaders"] },
+      { "id": "B3", "name": "Add scene hierarchy", "difficulty": "MEDIUM_HIGH", "novelty": "MEDIUM", "domains": ["scene", "transforms"] },
+      { "id": "B4", "name": "Add GPU resource RAII wrapper", "difficulty": "MEDIUM", "novelty": "HIGH", "domains": ["cpp", "gl_resources"] },
+      { "id": "B5", "name": "Add scene serialization v2", "difficulty": "MEDIUM", "novelty": "MEDIUM", "domains": ["serialization", "scene"] }
+    ],
+    "tier_C": [
+      { "id": "C1", "name": "Add material system", "difficulty": "HIGH", "novelty": "HIGH", "domains": ["rendering", "resources", "materials"] },
+      { "id": "C2", "name": "Add render batching", "difficulty": "HIGH", "novelty": "HIGH", "domains": ["rendering", "optimization"] },
+      { "id": "C3", "name": "Add async asset loading", "difficulty": "HIGH", "novelty": "HIGH", "domains": ["threading", "resources", "assets"] },
+      { "id": "C4", "name": "Add render pass abstraction", "difficulty": "HIGH", "novelty": "HIGH", "domains": ["rendering", "pipeline"] },
+      { "id": "C5", "name": "Add undo/redo system", "difficulty": "HIGH", "novelty": "MEDIUM", "domains": ["architecture", "commands"] }
+    ],
+    "tier_D": [
+      { "id": "D1", "name": "Add instanced + frustum culling", "difficulty": "VERY_HIGH", "novelty": "HIGH", "domains": ["rendering", "math", "optimization"] },
+      { "id": "D2", "name": "Add shader hot-reload", "difficulty": "VERY_HIGH", "novelty": "HIGH", "domains": ["rendering", "file_io", "debugging"] },
+      { "id": "D3", "name": "Add scene streaming", "difficulty": "VERY_HIGH", "novelty": "HIGH", "domains": ["resources", "memory", "streaming"] },
+      { "id": "D4", "name": "Add GPU profiling", "difficulty": "VERY_HIGH", "novelty": "HIGH", "domains": ["rendering", "profiling", "debugging"] },
+      { "id": "D5", "name": "Add editor viewport with gizmos", "difficulty": "VERY_HIGH", "novelty": "HIGH", "domains": ["editor", "rendering", "math"] }
+    ],
+    "tier_E": [
+      { "id": "E1", "name": "GPU resource lifetime redesign", "difficulty": "VERY_HIGH", "novelty": "VERY_HIGH", "domains": ["gl_resources", "raii", "memory"] },
+      { "id": "E2", "name": "Texture atlas system", "difficulty": "VERY_HIGH", "novelty": "VERY_HIGH", "domains": ["rendering", "textures", "batching"] },
+      { "id": "E3", "name": "Render command abstraction", "difficulty": "VERY_HIGH", "novelty": "VERY_HIGH", "domains": ["rendering", "architecture", "command_buffer"] },
+      { "id": "E4", "name": "Material instance system", "difficulty": "VERY_HIGH", "novelty": "VERY_HIGH", "domains": ["rendering", "resources", "materials"] },
+      { "id": "E5", "name": "Multi-threaded scene update", "difficulty": "VERY_HIGH", "novelty": "VERY_HIGH", "domains": ["threading", "scene", "synchronization"] }
+    ]
+  },
+
+  "scores": {},
+  "symbol_accuracy": {},
+  "marginal_gains": {},
+  "architecture_changes": {},
+  "novelty_comparison": {},
+
+  "saturation_classification": "UNKNOWN",
+  "saturation_confidence": "LOW",
+  "saturation_evidence": [],
+
+  "next_frontier": {
+    "status": "pending",
+    "top_candidates": []
+  }
+}
