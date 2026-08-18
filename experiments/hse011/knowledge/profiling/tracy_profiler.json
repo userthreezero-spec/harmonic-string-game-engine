@@ -1,0 +1,52 @@
+[
+  {
+    "knowledge_id": "KNOW-TRACY-001",
+    "domain": "profiling",
+    "topic": "Tracy Zone-Based Profiling Macros",
+    "source_id": "SRC-023",
+    "source_url": "https://raw.githubusercontent.com/wolfpld/tracy/master/public/tracy/Tracy.hpp",
+    "source_organization": "Wolf Balut (wolfpld)",
+    "source_classification": "D",
+    "source_version": "latest",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Tracy.hpp, Zone macros section",
+    "extracted_claim": "Tracy uses zone-based profiling via macros. ZoneScoped creates a scoped zone (RAII). ZoneNamedN(varname, name, active) creates named zone. ZoneTransient creates dynamic-name zone. Zones support: ZoneText/ZoneName (text labels), ZoneColor (custom color), ZoneValue (numeric value). When TRACY_ENABLE is not defined, all macros compile to nothing (zero overhead). SourceLocationData stores: name, function, file, line, color.",
+    "terminology": ["ZoneScoped", "ZoneNamedN", "ZoneTransient", "SourceLocationData", "TRACY_ENABLE", "scoped zone", "RAII profiling"],
+    "implementation_relevance": "HSE has no profiling. Tracy is the standard frame profiler for game engines.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no profiling"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-TRACY-002",
+    "domain": "profiling",
+    "topic": "Tracy Frame Marks and Memory Tracking",
+    "source_id": "SRC-023",
+    "source_url": "https://raw.githubusercontent.com/wolfpld/tracy/master/public/tracy/Tracy.hpp",
+    "source_organization": "Wolf Balut (wolfpld)",
+    "source_classification": "D",
+    "source_version": "latest",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Tracy.hpp, FrameMark and memory macros",
+    "extracted_claim": "FrameMark sends frame boundary. FrameMarkNamed(name) for named frames. FrameMarkStart/End for manual frame segments. FrameImage(data, w, h, offset, flip) captures frame buffer. Memory tracking: TracyAlloc(ptr, size), TracyFree(ptr), TracyAllocN(ptr, size, name), TracyFreeN(ptr, name). Lock profiling: TracyLockable(type, var), TracySharedLockable(type, var). Plot data: TracyPlot(name, val), TracyPlotConfig(name, type, step, fill, color). Message logging: TracyMessage(txt, size). Fiber support: TracyFiberEnter/Leave.",
+    "terminology": ["FrameMark", "FrameImage", "TracyAlloc", "TracyFree", "TracyLockable", "TracyPlot", "TracyMessage", "fiber"],
+    "implementation_relevance": "Frame marks enable frame time analysis. Memory tracking detects leaks. Lock profiling detects contention.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no profiling"
+    }
+  }
+]

@@ -3,10 +3,10 @@
   "generated_date": "2026-08-18T12:00:00Z",
   "summary": "Knowledge Index for deep authoritative knowledge ingestion",
   "totals": {
-    "total_knowledge_items": 50,
-    "total_knowledge_files": 13,
+    "total_knowledge_items": 55,
+    "total_knowledge_files": 15,
     "total_sources_referenced": 12,
-    "total_domains_covered": 12,
+    "total_domains_covered": 14,
     "classification_breakdown": {
       "A_primary_spec": 3,
       "B_official_docs": 4,
@@ -101,6 +101,18 @@
       "item_count": 3,
       "primary_source": "SRC-028",
       "knowledge_ids": ["KNOW-B2D-001", "KNOW-B2D-002", "KNOW-B2D-003"]
+    },
+    "audio": {
+      "file": "knowledge/audio/miniaudio.json",
+      "item_count": 3,
+      "primary_source": "SRC-022",
+      "knowledge_ids": ["KNOW-AUDIO-001", "KNOW-AUDIO-002", "KNOW-AUDIO-003"]
+    },
+    "profiling": {
+      "file": "knowledge/profiling/tracy_profiler.json",
+      "item_count": 2,
+      "primary_source": "SRC-023",
+      "knowledge_ids": ["KNOW-TRACY-001", "KNOW-TRACY-002"]
     }
   },
   "domains_not_yet_ingested": [

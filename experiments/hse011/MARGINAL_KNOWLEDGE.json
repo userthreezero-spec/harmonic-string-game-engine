@@ -92,9 +92,27 @@
       "new_api_patterns": 3,
       "hse_gaps_addressed": ["Physics world stepping", "Body/shape API", "Recording/snapshot system", "AABB queries", "Ray casting"],
       "cumulative_unique_concepts": 106
+    },
+    {
+      "source_id": "SRC-022",
+      "source_name": "miniaudio",
+      "classification": "D",
+      "unique_concepts": 12,
+      "new_api_patterns": 3,
+      "hse_gaps_addressed": ["Audio device init", "Callback-based audio", "High-level engine API", "Spatialization", "Sound groups"],
+      "cumulative_unique_concepts": 118
+    },
+    {
+      "source_id": "SRC-023",
+      "source_name": "Tracy Profiler",
+      "classification": "D",
+      "unique_concepts": 8,
+      "new_api_patterns": 2,
+      "hse_gaps_addressed": ["Zone-based profiling", "Frame marks", "Memory tracking", "Lock profiling", "Zero-overhead when disabled"],
+      "cumulative_unique_concepts": 126
     }
   ],
-  "total_unique_concepts": 106,
+  "total_unique_concepts": 126,
   "marginal_return_curve": {
     "observation": "First 3 sources contributed 49 concepts (46%). Next 9 sources contributed 57 concepts (54%). Each new source still contributes 5-10 novel concepts. Returns are NOT diminishing — we are still in the linear growth phase of knowledge acquisition.",
     "diminishing_threshold": "NOT YET REACHED — each source still contributes 5+ unique concepts",

@@ -1,0 +1,77 @@
+[
+  {
+    "knowledge_id": "KNOW-AUDIO-001",
+    "domain": "audio",
+    "topic": "miniaudio Device Initialization and Callback Pattern",
+    "source_id": "SRC-022",
+    "source_url": "https://raw.githubusercontent.com/mackron/miniaudio/master/miniaudio.h",
+    "source_organization": "David Reid (mackron)",
+    "source_classification": "D",
+    "source_version": "0.11.25",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "miniaudio.h, Section 1.1 Low Level API",
+    "extracted_claim": "miniaudio uses config/init pattern: ma_device_config_init(ma_device_type_playback) → set config members → ma_device_init(context, &config, &device) → ma_device_start(&device). Data delivered asynchronously via dataCallback function. Never stop/start device from inside callback (deadlock). Sample formats: ma_format_f32, ma_format_s16, ma_format_s24, ma_format_s32, ma_format_u8. All transparent structures (no opaque handles).",
+    "terminology": ["ma_device", "ma_device_config", "dataCallback", "ma_format_f32", "ma_device_type_playback", "config/init pattern"],
+    "implementation_relevance": "HSE has no audio. miniaudio is the standard single-header C audio library for games.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no audio system"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-AUDIO-002",
+    "domain": "audio",
+    "topic": "miniaudio High Level Engine API",
+    "source_id": "SRC-022",
+    "source_url": "https://raw.githubusercontent.com/mackron/miniaudio/master/miniaudio.h",
+    "source_organization": "David Reid (mackron)",
+    "source_classification": "D",
+    "source_version": "0.11.25",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "miniaudio.h, Section 1.2 High Level API",
+    "extracted_claim": "miniaudio high level API: ma_engine wraps ma_resource_manager (loading/streaming sounds) + ma_node_graph (mixing/effects). ma_engine_init(NULL, &engine) creates engine with internal device. ma_engine_play_sound(&engine, \"file.wav\", NULL) plays inline sound. ma_sound_init_from_file() creates reusable sound object with flags: MA_SOUND_FLAG_DECODE (pre-decode), MA_SOUND_FLAG_ASYNC (async load), MA_SOUND_FLAG_NO_PITCH, MA_SOUND_FLAG_NO_SPATIALIZATION. Spatialization: positioning, attenuation (none/inverse/linear/exponential), Doppler, cones. Sound groups organize sounds (sfx/voice/music) with independent volume.",
+    "terminology": ["ma_engine", "ma_sound", "ma_sound_group", "ma_resource_manager", "ma_node_graph", "spatialization", "MA_SOUND_FLAG"],
+    "implementation_relevance": "ma_engine provides complete game audio in ~10 lines of code.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no audio"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-AUDIO-003",
+    "domain": "audio",
+    "topic": "miniaudio Context and Device Enumeration",
+    "source_id": "SRC-022",
+    "source_url": "https://raw.githubusercontent.com/mackron/miniaudio/master/miniaudio.h",
+    "source_organization": "David Reid (mackron)",
+    "source_classification": "D",
+    "source_version": "0.11.25",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "miniaudio.h, Section 1.1, Context and Device Enumeration",
+    "extracted_claim": "ma_context sits above devices (1 context : N devices). ma_context_init(backends, backendCount, config) initializes. ma_context_get_devices() returns ma_device_info arrays with id and name. Device types: playback, capture, duplex, loopback (WASAPI only). Passing NULL context to ma_device_init creates internal context.",
+    "terminology": ["ma_context", "device enumeration", "ma_device_info", "loopback", "duplex"],
+    "implementation_relevance": "Context abstraction enables multi-device support and backend selection.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no audio"
+    }
+  }
+]
