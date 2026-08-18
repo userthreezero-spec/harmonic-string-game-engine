@@ -1,9 +1,11 @@
 #pragma once
 #include "math/vec3.h"
 #include "math/mat4.h"
+#include "renderer/texture.h"
 #include <vector>
 #include <cstdint>
 #include <string>
+#include <memory>
 
 namespace hse {
 
@@ -28,6 +30,7 @@ public:
     void setScale(const Vec3& scale);
     void setColor(const Vec3& color);
     void setRotationSpeed(const Vec3& speed);
+    void setTexture(std::shared_ptr<Texture> texture);
 
     PrimitiveType getType() const { return m_type; }
 
@@ -36,6 +39,8 @@ public:
     const Vec3& getScale() const { return m_scale; }
     const Vec3& getColor() const { return m_color; }
     const Vec3& getRotationSpeed() const { return m_rotationSpeed; }
+    std::shared_ptr<Texture> getTexture() const { return m_texture; }
+    bool hasTexture() const { return m_texture != nullptr; }
 
     const std::vector<float>& getVertices() const { return m_vertices; }
     const std::vector<uint32_t>& getIndices() const { return m_indices; }
@@ -69,6 +74,7 @@ private:
     unsigned int m_vbo = 0;
     unsigned int m_ebo = 0;
     bool m_uploaded = false;
+    std::shared_ptr<Texture> m_texture = nullptr;
 
     void generateGeometry();
 };

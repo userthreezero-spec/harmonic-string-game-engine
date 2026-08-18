@@ -1,0 +1,69 @@
+{
+  "summary": {
+    "total": 7,
+    "verified": 6,
+    "contradicted": 0,
+    "unverified": 1,
+    "inferred": 0,
+    "accuracy": "6/7 (85%)"
+  },
+  "results": [
+    {
+      "claim_id": "C01",
+      "status": "VERIFIED",
+      "evidence": "Class 'Primitive' found in include/scene/primitive.h:14",
+      "location": "include/scene/primitive.h:14",
+      "details": ""
+    },
+    {
+      "claim_id": "C02",
+      "status": "VERIFIED",
+      "evidence": "Member 'Primitive::m_vertices' found (type: std::vector<float>) in include/scene/primitive.h",
+      "location": "include/scene/primitive.h",
+      "details": ""
+    },
+    {
+      "claim_id": "C03",
+      "status": "VERIFIED",
+      "evidence": "Member 'Primitive::m_texture' found (type: std::shared_ptr<Texture>) in include/scene/primitive.h",
+      "location": "include/scene/primitive.h",
+      "details": ""
+    },
+    {
+      "claim_id": "C04",
+      "status": "VERIFIED",
+      "evidence": "Method 'Primitive::setTexture' found in include/scene/primitive.h",
+      "location": "",
+      "details": ""
+    },
+    {
+      "claim_id": "C05",
+      "status": "VERIFIED",
+      "evidence": "Class 'Texture' found in include/renderer/texture.h:6",
+      "location": "include/renderer/texture.h:6",
+      "details": ""
+    },
+    {
+      "claim_id": "C06",
+      "status": "VERIFIED",
+      "evidence": "File found: include/renderer/texture.h",
+      "location": "include/renderer/texture.h",
+      "details": ""
+    },
+    {
+      "claim_id": "C07",
+      "status": "UNVERIFIED",
+      "evidence": "Owner 'RendererState' not found, cannot verify member 'uHasTextureLoc'",
+      "location": "",
+      "details": ""
+    }
+  ],
+  "ground_truth_stats": {
+    "files": 30,
+    "classes": 11,
+    "structs": 8,
+    "enums": 3,
+    "functions": 128,
+    "includes": 149
+  }
+}

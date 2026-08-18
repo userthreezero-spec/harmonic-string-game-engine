@@ -1,0 +1,77 @@
+[
+  {
+    "knowledge_id": "KNOW-RLIB-001",
+    "domain": "engine_architecture",
+    "topic": "Raylib CoreData Architecture and Frame Lifecycle",
+    "source_id": "SRC-029",
+    "source_url": "https://raw.githubusercontent.com/raysan5/raylib/master/src/rcore.c",
+    "source_organization": "Ramon Santamaria (raysan5)",
+    "source_classification": "D",
+    "source_version": "5.5+",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "rcore.c: CoreData struct, InitWindow(), BeginDrawing()/EndDrawing()",
+    "extracted_claim": "raylib uses single CoreData global struct with nested Window, Storage, Input, Time sub-structs. Window tracks screen/render/FBO dimensions, flags, position. Input has Keyboard (key states + press queue), Mouse (position, buttons, wheel), Touch, Gamepad arrays. Time has current/previous/update/draw/frame/target measurements. Frame lifecycle: InitWindow → BeginDrawing (update time) → draw calls → EndDrawing (rlDrawRenderBatchActive, SwapScreenBuffer, frame time control, PollInputEvents). Platform abstraction via include of platform-specific rcore_<platform>.c files.",
+    "terminology": ["CoreData", "InitWindow", "BeginDrawing", "EndDrawing", "rlglInit", "SwapScreenBuffer", "PollInputEvents", "rcore"],
+    "implementation_relevance": "HSE has no core/window system yet. raylib's CoreData pattern is a reference for global engine state.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no core system"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-RLIB-002",
+    "domain": "engine_architecture",
+    "topic": "Raylib 2D/3D Mode Rendering Pattern",
+    "source_id": "SRC-029",
+    "source_url": "https://raw.githubusercontent.com/raysan5/raylib/master/src/rcore.c",
+    "source_organization": "Ramon Santamaria (raysan5)",
+    "source_classification": "D",
+    "source_version": "5.5+",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "rcore.c: BeginMode2D(), BeginMode3D(), BeginTextureMode(), BeginShaderMode(), BeginBlendMode()",
+    "extracted_claim": "Rendering modes are Begin/End pairs that push/pop matrix state. BeginMode2D: rlDrawRenderBatchActive, rlLoadIdentity, apply camera matrix. BeginMode3D: switch to RL_PROJECTION matrix, push, set perspective/orthographic, switch to RL_MODELVIEW, apply camera, enable depth test. BeginTextureMode: enable FBO, set viewport, ortho projection. All modes flush render batch before switching. EndMode3D restores projection from stack, disables depth test. Screen scaling applied via screenScale matrix.",
+    "terminology": ["BeginMode2D", "BeginMode3D", "BeginTextureMode", "BeginShaderMode", "BeginBlendMode", "rlMatrixMode", "rlPushMatrix", "rlPopMatrix", "FBO", "screenScale"],
+    "implementation_relevance": "HSE has no rendering modes. Begin/End pattern with matrix stack is a classic OpenGL approach.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no 2D/3D mode switching"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-RLIB-003",
+    "domain": "engine_architecture",
+    "topic": "Raylib Shader and Resource Management",
+    "source_id": "SRC-029",
+    "source_url": "https://raw.githubusercontent.com/raysan5/raylib/master/src/rcore.c",
+    "source_organization": "Ramon Santamaria (raysan5)",
+    "source_classification": "D",
+    "source_version": "5.5+",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "rcore.c: LoadShader(), LoadShaderFromMemory()",
+    "extracted_claim": "Shader loading: LoadShader(vsFile, fsFile) reads files, calls LoadShaderFromMemory. Returns Shader struct with id (program) and locs (int array of RL_MAX_SHADER_LOCATIONS). Custom shaders use rlLoadShaderProgram(vsCode, fsCode). Default shader fallback when custom fails. Shader locations bound by name-to-location mapping. TraceLog for diagnostics. Callback system for loadFileData/saveFileData for custom I/O.",
+    "terminology": ["Shader", "LoadShader", "LoadShaderFromMemory", "rlLoadShaderProgram", "shader locations", "TraceLog", "callback"],
+    "implementation_relevance": "HSE has basic shader loading. raylib's shader location system is a simpler reference than OpenGL directly.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has ShaderProgram class"
+    }
+  }
+]

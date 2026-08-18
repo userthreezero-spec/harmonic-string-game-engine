@@ -1,0 +1,77 @@
+[
+  {
+    "knowledge_id": "KNOW-GODOT-ST-001",
+    "domain": "scene_management",
+    "topic": "Godot SceneTree Process Architecture",
+    "source_id": "SRC-004",
+    "source_url": "https://raw.githubusercontent.com/godotengine/godot/master/scene/main/scene_tree.cpp",
+    "source_organization": "Godot Engine Contributors",
+    "source_classification": "A",
+    "source_version": "master (2026)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "scene_tree.cpp: SceneTree::process(), _process(), _process_group()",
+    "extracted_claim": "SceneTree processes nodes via ProcessGroups. Each group has owner Node, nodes list, physics_nodes list. _process_group() flushes call_queue, sorts nodes by priority, iterates copy of nodes list, calls NOTIFICATION_PROCESS or NOTIFICATION_PHYSICS_PROCESS. Threaded processing uses WorkerThreadPool::add_template_group_task. Groups have call_queue for deferred messages. _flush_ugc() handles unique group calls. _flush_delete_queue() handles deferred deletion.",
+    "terminology": ["SceneTree", "ProcessGroup", "WorkerThreadPool", "NOTIFICATION_PROCESS", "NOTIFICATION_PHYSICS_PROCESS", "call_queue", "_flush_delete_queue", "deferred deletion"],
+    "implementation_relevance": "HSE has no scene tree. Godot's process group architecture is a mature reference for node-based processing.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no scene tree"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GODOT-ST-002",
+    "domain": "scene_management",
+    "topic": "Godot SceneTree Group System",
+    "source_id": "SRC-004",
+    "source_url": "https://raw.githubusercontent.com/godotengine/godot/master/scene/main/scene_tree.cpp",
+    "source_organization": "Godot Engine Contributors",
+    "source_classification": "A",
+    "source_version": "master (2026)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "scene_tree.cpp: add_to_group(), remove_from_group(), call_group_flagsp(), _call_input_pause()",
+    "extracted_claim": "Groups are string-keyed sets of nodes in HashMap<StringName, SceneTreeGroup>. Thread-safe via _THREAD_SAFE_METHOD_. call_group_flagsp() copies node list, supports GROUP_CALL_DEFERRED (via MessageQueue), GROUP_CALL_REVERSE, GROUP_CALL_UNIQUE. Input dispatch uses group '_picking_viewports' with _process_picking. SceneTreeGroup has 'changed' flag for lazy sort. nodes_removed_on_group_call tracks nodes deleted during group iteration.",
+    "terminology": ["group", "SceneTreeGroup", "GROUP_CALL_DEFERRED", "GROUP_CALL_REVERSE", "GROUP_CALL_UNIQUE", "MessageQueue", "nodes_removed_on_group_call"],
+    "implementation_relevance": "Group-based processing with deferred calls is a standard pattern for decoupled communication in scene graphs.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no group system"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GODOT-ST-003",
+    "domain": "scene_management",
+    "topic": "Godot SceneTree Timer and Tween Processing",
+    "source_id": "SRC-004",
+    "source_url": "https://raw.githubusercontent.com/godotengine/godot/master/scene/main/scene_tree.cpp",
+    "source_organization": "Godot Engine Contributors",
+    "source_classification": "A",
+    "source_version": "master (2026)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "scene_tree.cpp: process_timers(), process_tweens(), SceneTreeTimer",
+    "extracted_claim": "Timers are List<Ref<SceneTreeTimer>>. Each timer has time_left, process_always, process_in_physics, ignore_time_scale. process_timers() iterates from back (handles new additions), decrements time_left by delta or unscaled_delta. Tweens follow same pattern. Both support pause-awareness. Timer emits 'timeout' signal when time_left <= 0.",
+    "terminology": ["SceneTreeTimer", "Tween", "process_always", "process_in_physics", "ignore_time_scale", "unscaled_delta"],
+    "implementation_relevance": "HSE has no timers or tweens. This shows how game engines handle time-dependent callbacks.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no timers"
+    }
+  }
+]

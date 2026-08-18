@@ -1,0 +1,77 @@
+[
+  {
+    "knowledge_id": "KNOW-BGFX-001",
+    "domain": "gpu_resources",
+    "topic": "bgfx Handle System and Resource Management",
+    "source_id": "SRC-030",
+    "source_url": "https://raw.githubusercontent.com/bkaradzic/bgfx/master/src/bgfx_p.h",
+    "source_organization": "Branimir Karadzic (bkaradzic)",
+    "source_classification": "D",
+    "source_version": "latest",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "bgfx_p.h: Handle struct, HandleAlloc, BGFX_CHECK_HANDLE",
+    "extracted_claim": "bgfx uses typed handles with idx (uint16_t) and type (uint16_t). Handle::Enum lists: DynamicIndexBuffer, DynamicVertexBuffer, FrameBuffer, IndexBuffer, IndirectBuffer, OcclusionQuery, Program, Shader, Texture, Uniform, VertexBuffer, VertexLayout. IMPLEMENT_HANDLE macro generates template specializations. BGFX_CHECK_HANDLE validates handle against HandleAlloc. HandleAlloc provides pool allocation with max handles tracking. Release template specializations free Memory via g_allocator.",
+    "terminology": ["Handle", "HandleAlloc", "Handle::Enum", "IMPLEMENT_HANDLE", "BGFX_CHECK_HANDLE", "bgfx::release"],
+    "implementation_relevance": "HSE has no handle system. bgfx's typed handle pattern is the standard for GPU resource management.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has raw GL resource IDs"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-BGFX-002",
+    "domain": "gpu_resources",
+    "topic": "bgfx Command Buffer and Render Pipeline",
+    "source_id": "SRC-030",
+    "source_url": "https://raw.githubusercontent.com/bkaradzic/bgfx/master/src/bgfx_p.h",
+    "source_organization": "Branimir Karadzic (bkaradzic)",
+    "source_classification": "D",
+    "source_version": "latest",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "bgfx_p.h: CommandBuffer, SortKey, PredefinedUniform",
+    "extracted_claim": "bgfx uses CommandBuffer for deferred GPU commands: RendererInit, Create* (VertexLayout, IndexBuffer, VertexBuffer, Dynamic*, Shader, Program, Texture, FrameBuffer, Uniform), Destroy*, Update*, ReadTexture. Commands serialized with alignment. SortKey encodes draw/compute ordering by view, program, depth, blend, alpha-ref. PredefinedUniforms: ViewRect, ViewTexel, View, InvView, Proj, InvProj, ViewProj, InvViewProj, Model, ModelView, InvModelView, ModelViewProj, AlphaRef, IndirectArgBase. FrameArenaT provides per-frame memory allocation with block allocation and mutex-free access.",
+    "terminology": ["CommandBuffer", "SortKey", "PredefinedUniform", "FrameArenaT", "DrawSort", "view remapping"],
+    "implementation_relevance": "HSE draws directly. bgfx's command buffer pattern separates CPU submission from GPU execution.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no command buffer"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-BGFX-003",
+    "domain": "gpu_resources",
+    "topic": "bgfx Multithreaded and Backend Abstraction",
+    "source_id": "SRC-030",
+    "source_url": "https://raw.githubusercontent.com/bkaradzic/bgfx/master/src/bgfx_p.h",
+    "source_organization": "Branimir Karadzic (bkaradzic)",
+    "source_classification": "D",
+    "source_version": "latest",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "bgfx_p.h: BGFX_CONFIG_MULTITHREADED, BGFX_MUTEX_SCOPE, renderer names",
+    "extracted_claim": "bgfx supports MULTITHREADED mode with BGFX_MUTEX_SCOPE for thread-safe command submission. Renderer backends: Noop, AGC, Direct3D 11, Direct3D 12, GNM, Metal, NVN, Vulkan, WebGPU, OpenGL 2.1-4.6, OpenGL ES 2.0-3.2. BGFX_PROFILER_SCOPE/BEGIN/END for instrumentation. PlatformData for native window handles. g_platformDataChangedSinceReset for context recreation. TinyStlAllocator for custom STL allocators. TextVideoMem for debug text rendering.",
+    "terminology": ["BGFX_CONFIG_MULTITHREADED", "BGFX_MUTEX_SCOPE", "renderer backend", "PlatformData", "TinyStlAllocator", "TextVideoMem"],
+    "implementation_relevance": "HSE only supports OpenGL. bgfx shows how to abstract across 10+ graphics APIs.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no backend abstraction"
+    }
+  }
+]

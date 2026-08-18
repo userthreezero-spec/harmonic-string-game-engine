@@ -13,20 +13,30 @@ namespace hse {
 static const char* vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aUV;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
+out vec2 vUV;
 void main() {
     gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);
+    vUV = aUV;
 }
 )";
 
 static const char* fragmentShaderSource = R"(
 #version 330 core
 out vec4 FragColor;
+in vec2 vUV;
 uniform vec3 uColor;
+uniform sampler2D uTexture;
+uniform bool uHasTexture;
 void main() {
-    FragColor = vec4(uColor, 1.0);
+    if (uHasTexture) {
+        FragColor = texture(uTexture, vUV) * vec4(uColor, 1.0);
+    } else {
+        FragColor = vec4(uColor, 1.0);
+    }
 }
 )";
 
@@ -124,6 +134,8 @@ void Renderer::renderScene(const Scene& scene, const Camera& camera) {
     GLint projLoc = glGetUniformLocation(m_state->shaderProgram, "uProjection");
     GLint modelLoc = glGetUniformLocation(m_state->shaderProgram, "uModel");
     GLint colorLoc = glGetUniformLocation(m_state->shaderProgram, "uColor");
+    GLint hasTexLoc = glGetUniformLocation(m_state->shaderProgram, "uHasTexture");
+    GLint texLoc = glGetUniformLocation(m_state->shaderProgram, "uTexture");
 
     Mat4 view = camera.getViewMatrix();
     Mat4 proj = camera.getProjectionMatrix();
@@ -140,6 +152,14 @@ void Renderer::renderScene(const Scene& scene, const Camera& camera) {
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model.ptr());
         Vec3 color = prim->getColor();
         glUniform3f(colorLoc, color.x, color.y, color.z);
+
+        if (prim->hasTexture()) {
+            prim->getTexture()->bind(0);
+            glUniform1i(hasTexLoc, 1);
+            glUniform1i(texLoc, 0);
+        } else {
+            glUniform1i(hasTexLoc, 0);
+        }
 
         prim->bind();
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(prim->getIndexCount()), GL_UNSIGNED_INT, 0);

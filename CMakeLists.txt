@@ -11,6 +11,7 @@ find_package(GLEW REQUIRED)
 add_library(hse_core STATIC
     src/core/window.cpp
     src/renderer/renderer.cpp
+    src/renderer/texture.cpp
     src/scene/scene.cpp
     src/scene/camera.cpp
     src/scene/primitive.cpp
@@ -46,6 +47,9 @@ target_link_libraries(hse_bridge_app PRIVATE hse_bridge)
 
 add_executable(hse_workspace_app src/workspace_main.cpp)
 target_link_libraries(hse_workspace_app PRIVATE hse_bridge)
+
+add_executable(hse_texture_demo src/texture_demo.cpp)
+target_link_libraries(hse_texture_demo PRIVATE hse_core)
 
 enable_testing()
 add_test(NAME MathTests COMMAND hse_test_math)

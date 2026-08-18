@@ -1,0 +1,50 @@
+[
+  {
+    "claim_id": "C01",
+    "claim_type": "class_exists",
+    "symbol_name": "Primitive",
+    "namespace": "hse",
+    "description": "Base class for renderable objects."
+  },
+  {
+    "claim_id": "C02",
+    "claim_type": "member_exists",
+    "symbol_name": "m_vertices",
+    "owner_class": "Primitive",
+    "description": "Vertex data storage."
+  },
+  {
+    "claim_id": "C03",
+    "claim_type": "member_exists",
+    "symbol_name": "m_texture",
+    "owner_class": "Primitive",
+    "description": "Pointer to texture asset (Proposed)."
+  },
+  {
+    "claim_id": "C04",
+    "claim_type": "function_exists",
+    "symbol_name": "setTexture",
+    "owner_class": "Primitive",
+    "description": "Sets the texture for the primitive (Proposed)."
+  },
+  {
+    "claim_id": "C05",
+    "claim_type": "class_exists",
+    "symbol_name": "Texture",
+    "namespace": "hse",
+    "description": "New class to manage OpenGL texture lifecycle (Proposed)."
+  },
+  {
+    "claim_id": "C06",
+    "claim_type": "file_exists",
+    "file_path": "include/renderer/texture.h",
+    "description": "Texture header file (Proposed)."
+  },
+  {
+    "claim_id": "C07",
+    "claim_type": "member_exists",
+    "symbol_name": "uHasTextureLoc",
+    "owner_class": "RendererState",
+    "description": "Uniform location for hasTexture flag (Proposed)."
+  }
+]

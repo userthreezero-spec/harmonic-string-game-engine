@@ -1,0 +1,16 @@
+{
+  "knowledge_nodes": [
+    { "id": "L1_RAII", "source": "C++ Core Guidelines R.1", "contributed_to": "Texture::~Texture" },
+    { "id": "L2_VBO", "source": "OpenGL 3.3 Spec", "contributed_to": "Primitive::uploadGPU" },
+    { "id": "L2_GLSL", "source": "LearnOpenGL", "contributed_to": "Renderer::fragmentShaderSource" },
+    { "id": "L1_SHARED_PTR", "source": "HSE-011 Synthesis", "contributed_to": "Primitive::m_texture" }
+  ],
+  "architectural_decisions": [
+    { "decision": "Separate Texture Class", "justification": "SRP and resource ownership", "symbol": "hse::Texture" },
+    { "decision": "Interleaved Vertex Data", "justification": "Cache locality and API simplicity", "layout": "Pos(3), UV(2)" }
+  ],
+  "verification_trace": [
+    { "stage": "Planned", "status": "VERIFIED_EXISTING_CLASS_Primitive", "score": 28 },
+    { "stage": "Implemented", "status": "VERIFIED_ALL_SYMBOLS", "score": 85 }
+  ]
+}
