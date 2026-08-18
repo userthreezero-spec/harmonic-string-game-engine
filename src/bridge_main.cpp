@@ -42,14 +42,13 @@ int main(int argc, char* argv[]) {
     renderer.setClearColor(0.05f, 0.05f, 0.08f);
 
     std::cout << "Waiting for external client..." << std::endl;
-    std::cout << "Run: python bridge_client.py" << std::endl;
+    std::cout << "Run: .\\phase005_probe\\controller.ps1" << std::endl;
     std::cout << std::endl;
 
     while (!window.shouldClose()) {
         float dt = window.getDeltaTime();
         window.pollEvents();
 
-        // Pump bridge commands on GL thread
         bridge.pumpCommands(scene, camera, renderer);
 
         scene->update(dt);
@@ -57,6 +56,7 @@ int main(int argc, char* argv[]) {
         renderer.beginFrame();
         renderer.renderScene(*scene, *camera);
         renderer.endFrame();
+        renderer.incrementFrameCount();
         window.swapBuffers();
     }
 

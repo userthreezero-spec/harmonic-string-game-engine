@@ -18,18 +18,26 @@ struct Command {
         CMD_SET_CAMERA,
         CMD_SET_CLEAR_COLOR,
         CMD_SCENE_STATE,
+        CMD_OBSERVE_SCENE,
+        CMD_OBSERVE_OBJECT,
+        CMD_OBSERVE_CAMERA,
+        CMD_OBSERVE_HEALTH,
+        CMD_CAPTURE_FRAME,
         CMD_HEALTH
     };
 
     Type type = CMD_NONE;
+    uint64_t seq = 0;
     int index = -1;
+    uint64_t objectID = 0;
     float px = 0, py = 0, pz = 0;
     float rx = 0, ry = 0, rz = 0;
     float sx = 1, sy = 1, sz = 1;
     float cr = 1, cg = 1, cb = 1;
     int primType = 0;
     float fov = 60;
-    char name[32] = {};
+    char name[64] = {};
+    uint64_t sinceRevision = 0;
 };
 
 static constexpr int RING_SIZE = 256;

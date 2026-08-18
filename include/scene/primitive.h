@@ -3,6 +3,7 @@
 #include "math/mat4.h"
 #include <vector>
 #include <cstdint>
+#include <string>
 
 namespace hse {
 
@@ -17,6 +18,10 @@ public:
     Primitive& operator=(const Primitive&) = delete;
     Primitive(Primitive&&) = delete;
     Primitive& operator=(Primitive&&) = delete;
+
+    uint64_t getID() const { return m_id; }
+    const std::string& getName() const { return m_name; }
+    void setName(const std::string& name) { m_name = name; }
 
     void setPosition(const Vec3& position);
     void setRotation(const Vec3& rotation);
@@ -44,7 +49,12 @@ public:
     void bind() const;
     void unbind() const;
 
+    static uint64_t nextID();
+
 private:
+    static uint64_t s_nextID;
+    uint64_t m_id;
+    std::string m_name;
     PrimitiveType m_type;
     Vec3 m_position{0.0f, 0.0f, 0.0f};
     Vec3 m_rotation{0.0f, 0.0f, 0.0f};

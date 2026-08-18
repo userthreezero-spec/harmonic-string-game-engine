@@ -1,0 +1,57 @@
+{
+  "experiment": "HSE-005",
+  "status": "STATE_B",
+  "classification": "External control + observation works, WebOS not connected",
+  "timestamp": "2026-08-17",
+  "summary": "Built continuous cognitive live loop: external controller sends commands, HSE executes on GL thread, observations returned via named pipe",
+  "acceptance_criteria": {
+    "hse_runs_independently": true,
+    "external_controller_connects": true,
+    "commands_receive_acknowledgements": true,
+    "scene_mutations_happen_in_renderer": true,
+    "objects_have_stable_ids": true,
+    "scene_revisions_increment": true,
+    "machine_readable_observations_returned": true,
+    "observations_reflect_actual_scene_state": true,
+    "camera_state_is_observable": true,
+    "engine_health_is_observable": true,
+    "invalid_commands_fail_safely": true,
+    "disconnecting_does_not_crash_hse": true,
+    "continuous_observe_act_observe_loop": true,
+    "renderer_remains_responsive": true,
+    "no_webos_source_modified": true,
+    "no_fake_observations": true,
+    "existing_tests_continue_passing": true
+  },
+  "limitations": [
+    "WebOS is not actually connected (protocol ready)",
+    "Controller is deterministic, not AI cognition",
+    "No harmonic concepts implemented",
+    "No scene hierarchy (flat primitive list)",
+    "No material system beyond color",
+    "Frame capture is base64, not compressed image format"
+  ],
+  "built": {
+    "stable_object_ids": "uint64 monotonically increasing, stored on Primitive",
+    "scene_id_lookup": "unordered_map<uint64_t, size_t> for O(1) lookup",
+    "command_sequence_numbers": "seq field in Command and all acks",
+    "bidirectional_communication": "Named pipe full-duplex, observations sent back",
+    "scene_revision_tracking": "Increments on every successful mutation",
+    "observation_protocol": "6 types: scene, object, camera, health, delta, frame_capture",
+    "framebuffer_capture": "glReadPixels → base64 RGBA",
+    "delta_observations": "Snapshot-based diff, reports only changes since known revision",
+    "failure_handling": "Invalid objects, invalid commands, queue overflow all fail gracefully"
+  },
+  "executables": {
+    "hse_main": "Original demo",
+    "hse_room_demo": "Room demo",
+    "hse_bridge_app": "Bridge with named pipe server + observations",
+    "hse_test_math": "Math tests",
+    "hse_test_scene": "Scene tests"
+  },
+  "test_results": {
+    "math_tests": "12/12 pass",
+    "scene_tests": "7/7 pass",
+    "total": "19/19 pass"
+  }
+}

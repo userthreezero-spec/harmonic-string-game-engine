@@ -155,8 +155,30 @@ void Renderer::setClearColor(float r, float g, float b, float a) {
     m_state->clearColorB = b;
 }
 
+void Renderer::getClearColor(float& r, float& g, float& b) const {
+    r = m_state->clearColorR;
+    g = m_state->clearColorG;
+    b = m_state->clearColorB;
+}
+
 void Renderer::setViewport(int x, int y, int width, int height) {
     glViewport(x, y, width, height);
+}
+
+bool Renderer::readPixels(std::vector<uint8_t>& rgba, int& width, int& height) {
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    width = viewport[2];
+    height = viewport[3];
+
+    if (width <= 0 || height <= 0) return false;
+
+    size_t pixelCount = static_cast<size_t>(width) * static_cast<size_t>(height);
+    rgba.resize(pixelCount * 4);
+
+    glReadPixels(viewport[0], viewport[1], width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
+
+    return !rgba.empty();
 }
 
 } // namespace hse

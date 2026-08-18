@@ -3,7 +3,10 @@
 
 namespace hse {
 
-Primitive::Primitive(PrimitiveType type) : m_type(type) {
+uint64_t Primitive::s_nextID = 1;
+uint64_t Primitive::nextID() { return s_nextID++; }
+
+Primitive::Primitive(PrimitiveType type) : m_id(s_nextID++), m_type(type) {
     generateGeometry();
 }
 

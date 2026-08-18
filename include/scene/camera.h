@@ -19,6 +19,11 @@ public:
 
     ProjectionType getProjectionType() const { return m_type; }
     const Vec3& getPosition() const { return m_position; }
+    const Vec3& getTarget() const { return m_target; }
+    float getFOV() const { return m_fovDeg; }
+    float getNearPlane() const { return m_nearPlane; }
+    float getFarPlane() const { return m_farPlane; }
+    float getAspectRatio() const { return m_aspectRatio; }
     const Mat4& getViewMatrix() const { return m_viewMatrix; }
     const Mat4& getProjectionMatrix() const { return m_projectionMatrix; }
 
