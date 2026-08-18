@@ -1,0 +1,77 @@
+[
+  {
+    "knowledge_id": "KNOW-B2D-001",
+    "domain": "physics",
+    "topic": "Box2D World Creation and Stepping",
+    "source_id": "SRC-028",
+    "source_url": "https://raw.githubusercontent.com/erincatto/box2d/main/include/box2d/box2d.h",
+    "source_organization": "Erin Catto",
+    "source_classification": "D",
+    "source_version": "3.0 (v3 C API)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "box2d.h, World section",
+    "extracted_claim": "Box2D v3 uses C API with opaque handles (b2WorldId, b2BodyId, b2ShapeId, b2JointId). b2CreateWorld(b2WorldDef*) creates world (up to 128). b2World_Step(worldId, timeStep, subStepCount) runs simulation (collision detection, integration, constraint solution). Default: timeStep=1/60, subStepCount=4. b2World_SetGravity() controls gravity. b2World_GetBodyEvents/SensorEvents/ContactEvents/JointEvents returns transient event data.",
+    "terminology": ["b2WorldId", "b2BodyId", "b2ShapeId", "b2World_Step", "b2WorldDef", "subStepCount", "collision detection", "constraint solver"],
+    "implementation_relevance": "HSE has no physics. Box2D is the standard 2D physics engine.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no physics system"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-B2D-002",
+    "domain": "physics",
+    "topic": "Box2D Body and Shape API",
+    "source_id": "SRC-028",
+    "source_url": "https://raw.githubusercontent.com/erincatto/box2d/main/include/box2d/box2d.h",
+    "source_organization": "Erin Catto",
+    "source_classification": "D",
+    "source_version": "3.0 (v3 C API)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "box2d.h, Body section and Shape section",
+    "extracted_claim": "Box2D bodies: b2CreateBody(worldId, b2BodyDef*), b2DestroyBody(bodyId). Body types: static, kinematic, dynamic. Body properties: position, rotation, linearVelocity, angularVelocity, mass, inertia, damping, gravityScale. Forces: ApplyForce, ApplyTorque, ApplyLinearImpulse. Shapes: b2CreateCircleShape, b2CreatePolygonShape, b2CreateCapsuleShape, b2CreateSegmentShape. Shape properties: density, friction, restitution, filter. AABB query: b2World_OverlapAABB. Ray cast: b2World_CastRay.",
+    "terminology": ["b2BodyDef", "b2ShapeDef", "static/kinematic/dynamic", "density", "friction", "restitution", "AABB", "ray cast"],
+    "implementation_relevance": "Box2D's body/shape separation is the standard physics engine design pattern.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no physics"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-B2D-003",
+    "domain": "physics",
+    "topic": "Box2D Recording and Snapshot System",
+    "source_id": "SRC-028",
+    "source_url": "https://raw.githubusercontent.com/erincatto/box2d/main/include/box2d/box2d.h",
+    "source_organization": "Erin Catto",
+    "source_classification": "D",
+    "source_version": "3.0 (v3 C API)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "box2d.h, Recording and Snapshot sections",
+    "extracted_claim": "Box2D v3 supports simulation recording (b2CreateRecording, b2World_StartRecording/StopRecording, b2SaveRecordingToFile) and snapshot/restore (b2World_Snapshot, b2World_Restore, b2CreateWorldFromSnapshot). Snapshots capture full simulation state for rollback/undo/save-games. Snapshots are instant-in-time; recordings are step streams. Restore keeps live world wiring; CreateFromSnapshot resets to defaults.",
+    "terminology": ["recording", "snapshot", "rollback", "save game", "deterministic"],
+    "implementation_relevance": "Recording/snapshot is a powerful pattern for HSE's project persistence and undo system.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no snapshot/undo system"
+    }
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "knowledge_id": "KNOW-ENTT-001",
+    "domain": "ecs",
+    "topic": "EnTT Registry and Entity Management",
+    "source_id": "SRC-027",
+    "source_url": "https://raw.githubusercontent.com/skypjack/entt/master/single_include/entt/entt.hpp",
+    "source_organization": "Michele Caini (skypjack)",
+    "source_classification": "D",
+    "source_version": "4.0.0",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "EnTT single_include/entt/entt.hpp, config/version.h",
+    "extracted_claim": "EnTT v4.0 uses sparse_set + packed_array architecture. ENTT_ID_TYPE defaults to uint32_t. ENTT_SPARSE_PAGE=4096, ENTT_PACKED_PAGE=1024. Entity = index + version (generation). basic_any<Len, Align> provides type-erased storage with policies: empty, dynamic, embedded, ref, cref. dense_map provides fast key-value storage. Registry creates/destroys entities and manages component storage.",
+    "terminology": ["sparse_set", "packed_array", "entity", "component", "system", "dense_map", "basic_any", "ENTT_ID_TYPE"],
+    "implementation_relevance": "HSE has no ECS. EnTT is the leading C++ ECS library.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE uses OOP scene graph, not ECS"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-ENTT-002",
+    "domain": "ecs",
+    "topic": "EnTT Component Pools and Type Erasure",
+    "source_id": "SRC-027",
+    "source_url": "https://raw.githubusercontent.com/skypjack/entt/master/single_include/entt/entt.hpp",
+    "source_organization": "Michele Caini (skypjack)",
+    "source_classification": "D",
+    "source_version": "4.0.0",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "EnTT core/type_traits.hpp, container/dense_map.hpp",
+    "extracted_claim": "EnTT component pools use compressed_pair for EBO (empty base optimization). Type identity used for compile-time type queries. type_list provides compile-time type manipulation (concat, unique, diff, transform). value_list provides compile-time value lists. any_policy enum controls storage mode. ENTT_NO_ETO disables embedded type optimization. ENTT_NO_MIXIN disables storage mixins.",
+    "terminology": ["compressed_pair", "EBO", "type_identity", "type_list", "value_list", "any_policy", "storage mixin"],
+    "implementation_relevance": "Understanding EnTT's type erasure helps design HSE's component system if adopting ECS.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "implementation_detail",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no type-erased storage"
+    }
+  }
+]

@@ -3,7 +3,7 @@
 ## Started: 2026-08-18
 ## Status: IN PROGRESS
 
-## Sources Ingested (6/28 qualifying)
+## Sources Ingested (10/28 qualifying)
 
 | Source | Name | Classification | Items | Status |
 |--------|------|---------------|-------|--------|
@@ -12,18 +12,18 @@
 | SRC-006 | LearnOpenGL | D | 16 | DONE |
 | SRC-009 | Godot Source | A | 3 | DONE |
 | SRC-011 | Hazel Engine | D | 2 | PARTIAL |
+| SRC-012 | Dear ImGui | D | 3 | DONE |
 | SRC-016 | GLM Manual | B | 4 | DONE |
+| SRC-025 | nlohmann/json | D | 2 | DONE |
+| SRC-027 | EnTT | D | 2 | DONE |
+| SRC-028 | Box2D v3 | D | 3 | DONE |
 
-## Sources Not Yet Ingested (22 remaining, high-priority marked with *)
+## Sources Not Yet Ingested (18 remaining, high-priority marked with *)
 
 | Source | Name | Classification | Priority |
 |--------|------|---------------|----------|
-| SRC-012/019 | Dear ImGui | D | *HIGH |
-| SRC-027 | EnTT | D | *HIGH |
 | SRC-022 | miniaudio | D | *HIGH |
 | SRC-023 | Tracy Profiler | D | *HIGH |
-| SRC-025 | nlohmann/json | D | *HIGH |
-| SRC-028 | Box2D | D | MEDIUM |
 | SRC-029 | Bullet Physics | D | MEDIUM |
 | SRC-026 | Flecs | D | MEDIUM |
 | SRC-009 | Godot (deeper) | A | MEDIUM |
@@ -45,12 +45,12 @@
 | math | 4 | COMPLETE |
 | resource_management | 5 | COMPLETE |
 | event_system | 2 | PARTIAL |
+| gui | 3 | COMPLETE |
+| ecs | 2 | COMPLETE |
+| serialization | 2 | COMPLETE |
+| physics | 3 | COMPLETE |
 | scene_management | 0 | NOT STARTED |
 | materials | 0 | NOT STARTED |
 | audio | 0 | NOT STARTED |
-| physics | 0 | NOT STARTED |
-| ecs | 0 | NOT STARTED |
-| gui | 0 | NOT STARTED |
 | profiling | 0 | NOT STARTED |
 | memory_management | 0 | NOT STARTED |
-| serialization | 0 | NOT STARTED |

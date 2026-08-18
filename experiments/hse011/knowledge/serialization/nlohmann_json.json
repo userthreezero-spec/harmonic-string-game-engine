@@ -1,0 +1,52 @@
+[
+  {
+    "knowledge_id": "KNOW-JSON-001",
+    "domain": "serialization",
+    "topic": "nlohmann/json Basic Usage and Type Conversion",
+    "source_id": "SRC-025",
+    "source_url": "https://raw.githubusercontent.com/nlohmann/json/develop/single_include/nlohmann/json.hpp",
+    "source_organization": "Niels Lohmann",
+    "source_classification": "D",
+    "source_version": "3.12.0",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "nlohmann/json.hpp, version header",
+    "extracted_claim": "nlohmann/json v3.12.0 is a single-header JSON library. Supports implicit conversion between json and C++ types (string, int, float, bool, vector, map). json::parse() from string, json::dump() to string. Supports nested objects and arrays. Supports custom type serialization via from_json/to_json ADL functions. JSON_DIAGNOSTICS enables parent pointers for better error messages.",
+    "terminology": ["json", "parse", "dump", "from_json", "to_json", "implicit conversion", "ADL"],
+    "implementation_relevance": "HSE has no serialization. nlohmann/json is the standard C++ JSON library for config files and data exchange.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no serialization system"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-JSON-002",
+    "domain": "serialization",
+    "topic": "nlohmann/json ABI and Versioning",
+    "source_id": "SRC-025",
+    "source_url": "https://raw.githubusercontent.com/nlohmann/json/develop/single_include/nlohmann/json.hpp",
+    "source_organization": "Niels Lohmann",
+    "source_classification": "D",
+    "source_version": "3.12.0",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "nlohmann/json.hpp, detail/abi_macros.hpp",
+    "extracted_claim": "nlohmann/json uses inline namespace versioning (e.g. json_abi_diag_v3_12_0). JSON_DIAGNOSTICS, JSON_DIAGNOSTIC_POSITIONS, JSON_USE_LEGACY_DISCARDED_VALUE_COMPARISON control ABI tags. Version check: NLOHMANN_JSON_VERSION_MAJOR/MINOR/PATCH. JSON_NO_IO disables stream operators. Hedley library provides cross-compiler attribute macros.",
+    "terminology": ["inline namespace", "ABI tag", "version check", "Hedley", "JSON_DIAGNOSTICS"],
+    "implementation_relevance": "ABI versioning prevents ODR violations when multiple TUs include different versions.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE does not use inline namespaces"
+    }
+  }
+]

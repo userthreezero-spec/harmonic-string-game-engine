@@ -1,0 +1,77 @@
+[
+  {
+    "knowledge_id": "KNOW-IMGUI-001",
+    "domain": "gui",
+    "topic": "Dear ImGui Immediate Mode Paradigm",
+    "source_id": "SRC-012",
+    "source_url": "https://raw.githubusercontent.com/ocornut/imgui/master/imgui.h",
+    "source_organization": "Omar Cornut",
+    "source_classification": "D",
+    "source_version": "1.93.0 WIP",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "imgui.h, 'Dear ImGui end-user API functions' section",
+    "extracted_claim": "Dear ImGui uses immediate mode GUI: call Begin()/End() pairs to create windows, call widget functions each frame to both declare UI and retrieve results. No retained widget tree. NewFrame() starts a frame, Render() finalizes draw data. GetDrawData() returns vertex lists for backend rendering. ImDrawList is a dynamic mesh builder (per-window). ImDrawVert = pos + uv + col (20 bytes). ImTextureID is backend-specific (default ImU64).",
+    "terminology": ["immediate mode", "Begin/End", "NewFrame", "Render", "ImDrawList", "ImDrawVert", "ImTextureID", "ImDrawData"],
+    "implementation_relevance": "HSE has no GUI. ImGui is the standard C++ immediate mode GUI for game engines.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no GUI system"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-IMGUI-002",
+    "domain": "gui",
+    "topic": "ImGui Vertex Buffer and Draw Command Structure",
+    "source_id": "SRC-012",
+    "source_url": "https://raw.githubusercontent.com/ocornut/imgui/master/imgui.h",
+    "source_organization": "Omar Cornut",
+    "source_classification": "D",
+    "source_version": "1.93.0 WIP",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "imgui.h, Drawing API section",
+    "extracted_claim": "ImDrawCmd contains: ImTextureID texture_id, unsigned int elem_count, int clip_rect[4], int vtx_offset, int idx_offset. ImDrawListSplitter splits draw list into layers for out-of-order rendering then flattens. ImDrawData contains: int CmdListsCount, ImDrawList** CmdLists, int DisplayPos[2], int DisplaySize[2], int FramebufferScale[2].",
+    "terminology": ["ImDrawCmd", "ImDrawListSplitter", "ImDrawData", "clip_rect", "vtx_offset", "idx_offset"],
+    "implementation_relevance": "ImGui's draw command structure maps directly to OpenGL draw calls — each ImDrawCmd becomes a glDrawElements call.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["Renderer"],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE renderer does not handle GUI draw lists"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-IMGUI-003",
+    "domain": "gui",
+    "topic": "ImGui Context and Backend Integration",
+    "source_id": "SRC-012",
+    "source_url": "https://raw.githubusercontent.com/ocornut/imgui/master/imgui.h",
+    "source_organization": "Omar Cornut",
+    "source_classification": "D",
+    "source_version": "1.93.0 WIP",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "imgui.h, Context creation and access section",
+    "extracted_claim": "ImGui requires: CreateContext() → per-frame NewFrame() → widget calls → Render() → GetDrawData() → backend renders. ImGuiIO carries: mouse/keyboard/gamepad inputs, time, configuration flags. ImGuiPlatformIO connects platform/renderer backends. Backend flags: ImGuiBackendFlags_RendererHasTextures (since v1.9198). FontAtlas bakes multiple fonts into single texture.",
+    "terminology": ["ImGuiContext", "ImGuiIO", "ImGuiPlatformIO", "FontAtlas", "CreateContext", "BackendFlags"],
+    "implementation_relevance": "Integrating ImGui with HSE requires creating an OpenGL backend that uploads ImDrawData vertex/index buffers.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "integration_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["Renderer", "Window"],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE would need ImGui backend integration"
+    }
+  }
+]

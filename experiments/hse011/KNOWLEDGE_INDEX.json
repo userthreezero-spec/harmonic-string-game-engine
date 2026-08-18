@@ -3,15 +3,15 @@
   "generated_date": "2026-08-18T12:00:00Z",
   "summary": "Knowledge Index for deep authoritative knowledge ingestion",
   "totals": {
-    "total_knowledge_items": 37,
-    "total_knowledge_files": 9,
-    "total_sources_referenced": 8,
-    "total_domains_covered": 8,
+    "total_knowledge_items": 50,
+    "total_knowledge_files": 13,
+    "total_sources_referenced": 12,
+    "total_domains_covered": 12,
     "classification_breakdown": {
       "A_primary_spec": 3,
       "B_official_docs": 4,
       "C_official_repo": 0,
-      "D_mature_impl": 2
+      "D_mature_impl": 6
     }
   },
   "domains": {
@@ -77,19 +77,39 @@
       "item_count": 2,
       "primary_source": "SRC-011",
       "knowledge_ids": ["KNOW-HZ-EVT-001", "KNOW-HZ-EVT-002"]
+    },
+    "gui": {
+      "file": "knowledge/gui/dear_imgui.json",
+      "item_count": 3,
+      "primary_source": "SRC-012",
+      "knowledge_ids": ["KNOW-IMGUI-001", "KNOW-IMGUI-002", "KNOW-IMGUI-003"]
+    },
+    "ecs": {
+      "file": "knowledge/ecs/entt_ecs.json",
+      "item_count": 2,
+      "primary_source": "SRC-027",
+      "knowledge_ids": ["KNOW-ENTT-001", "KNOW-ENTT-002"]
+    },
+    "serialization": {
+      "file": "knowledge/serialization/nlohmann_json.json",
+      "item_count": 2,
+      "primary_source": "SRC-025",
+      "knowledge_ids": ["KNOW-JSON-001", "KNOW-JSON-002"]
+    },
+    "physics": {
+      "file": "knowledge/physics/box2d_physics.json",
+      "item_count": 3,
+      "primary_source": "SRC-028",
+      "knowledge_ids": ["KNOW-B2D-001", "KNOW-B2D-002", "KNOW-B2D-003"]
     }
   },
   "domains_not_yet_ingested": [
     "scene_management",
     "materials",
     "audio",
-    "physics",
-    "ecs",
-    "gui",
     "profiling",
     "memory_management",
     "error_handling",
-    "serialization",
     "platform_abstraction",
     "file_io",
     "mesh_import",

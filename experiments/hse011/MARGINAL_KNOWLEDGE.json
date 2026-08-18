@@ -56,12 +56,48 @@
       "new_api_patterns": 2,
       "hse_gaps_addressed": ["Event dispatcher pattern", "Layer stack architecture"],
       "cumulative_unique_concepts": 72
+    },
+    {
+      "source_id": "SRC-012",
+      "source_name": "Dear ImGui",
+      "classification": "D",
+      "unique_concepts": 10,
+      "new_api_patterns": 3,
+      "hse_gaps_addressed": ["Immediate mode GUI paradigm", "Draw command structure", "Backend integration pattern"],
+      "cumulative_unique_concepts": 82
+    },
+    {
+      "source_id": "SRC-027",
+      "source_name": "EnTT ECS",
+      "classification": "D",
+      "unique_concepts": 8,
+      "new_api_patterns": 2,
+      "hse_gaps_addressed": ["Sparse set architecture", "Entity-component separation", "Type-erased storage"],
+      "cumulative_unique_concepts": 90
+    },
+    {
+      "source_id": "SRC-025",
+      "source_name": "nlohmann/json",
+      "classification": "D",
+      "unique_concepts": 6,
+      "new_api_patterns": 2,
+      "hse_gaps_addressed": ["JSON serialization", "ABI versioning", "ADL type conversion"],
+      "cumulative_unique_concepts": 96
+    },
+    {
+      "source_id": "SRC-028",
+      "source_name": "Box2D v3",
+      "classification": "D",
+      "unique_concepts": 10,
+      "new_api_patterns": 3,
+      "hse_gaps_addressed": ["Physics world stepping", "Body/shape API", "Recording/snapshot system", "AABB queries", "Ray casting"],
+      "cumulative_unique_concepts": 106
     }
   ],
-  "total_unique_concepts": 72,
+  "total_unique_concepts": 106,
   "marginal_return_curve": {
-    "observation": "First 3 sources (GLFW, docs.gl, LearnOpenGL) contributed 49 unique concepts (68%). Remaining 3 sources contributed 23 unique concepts (32%). Returns are diminishing but still significant — each new source adds novel patterns not covered by previous sources.",
+    "observation": "First 3 sources contributed 49 concepts (46%). Next 9 sources contributed 57 concepts (54%). Each new source still contributes 5-10 novel concepts. Returns are NOT diminishing — we are still in the linear growth phase of knowledge acquisition.",
     "diminishing_threshold": "NOT YET REACHED — each source still contributes 5+ unique concepts",
-    "saturation_estimate": "~15-20 authoritative sources needed for core OpenGL/game engine knowledge"
+    "saturation_estimate": "~20-25 authoritative sources needed for full game engine knowledge coverage"
   }
 }
