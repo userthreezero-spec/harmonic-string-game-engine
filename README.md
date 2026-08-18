@@ -1,61 +1,66 @@
-# Harmonic String Engine - Rendering Foundation v0.1
+# Harmonic String Engine
 
-## Overview
+An independent game engine project whose engineering process can be assisted by WebOS.
 
-Minimal rendering foundation for the Harmonic String Engine project.
+## Status
 
-## Architecture
-
-```
-Window (GLFW)
-    ↓
-Renderer (OpenGL 3.3)
-    ↓
-Scene
-    ├── Camera (Perspective/Orthographic)
-    └── Primitive (Triangle, Quad, Cube)
-```
-
-## Dependencies
-
-- CMake 3.20+
-- OpenGL 3.3+
-- GLFW 3.3+
-- GLEW
+**Rendering Foundation v0.1** — Initial rendering foundation with math library, window management, and basic OpenGL rendering.
 
 ## Building
 
+### Prerequisites
+
+- CMake 3.20+
+- C++20 compiler (MSVC, GCC, or Clang)
+- OpenGL 3.3+ capable GPU
+- GLFW 3.3+
+- GLEW
+
+### Build Commands
+
 ```bash
-mkdir build && cd build
-cmake ..
-cmake --build .
+cmake -S . -B build
+cmake --build build
 ```
 
-## Components
+### Running Tests
 
-### Window
-- GLFW-based windowing
-- Input handling
-- Resize callbacks
+```bash
+cd build
+ctest
+```
 
-### Renderer
-- OpenGL 3.3 core profile
-- Shader compilation
-- Basic render pipeline
+### Running
 
-### Scene
-- Container for primitives and cameras
-- Active camera management
+```bash
+./build/hse_main
+```
 
-### Camera
-- Perspective and orthographic projection
-- View matrix computation
+Press ESC to exit.
 
-### Primitive
-- Geometry generation (Triangle, Quad, Cube)
-- GPU upload (VAO/VBO/EBO)
+## Architecture
 
-### Math
-- Vec3, Mat4 types
-- Transform operations
-- Projection matrices
+See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed architecture.
+
+## WebOS Integration
+
+This project can request cognitive engineering assistance from WebOS. See [WEBOS_INTEGRATION.md](WEBOS_INTEGRATION.md) for details.
+
+## Project Structure
+
+```
+HarmonicStringEngine/
+├── src/           # Source files
+├── include/       # Header files
+├── tests/         # Unit tests
+├── assets/        # Shaders, textures, models
+├── docs/          # Documentation
+├── knowledge/     # Project knowledge model
+├── webos/         # WebOS integration
+├── experiments/   # Experiment artifacts
+└── tools/         # Build tools, scripts
+```
+
+## License
+
+Internal project — not yet licensed.

@@ -14,9 +14,12 @@ public:
     ~Scene();
 
     const std::string& getName() const { return m_name; }
+    size_t getPrimitiveCount() const { return m_primitives.size(); }
+    size_t getCameraCount() const { return m_cameras.size(); }
 
     void addPrimitive(std::shared_ptr<Primitive> primitive);
     void removePrimitive(int index);
+    void update(float deltaTime);
 
     const std::vector<std::shared_ptr<Primitive>>& getPrimitives() const {
         return m_primitives;

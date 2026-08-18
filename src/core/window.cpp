@@ -70,4 +70,11 @@ void Window::setResizeCallback(std::function<void(int, int)> callback) {
     m_resizeCallback = callback;
 }
 
+float Window::getDeltaTime() {
+    double currentTime = glfwGetTime();
+    float dt = static_cast<float>(currentTime - m_lastFrameTime);
+    m_lastFrameTime = currentTime;
+    return dt;
+}
+
 } // namespace hse

@@ -1,4 +1,5 @@
 #include "scene/scene.h"
+#include "scene/primitive.h"
 
 namespace hse {
 
@@ -31,6 +32,17 @@ void Scene::setActiveCamera(int index) {
 std::shared_ptr<Camera> Scene::getActiveCamera() const {
     if (m_cameras.empty()) return nullptr;
     return m_cameras[m_activeCameraIndex];
+}
+
+void Scene::update(float deltaTime) {
+    for (auto& prim : m_primitives) {
+        Vec3 rot = prim->getRotation();
+        Vec3 speed = prim->getRotationSpeed();
+        rot.x += speed.x * deltaTime;
+        rot.y += speed.y * deltaTime;
+        rot.z += speed.z * deltaTime;
+        prim->setRotation(rot);
+    }
 }
 
 } // namespace hse

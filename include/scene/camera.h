@@ -17,6 +17,7 @@ public:
     void setFarPlane(float far);
     void setAspectRatio(float ratio);
 
+    ProjectionType getProjectionType() const { return m_type; }
     const Vec3& getPosition() const { return m_position; }
     const Mat4& getViewMatrix() const { return m_viewMatrix; }
     const Mat4& getProjectionMatrix() const { return m_projectionMatrix; }

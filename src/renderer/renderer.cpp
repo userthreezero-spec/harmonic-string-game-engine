@@ -2,6 +2,7 @@
 #include "scene/scene.h"
 #include "scene/camera.h"
 #include "scene/primitive.h"
+#include "math/vec3.h"
 #include <GL/glew.h>
 #include <iostream>
 #include <fstream>
@@ -137,7 +138,8 @@ void Renderer::renderScene(const Scene& scene, const Camera& camera) {
                    * Mat4::rotate(prim->getRotation().z, {0, 0, 1})
                    * Mat4::scale(prim->getScale());
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model.ptr());
-        glUniform3f(colorLoc, 1.0f, 0.5f, 0.2f);
+        Vec3 color = prim->getColor();
+        glUniform3f(colorLoc, color.x, color.y, color.z);
 
         prim->bind();
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(prim->getIndexCount()), GL_UNSIGNED_INT, 0);

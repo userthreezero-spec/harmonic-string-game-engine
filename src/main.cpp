@@ -30,6 +30,8 @@ int main() {
 
     auto triangle = std::make_shared<hse::Primitive>(hse::PrimitiveType::Triangle);
     triangle->setPosition({0.0f, 0.0f, 0.0f});
+    triangle->setColor({0.2f, 0.8f, 0.3f});
+    triangle->setRotationSpeed({0.0f, 1.0f, 0.0f});
     triangle->uploadGPU();
     scene->addPrimitive(triangle);
 
@@ -39,7 +41,10 @@ int main() {
     std::cout << "Press ESC to exit" << std::endl;
 
     while (!window.shouldClose()) {
+        float dt = window.getDeltaTime();
         window.pollEvents();
+
+        scene->update(dt);
 
         renderer.beginFrame();
         renderer.renderScene(*scene, *camera);

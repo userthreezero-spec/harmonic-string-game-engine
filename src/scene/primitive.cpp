@@ -18,6 +18,8 @@ Primitive::~Primitive() {
 void Primitive::setPosition(const Vec3& position) { m_position = position; }
 void Primitive::setRotation(const Vec3& rotation) { m_rotation = rotation; }
 void Primitive::setScale(const Vec3& scale) { m_scale = scale; }
+void Primitive::setColor(const Vec3& color) { m_color = color; }
+void Primitive::setRotationSpeed(const Vec3& speed) { m_rotationSpeed = speed; }
 
 void Primitive::generateGeometry() {
     switch (m_type) {

@@ -27,6 +27,7 @@ public:
     bool shouldClose() const;
     void pollEvents();
     void swapBuffers();
+    float getDeltaTime();
 
     int getWidth() const { return m_width; }
     int getHeight() const { return m_height; }
@@ -40,6 +41,7 @@ private:
     GLFWwindow* m_window = nullptr;
     int m_width = 0;
     int m_height = 0;
+    double m_lastFrameTime = 0.0;
     std::function<void(int, int)> m_resizeCallback;
 };
 

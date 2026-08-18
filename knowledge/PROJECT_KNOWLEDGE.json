@@ -1,0 +1,271 @@
+{
+  "metadata": {
+    "experiment": "HSE-002",
+    "purpose": "Structured Engineering Knowledge for HSE",
+    "date": "2026-08-17",
+    "cognitive_engine": "opencode/big-pickle"
+  },
+  "project_identity": {
+    "name": "Harmonic String Engine",
+    "version": "0.1.0",
+    "type": "Game Engine",
+    "language": "C++20",
+    "build_system": "CMake 3.20+",
+    "license": "Internal",
+    "description": "Minimal rendering foundation for a game engine"
+  },
+  "architecture": {
+    "pattern": "Layered architecture",
+    "layers": ["Application", "Platform (GLFW)", "Renderer (OpenGL)", "Scene", "Math"],
+    "threading": "Single-threaded",
+    "memory_model": "RAII with smart pointers",
+    "confidence": "HIGH",
+    "source": "Repository analysis",
+    "location": "ARCHITECTURE.md"
+  },
+  "modules": {
+    "core/window": {
+      "files": ["include/core/window.h", "src/core/window.cpp"],
+      "responsibility": "OS window creation, input handling",
+      "dependencies": ["GLFW 3.3", "OpenGL"],
+      "key_types": ["Window", "WindowProps"],
+      "confidence": "HIGH",
+      "source": "Repository analysis"
+    },
+    "renderer/renderer": {
+      "files": ["include/renderer/renderer.h", "src/renderer/renderer.cpp"],
+      "responsibility": "OpenGL initialization, draw calls, shader management",
+      "dependencies": ["GLEW", "OpenGL 3.3", "scene/camera", "scene/primitive"],
+      "key_types": ["Renderer"],
+      "confidence": "HIGH",
+      "source": "Repository analysis"
+    },
+    "scene/scene": {
+      "files": ["include/scene/scene.h", "src/scene/scene.cpp"],
+      "responsibility": "Container for primitives and cameras",
+      "dependencies": ["scene/primitive", "scene/camera"],
+      "key_types": ["Scene"],
+      "confidence": "HIGH",
+      "source": "Repository analysis"
+    },
+    "scene/camera": {
+      "files": ["include/scene/camera.h", "src/scene/camera.cpp"],
+      "responsibility": "View/projection matrix computation",
+      "dependencies": ["math/vec3", "math/mat4"],
+      "key_types": ["Camera", "ProjectionType"],
+      "confidence": "HIGH",
+      "source": "Repository analysis"
+    },
+    "scene/primitive": {
+      "files": ["include/scene/primitive.h", "src/scene/primitive.cpp"],
+      "responsibility": "Geometry generation and GPU upload",
+      "dependencies": ["math/vec3", "math/mat4", "OpenGL"],
+      "key_types": ["Primitive", "PrimitiveType"],
+      "resource_ownership": "Owns VAO/VBO/EBO (non-copyable)",
+      "confidence": "HIGH",
+      "source": "Repository analysis"
+    },
+    "math/vec3": {
+      "files": ["include/math/vec3.h", "src/math/vec3.cpp"],
+      "responsibility": "3D vector operations",
+      "dependencies": [],
+      "key_types": ["Vec3"],
+      "confidence": "HIGH",
+      "source": "Repository analysis"
+    },
+    "math/mat4": {
+      "files": ["include/math/mat4.h", "src/math/mat4.cpp"],
+      "responsibility": "4x4 matrix operations, transforms",
+      "dependencies": ["math/vec3"],
+      "key_types": ["Mat4"],
+      "confidence": "HIGH",
+      "source": "Repository analysis"
+    }
+  },
+  "dependencies": {
+    "external": {
+      "GLFW 3.3": {
+        "purpose": "Window creation, input handling",
+        "type": "System library",
+        "required": true,
+        "confidence": "HIGH",
+        "source": "CMakeLists.txt"
+      },
+      "GLEW": {
+        "purpose": "OpenGL function loading",
+        "type": "System library",
+        "required": true,
+        "confidence": "HIGH",
+        "source": "CMakeLists.txt"
+      },
+      "OpenGL 3.3": {
+        "purpose": "Graphics API",
+        "type": "System library",
+        "required": true,
+        "confidence": "HIGH",
+        "source": "CMakeLists.txt"
+      }
+    },
+    "internal": {
+      "hse_core": {
+        "purpose": "Static library containing all engine code",
+        "type": "Internal library",
+        "required": true,
+        "confidence": "HIGH",
+        "source": "CMakeLists.txt"
+      }
+    }
+  },
+  "rendering_pipeline": {
+    "api": "OpenGL 3.3 Core Profile",
+    "shaders": "GLSL 330",
+    "stages": [
+      "Window creation (GLFW)",
+      "OpenGL context initialization (GLEW)",
+      "Shader compilation (embedded strings)",
+      "Geometry upload (VAO/VBO/EBO)",
+      "Render loop (clear, draw, swap)"
+    ],
+    "confidence": "HIGH",
+    "source": "Repository analysis"
+  },
+  "engine_lifecycle": {
+    "startup": "main() → Window → Renderer → Scene → Camera → Primitive",
+    "run": "while (!shouldClose) { pollEvents; beginFrame; renderScene; endFrame; swapBuffers; }",
+    "shutdown": "Renderer shutdown → Window destruction",
+    "confidence": "HIGH",
+    "source": "Repository analysis"
+  },
+  "input": {
+    "system": "GLFW callbacks",
+    "events": ["Keyboard", "Mouse", "Window resize"],
+    "confidence": "MEDIUM",
+    "source": "Repository analysis"
+  },
+  "windowing": {
+    "library": "GLFW 3.3",
+    "features": ["Window creation", "OpenGL context", "Input handling", "Resize callbacks"],
+    "confidence": "HIGH",
+    "source": "Repository analysis"
+  },
+  "gpu_abstraction": {
+    "api": "OpenGL 3.3",
+    "loader": "GLEW",
+    "resources": ["VAO", "VBO", "EBO", "Shader Program"],
+    "confidence": "HIGH",
+    "source": "Repository analysis"
+  },
+  "shader_system": {
+    "language": "GLSL 330",
+    "source": "Embedded strings in renderer.cpp",
+    "compilation": "Runtime compilation via glCompileShader",
+    "types": ["Vertex Shader", "Fragment Shader"],
+    "confidence": "HIGH",
+    "source": "Repository analysis"
+  },
+  "resource_management": {
+    "pattern": "RAII with non-copyable types",
+    "gpu_resources": "VAO/VBO/EBO owned by Primitive",
+    "shader_resources": "Owned by Renderer",
+    "confidence": "HIGH",
+    "source": "Repository analysis"
+  },
+  "scene_representation": {
+    "pattern": "Flat container (vector of primitives)",
+    "hierarchy": "None",
+    "camera_management": "Active camera index",
+    "confidence": "HIGH",
+    "source": "Repository analysis"
+  },
+  "entity_model": {
+    "pattern": "No ECS in v0.1",
+    "objects": ["Primitive", "Camera"],
+    "confidence": "HIGH",
+    "source": "Repository analysis"
+  },
+  "math": {
+    "types": ["Vec3", "Mat4"],
+    "operations": ["Add", "Sub", "Mul", "Dot", "Cross", "Normalize", "Length"],
+    "transforms": ["Translate", "Rotate", "Scale", "Perspective", "Ortho", "LookAt"],
+    "confidence": "HIGH",
+    "source": "Repository analysis"
+  },
+  "memory_ownership": {
+    "pattern": "RAII",
+    "smart_pointers": ["shared_ptr (Scene objects)"],
+    "resource_safety": "Non-copyable types for GPU resources",
+    "confidence": "HIGH",
+    "source": "Repository analysis"
+  },
+  "error_handling": {
+    "pattern": "Return codes + cerr logging",
+    "exceptions": "None",
+    "confidence": "MEDIUM",
+    "source": "Repository analysis"
+  },
+  "build_system": {
+    "tool": "CMake 3.20+",
+    "standard": "C++20",
+    "targets": ["hse_core (static library)", "hse_main (executable)", "hse_test_math", "hse_test_scene"],
+    "testing": "CTest",
+    "confidence": "HIGH",
+    "source": "CMakeLists.txt"
+  },
+  "tests": {
+    "framework": "Raw assert()",
+    "files": ["tests/test_math.cpp", "tests/test_scene.cpp"],
+    "coverage": "Math operations, scene management",
+    "confidence": "MEDIUM",
+    "source": "Repository analysis"
+  },
+  "known_defects": [
+    {
+      "id": "DEF-001",
+      "description": "PrimitiveType::Sphere is a stub (single vertex)",
+      "severity": "MEDIUM",
+      "confidence": "HIGH",
+      "source": "HSE-001 repository analysis"
+    },
+    {
+      "id": "DEF-002",
+      "description": "No texture support",
+      "severity": "LOW",
+      "confidence": "HIGH",
+      "source": "HSE-001 repository analysis"
+    },
+    {
+      "id": "DEF-003",
+      "description": "No lighting",
+      "severity": "LOW",
+      "confidence": "HIGH",
+      "source": "HSE-001 repository analysis"
+    },
+    {
+      "id": "DEF-004",
+      "description": "No material system",
+      "severity": "LOW",
+      "confidence": "HIGH",
+      "source": "HSE-001 repository analysis"
+    },
+    {
+      "id": "DEF-005",
+      "description": "Orthographic projection uses hardcoded bounds",
+      "severity": "LOW",
+      "confidence": "HIGH",
+      "source": "HSE-001 repository analysis"
+    }
+  ],
+  "design_goals": [
+    "Minimal rendering foundation",
+    "Clean separation of concerns",
+    "Evidence-grounded architecture",
+    "Testable components",
+    "Extensible for future development"
+  ],
+  "architectural_constraints": [
+    "OpenGL 3.3 core profile",
+    "Single-threaded",
+    "No external dependencies beyond GLFW/GLEW/OpenGL",
+    "Windows primary target"
+  ]
+}
