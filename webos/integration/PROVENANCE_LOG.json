@@ -1,5 +1,137 @@
 {
   "project": "HarmonicStringEngine",
   "last_updated": "2026-08-17",
-  "modifications": []
+  "modifications": [
+    {
+      "id": "MOD-001",
+      "date": "2026-08-17",
+      "task": "A",
+      "type": "accessor_addition",
+      "files": ["include/scene/primitive.h"],
+      "change": "Added getType() const method",
+      "reason": "Allow external code to query primitive type",
+      "risk": "LOW",
+      "build_tested": false,
+      "build_result": "BLOCKED_NO_COMPILER"
+    },
+    {
+      "id": "MOD-002",
+      "date": "2026-08-17",
+      "task": "A",
+      "type": "accessor_addition",
+      "files": ["include/scene/scene.h"],
+      "change": "Added getPrimitiveCount() and getCameraCount() const methods",
+      "reason": "Allow external code to query scene contents",
+      "risk": "LOW",
+      "build_tested": false,
+      "build_result": "BLOCKED_NO_COMPILER"
+    },
+    {
+      "id": "MOD-003",
+      "date": "2026-08-17",
+      "task": "A",
+      "type": "accessor_addition",
+      "files": ["include/scene/camera.h"],
+      "change": "Added getProjectionType() const method",
+      "reason": "Allow external code to query camera projection type",
+      "risk": "LOW",
+      "build_tested": false,
+      "build_result": "BLOCKED_NO_COMPILER"
+    },
+    {
+      "id": "MOD-004",
+      "date": "2026-08-17",
+      "task": "B",
+      "type": "feature_addition",
+      "files": ["include/scene/primitive.h", "src/scene/primitive.cpp"],
+      "change": "Added m_color member (Vec3), setColor(), getColor()",
+      "reason": "Per-primitive color replaces hardcoded orange in renderer",
+      "risk": "LOW",
+      "build_tested": false,
+      "build_result": "BLOCKED_NO_COMPILER"
+    },
+    {
+      "id": "MOD-005",
+      "date": "2026-08-17",
+      "task": "B",
+      "type": "data_flow_change",
+      "files": ["src/renderer/renderer.cpp"],
+      "change": "renderScene() now reads color from Primitive::getColor() instead of hardcoded (1.0, 0.5, 0.2)",
+      "reason": "Enable per-primitive coloring",
+      "risk": "MEDIUM",
+      "architectural_relationship": "Renderer depends on Primitive for color data",
+      "build_tested": false,
+      "build_result": "BLOCKED_NO_COMPILER"
+    },
+    {
+      "id": "MOD-006",
+      "date": "2026-08-17",
+      "task": "B",
+      "type": "initialization",
+      "files": ["src/main.cpp"],
+      "change": "Added triangle->setColor({0.2f, 0.8f, 0.3f})",
+      "reason": "Set explicit green color for demo triangle",
+      "risk": "LOW",
+      "build_tested": false,
+      "build_result": "BLOCKED_NO_COMPILER"
+    },
+    {
+      "id": "MOD-007",
+      "date": "2026-08-17",
+      "task": "D",
+      "type": "feature_addition",
+      "files": ["include/scene/primitive.h", "src/scene/primitive.cpp"],
+      "change": "Added m_rotationSpeed member (Vec3), setRotationSpeed(), getRotationSpeed()",
+      "reason": "Enable per-primitive rotation animation speed",
+      "risk": "LOW",
+      "build_tested": false,
+      "build_result": "BLOCKED_NO_COMPILER"
+    },
+    {
+      "id": "MOD-008",
+      "date": "2026-08-17",
+      "task": "D",
+      "type": "feature_addition",
+      "files": ["include/scene/scene.h", "src/scene/scene.cpp"],
+      "change": "Added Scene::update(float deltaTime) that rotates primitives by rotationSpeed * dt",
+      "reason": "Scene needs to propagate time to primitives for animation",
+      "risk": "MEDIUM",
+      "architectural_relationship": "Scene owns primitives and updates them each frame",
+      "build_tested": false,
+      "build_result": "BLOCKED_NO_COMPILER"
+    },
+    {
+      "id": "MOD-009",
+      "date": "2026-08-17",
+      "task": "D",
+      "type": "feature_addition",
+      "files": ["include/core/window.h", "src/core/window.cpp"],
+      "change": "Added getDeltaTime() using glfwGetTime() for frame timing",
+      "reason": "Animation requires a time source; GLFW provides glfwGetTime()",
+      "risk": "MEDIUM",
+      "architectural_relationship": "Window is the platform abstraction; GLFW is the timing source",
+      "build_tested": false,
+      "build_result": "BLOCKED_NO_COMPILER"
+    },
+    {
+      "id": "MOD-010",
+      "date": "2026-08-17",
+      "task": "D",
+      "type": "loop_modification",
+      "files": ["src/main.cpp"],
+      "change": "Main loop now calls window.getDeltaTime() and scene.update(dt)",
+      "reason": "Wire delta time from Window through Scene to primitives",
+      "risk": "MEDIUM",
+      "architectural_relationship": "main() orchestrates the update/render cycle",
+      "build_tested": false,
+      "build_result": "BLOCKED_NO_COMPILER"
+    }
+  ],
+  "build_verification": {
+    "attempted": true,
+    "method": "CMake configure",
+    "result": "BLOCKED",
+    "reason": "CMake and C++ compiler not installed on host",
+    "can_retry_after": "Install CMake + MSVC/GCC via winget or manual installer"
+  }
 }

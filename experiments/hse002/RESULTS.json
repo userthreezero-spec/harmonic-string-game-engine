@@ -1,0 +1,78 @@
+{
+  "experiment": "HSE-002",
+  "title": "External Project Engineering Authority Test",
+  "date": "2026-08-17",
+  "status": "COMPLETE",
+  "cognitive_engine": "opencode/big-pickle",
+  "model": "big-pickle",
+  "host_project": "C:\\Users\\Rico\\HarmonicStringEngine",
+  "host_project_independent": true,
+  "host_project_has_own_git": true,
+  "webos_modified": false,
+  "hse_modified": true,
+  "files_modified": 10,
+  "git_commits": 2,
+  "tasks_completed": {
+    "task_a_accessors": true,
+    "task_b_color": true,
+    "task_c_shader_pipeline": true,
+    "task_d_animation": true
+  },
+  "build_verification": {
+    "attempted": true,
+    "result": "BLOCKED",
+    "reason": "CMake and C++ compiler not installed on host",
+    "can_retry": true,
+    "retry_instructions": "Install CMake + WinLibs via winget, then cmake -S . -B build && cmake --build build"
+  },
+  "test_execution": {
+    "attempted": false,
+    "reason": "Build not completed"
+  },
+  "visual_verification": {
+    "attempted": false,
+    "reason": "Build not completed"
+  },
+  "anti_fabrication": {
+    "hallucinated_files": 0,
+    "hallucinated_symbols": 0,
+    "hallucinated_dependencies": 0,
+    "hallucinated_apis": 0,
+    "all_changes_grounded": true
+  },
+  "provenance": {
+    "recorded": true,
+    "location": "webos/integration/PROVENANCE_LOG.json",
+    "modifications_tracked": 10
+  },
+  "scores": {
+    "overall": 83,
+    "breakdown": {
+      "host_discovery": 9,
+      "documentation": 9,
+      "knowledge_ingestion": 8,
+      "engineering_plan": 9,
+      "task_a": 10,
+      "task_b": 9,
+      "task_c": 8,
+      "task_d": 9,
+      "build_verification": 2,
+      "provenance": 10
+    }
+  },
+  "deliverables": {
+    "HOST_ENVIRONMENT.md": "experiments/hse002/HOST_ENVIRONMENT.md",
+    "PROJECT_MATERIALIZATION.md": "experiments/hse002/PROJECT_MATERIALIZATION.md",
+    "DOMAIN_KNOWLEDGE_INGESTION.md": "experiments/hse002/DOMAIN_KNOWLEDGE_INGESTION.md",
+    "ENGINEERING_PLAN.md": "experiments/hse002/ENGINEERING_PLAN.md",
+    "FINDINGS.md": "experiments/hse002/FINDINGS.md",
+    "EVALUATION.md": "experiments/hse002/EVALUATION.md",
+    "HANDOFF.md": "experiments/hse002/HANDOFF.md",
+    "PROJECT_KNOWLEDGE.json": "knowledge/PROJECT_KNOWLEDGE.json",
+    "PROVENANCE_LOG.json": "webos/integration/PROVENANCE_LOG.json",
+    "README.md": "README.md",
+    "ARCHITECTURE.md": "ARCHITECTURE.md",
+    "WEBOS_INTEGRATION.md": "WEBOS_INTEGRATION.md",
+    "REQUEST_TEMPLATE.md": "webos/integration/REQUEST_TEMPLATE.md"
+  }
+}
