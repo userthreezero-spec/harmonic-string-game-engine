@@ -1,0 +1,156 @@
+{
+  "mission": "Create a small room with floor, four walls, ceiling, doorway, and window",
+  "version": "1.0",
+  "provenance": {
+    "source": "HSE-003 OBJ-8 First Cognitive World-Building Mission",
+    "date": "2026-08-17",
+    "confidence": "HIGH",
+    "evidence": "Mission derived from HSE capabilities (Quad primitive, translate, rotate)"
+  },
+  "world": {
+    "name": "SmallRoom",
+    "objects": [
+      {
+        "id": "floor",
+        "type": "Quad",
+        "transform": {
+          "position": [0.0, -1.5, 0.0],
+          "rotation": [-90.0, 0.0, 0.0],
+          "scale": [6.0, 6.0, 1.0]
+        },
+        "material": { "color": [0.4, 0.3, 0.2] },
+        "description": "Floor plane"
+      },
+      {
+        "id": "ceiling",
+        "type": "Quad",
+        "transform": {
+          "position": [0.0, 1.5, 0.0],
+          "rotation": [90.0, 0.0, 0.0],
+          "scale": [6.0, 6.0, 1.0]
+        },
+        "material": { "color": [0.7, 0.7, 0.65] },
+        "description": "Ceiling plane"
+      },
+      {
+        "id": "wall_back",
+        "type": "Quad",
+        "transform": {
+          "position": [0.0, 0.0, -3.0],
+          "rotation": [0.0, 0.0, 0.0],
+          "scale": [6.0, 3.0, 1.0]
+        },
+        "material": { "color": [0.6, 0.55, 0.5] },
+        "description": "Back wall (facing camera)"
+      },
+      {
+        "id": "wall_front_lower",
+        "type": "Quad",
+        "transform": {
+          "position": [0.0, -0.75, 3.0],
+          "rotation": [0.0, 180.0, 0.0],
+          "scale": [6.0, 1.5, 1.0]
+        },
+        "material": { "color": [0.6, 0.55, 0.5] },
+        "description": "Front wall lower section (below window)"
+      },
+      {
+        "id": "wall_front_upper",
+        "type": "Quad",
+        "transform": {
+          "position": [0.0, 0.75, 3.0],
+          "rotation": [0.0, 180.0, 0.0],
+          "scale": [6.0, 1.5, 1.0]
+        },
+        "material": { "color": [0.6, 0.55, 0.5] },
+        "description": "Front wall upper section (above window)"
+      },
+      {
+        "id": "wall_front_left",
+        "type": "Quad",
+        "transform": {
+          "position": [-2.0, 0.0, 3.0],
+          "rotation": [0.0, 180.0, 0.0],
+          "scale": [2.0, 3.0, 1.0]
+        },
+        "material": { "color": [0.6, 0.55, 0.5] },
+        "description": "Front wall left of window"
+      },
+      {
+        "id": "wall_front_right",
+        "type": "Quad",
+        "transform": {
+          "position": [2.0, 0.0, 3.0],
+          "rotation": [0.0, 180.0, 0.0],
+          "scale": [2.0, 3.0, 1.0]
+        },
+        "material": { "color": [0.6, 0.55, 0.5] },
+        "description": "Front wall right of window"
+      },
+      {
+        "id": "wall_left",
+        "type": "Quad",
+        "transform": {
+          "position": [-3.0, 0.0, 0.0],
+          "rotation": [0.0, 90.0, 0.0],
+          "scale": [6.0, 3.0, 1.0]
+        },
+        "material": { "color": [0.55, 0.5, 0.45] },
+        "description": "Left wall"
+      },
+      {
+        "id": "wall_right_upper",
+        "type": "Quad",
+        "transform": {
+          "position": [3.0, 0.75, 0.0],
+          "rotation": [0.0, -90.0, 0.0],
+          "scale": [6.0, 1.5, 1.0]
+        },
+        "material": { "color": [0.55, 0.5, 0.45] },
+        "description": "Right wall upper section (above doorway)"
+      },
+      {
+        "id": "wall_right_lower_left",
+        "type": "Quad",
+        "transform": {
+          "position": [3.0, -0.75, -1.5],
+          "rotation": [0.0, -90.0, 0.0],
+          "scale": [3.0, 1.5, 1.0]
+        },
+        "material": { "color": [0.55, 0.5, 0.45] },
+        "description": "Right wall lower-left (left of doorway)"
+      },
+      {
+        "id": "wall_right_lower_right",
+        "type": "Quad",
+        "transform": {
+          "position": [3.0, -0.75, 1.5],
+          "rotation": [0.0, -90.0, 0.0],
+          "scale": [3.0, 1.5, 1.0]
+        },
+        "material": { "color": [0.55, 0.5, 0.45] },
+        "description": "Right wall lower-right (right of doorway)"
+      }
+    ],
+    "cameras": [
+      {
+        "id": "main_camera",
+        "type": "Perspective",
+        "position": [4.5, 2.0, 4.5],
+        "target": [0.0, 0.0, 0.0],
+        "fov": 60.0,
+        "description": "Observation camera outside room looking in through doorway"
+      }
+    ],
+    "acceptance_criteria": [
+      "Floor exists as a horizontal plane",
+      "Ceiling exists as a horizontal plane above floor",
+      "Four walls exist (front, back, left, right)",
+      "Front wall has a window opening (gap between upper and lower sections)",
+      "Right wall has a doorway opening (gap between upper and lower-left/lower-right)",
+      "Camera can observe the room interior",
+      "All objects have distinct colors for identification",
+      "Room dimensions are approximately 6x3x6 units"
+    ]
+  }
+}

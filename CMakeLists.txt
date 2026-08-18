@@ -14,6 +14,7 @@ add_library(hse_core STATIC
     src/scene/scene.cpp
     src/scene/camera.cpp
     src/scene/primitive.cpp
+    src/scene/scene_builder.cpp
     src/math/vec3.cpp
     src/math/mat4.cpp
 )
@@ -23,6 +24,9 @@ target_link_libraries(hse_core PUBLIC OpenGL::GL GLEW::GLEW glfw)
 
 add_executable(hse_main src/main.cpp)
 target_link_libraries(hse_main PRIVATE hse_core)
+
+add_executable(hse_room_demo src/room_demo.cpp)
+target_link_libraries(hse_room_demo PRIVATE hse_core)
 
 add_executable(hse_test_math tests/test_math.cpp)
 target_link_libraries(hse_test_math PRIVATE hse_core)

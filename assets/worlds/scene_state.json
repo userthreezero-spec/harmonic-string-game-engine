@@ -1,0 +1,99 @@
+{
+  "scene": "SmallRoom",
+  "primitive_count": 11,
+  "camera_count": 1,
+  "objects": [
+    {
+      "index": 0,
+      "type": "1",
+      "position": [0, -1.5, 0],
+      "rotation": [-90, 0, 0],
+      "scale": [6, 6, 1],
+      "color": [0.4, 0.3, 0.2]
+    },
+    {
+      "index": 1,
+      "type": "1",
+      "position": [0, 1.5, 0],
+      "rotation": [90, 0, 0],
+      "scale": [6, 6, 1],
+      "color": [0.7, 0.7, 0.65]
+    },
+    {
+      "index": 2,
+      "type": "1",
+      "position": [0, 0, -3],
+      "rotation": [0, 0, 0],
+      "scale": [6, 3, 1],
+      "color": [0.6, 0.55, 0.5]
+    },
+    {
+      "index": 3,
+      "type": "1",
+      "position": [0, -0.75, 3],
+      "rotation": [0, 180, 0],
+      "scale": [6, 1.5, 1],
+      "color": [0.6, 0.55, 0.5]
+    },
+    {
+      "index": 4,
+      "type": "1",
+      "position": [0, 0.75, 3],
+      "rotation": [0, 180, 0],
+      "scale": [6, 1.5, 1],
+      "color": [0.6, 0.55, 0.5]
+    },
+    {
+      "index": 5,
+      "type": "1",
+      "position": [-2, 0, 3],
+      "rotation": [0, 180, 0],
+      "scale": [2, 3, 1],
+      "color": [0.6, 0.55, 0.5]
+    },
+    {
+      "index": 6,
+      "type": "1",
+      "position": [2, 0, 3],
+      "rotation": [0, 180, 0],
+      "scale": [2, 3, 1],
+      "color": [0.6, 0.55, 0.5]
+    },
+    {
+      "index": 7,
+      "type": "1",
+      "position": [-3, 0, 0],
+      "rotation": [0, 90, 0],
+      "scale": [6, 3, 1],
+      "color": [0.55, 0.5, 0.45]
+    },
+    {
+      "index": 8,
+      "type": "1",
+      "position": [3, 0.75, 0],
+      "rotation": [0, -90, 0],
+      "scale": [6, 1.5, 1],
+      "color": [0.55, 0.5, 0.45]
+    },
+    {
+      "index": 9,
+      "type": "1",
+      "position": [3, -0.75, -1.5],
+      "rotation": [0, -90, 0],
+      "scale": [3, 1.5, 1],
+      "color": [0.55, 0.5, 0.45]
+    },
+    {
+      "index": 10,
+      "type": "1",
+      "position": [3, -0.75, 1.5],
+      "rotation": [0, -90, 0],
+      "scale": [3, 1.5, 1],
+      "color": [0.55, 0.5, 0.45]
+    }
+  ],
+  "camera": {
+    "position": [4.5, 2, 4.5],
+    "type": "Perspective"
+  }
+}
