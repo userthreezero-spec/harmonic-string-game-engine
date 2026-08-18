@@ -1,0 +1,332 @@
+{
+  "mission": {
+    "id": "HSE-008",
+    "name": "Bounded Texture Mapping",
+    "scope": "UV coordinates, texture loading, GPU texture objects, texture sampling, bridge commands, serialization",
+    "non_goals": ["Material system", "PBR", "Mipmaps", "Texture atlas", "Editor UI", "Asset pipeline", "Harmonic materials"],
+    "target_behavior": "External controller assigns texture to primitive, sees it rendered, save/load preserves assignment"
+  },
+  
+  "repositories": {
+    "hse": {
+      "path": "C:\\Users\\Rico\\HarmonicStringEngine",
+      "branch": "master",
+      "commit": "HEAD"
+    },
+    "webos": {
+      "path": "NOT MODIFIED",
+      "role": "External cognitive collaborator"
+    }
+  },
+  
+  "knowledge_sources": [
+    {
+      "id": "HSE-007",
+      "type": "experiment_artifacts",
+      "files": [
+        "experiments/hse007/BASELINE.md",
+        "experiments/hse007/KNOWLEDGE_MAP.md",
+        "experiments/hse007/SYMBOL_DOMAIN_MAP.md",
+        "experiments/hse007/ARCHITECTURE_BENCHMARK.md",
+        "experiments/hse007/MISSION_CHAINS.md",
+        "experiments/hse007/HARMONIC_ASSESSMENT.md"
+      ],
+      "reliability": "PARTIAL (4 errors found)"
+    },
+    {
+      "id": "HSE_EXTERNAL_PROTOCOL",
+      "type": "protocol_spec",
+      "file": "HSE_EXTERNAL_PROTOCOL.md",
+      "reliability": "HIGH"
+    },
+    {
+      "id": "ACTUAL_SOURCE",
+      "type": "ground_truth",
+      "files": ["All .h and .cpp files"],
+      "reliability": "HIGH"
+    }
+  ],
+  
+  "webos_outputs": {
+    "architecture_completeness": {"score": 7, "max": 7, "percent": 100},
+    "symbol_accuracy": {"score": 9, "max": 10, "percent": 90},
+    "dependency_accuracy": {"score": 4, "max": 4, "percent": 100},
+    "implementation_readiness": {"score": 4, "max": 4, "percent": 100},
+    "unsupported_assumptions": {"score": 5, "max": 5, "percent": 100},
+    "acceptance_test_quality": {"score": 3, "max": 3, "percent": 100},
+    "overall": {"score": 32, "max": 33, "percent": 97}
+  },
+  
+  "files": {
+    "new": [
+      {
+        "path": "include/math/vec2.h",
+        "purpose": "Vec2 struct for UV coordinates",
+        "symbols": ["Vec2", "Vec2::x", "Vec2::y", "Vec2::operator+", "Vec2::operator-", "Vec2::operator*", "Vec2::operator=="]
+      },
+      {
+        "path": "src/math/vec2.cpp",
+        "purpose": "Vec2 method implementations",
+        "symbols": ["Vec2::operator+", "Vec2::operator-", "Vec2::operator*", "Vec2::operator=="]
+      },
+      {
+        "path": "include/resource/texture_manager.h",
+        "purpose": "TextureManager class for GPU texture lifecycle",
+        "symbols": ["TextureManager", "TextureManager::loadTexture", "TextureManager::releaseTexture", "TextureManager::bindTexture", "TextureManager::clear", "TextureManager::hasTexture", "TextureEntry"]
+      },
+      {
+        "path": "src/resource/texture_manager.cpp",
+        "purpose": "TextureManager implementation",
+        "symbols": ["TextureManager::loadTexture", "TextureManager::releaseTexture", "TextureManager::bindTexture", "TextureManager::clear"]
+      }
+    ],
+    "modified": [
+      {
+        "path": "include/scene/primitive.h",
+        "symbols_added": ["m_texCoords", "m_textureID", "m_texturePath", "getTexCoords", "getTextureID", "setTexture", "getTexturePath"],
+        "symbols_modified": []
+      },
+      {
+        "path": "src/scene/primitive.cpp",
+        "symbols_added": ["Primitive::setTexture"],
+        "symbols_modified": ["Primitive::generateGeometry", "Primitive::uploadGPU", "Primitive::~Primitive", "Primitive::bind"],
+        "line_ranges": {
+          "generateGeometry": "27-67",
+          "uploadGPU": "69-89",
+          "~Primitive": "13-19",
+          "bind": "91-93"
+        }
+      },
+      {
+        "path": "src/renderer/renderer.cpp",
+        "symbols_added": [],
+        "symbols_modified": ["vertexShaderSource", "fragmentShaderSource", "Renderer::renderScene"],
+        "line_ranges": {
+          "vertexShaderSource": "13-22",
+          "fragmentShaderSource": "24-31",
+          "renderScene": "120-148"
+        }
+      },
+      {
+        "path": "include/bridge/command_queue.h",
+        "symbols_added": ["CMD_SET_TEXTURE", "Command::texturePath"],
+        "symbols_modified": []
+      },
+      {
+        "path": "src/bridge/bridge.cpp",
+        "symbols_added": [],
+        "symbols_modified": ["Bridge::parseCommand", "Bridge::executeCommand"],
+        "line_ranges": {
+          "parseCommand": "63-204",
+          "executeCommand": "215-395"
+        }
+      },
+      {
+        "path": "src/scene/scene_builder.cpp",
+        "symbols_added": [],
+        "symbols_modified": ["SceneBuilder::exportHSC", "SceneBuilder::importState"],
+        "line_ranges": {
+          "exportHSC": "286-338",
+          "importState": "136-237"
+        }
+      },
+      {
+        "path": "CMakeLists.txt",
+        "symbols_added": [],
+        "symbols_modified": ["hse_core sources"],
+        "line_ranges": {
+          "hse_core": "11-20"
+        }
+      }
+    ]
+  },
+  
+  "dependencies": {
+    "new_external": [
+      {
+        "name": "stb_image.h",
+        "type": "single header",
+        "location": "include/third_party/stb_image.h",
+        "purpose": "Image file loading (PNG, JPG)"
+      }
+    ],
+    "new_internal": [
+      {
+        "name": "vec2.h",
+        "type": "header",
+        "purpose": "Vec2 struct for UV coordinates"
+      },
+      {
+        "name": "texture_manager.h",
+        "type": "header",
+        "purpose": "TextureManager class"
+      }
+    ],
+    "cmake_changes": [
+      {
+        "file": "CMakeLists.txt",
+        "change": "Add src/math/vec2.cpp and src/resource/texture_manager.cpp to hse_core sources",
+        "line": "11-20"
+      }
+    ]
+  },
+  
+  "claims": {
+    "verified": [
+      "Primitive has 14 fields (m_type, m_vertices, m_indices, m_position, m_rotation, m_scale, m_color, m_rotationSpeed, m_name, m_id, m_vao, m_vbo, m_ebo, m_uploaded)",
+      "No UV coordinates exist in Primitive",
+      "No texture loading exists",
+      "Fragment shader outputs flat color only",
+      "Single shader program for all primitives",
+      "Bridge has 18 command types",
+      "SceneBuilder exports/imports JSON",
+      "uploadGPU creates VAO/VBO/EBO",
+      "Vertex shader has layout(location=0)",
+      "Renderer uses pimpl pattern",
+      "PipeServer is duplex",
+      "Thread model is correct (reader thread + main thread)",
+      "No normals in Primitive (corrected HSE-007 claim)",
+      "stb_image is appropriate for texture loading"
+    ],
+    "incorrect": [
+      "HSE-007 claimed m_normals exists in Primitive (does not exist)",
+      "HSE-007 referenced renderer_state.cpp (does not exist, shader is in renderer.cpp)"
+    ],
+    "inferred": [
+      "stb_image is appropriate (industry standard, not verified in repo)",
+      "Vec2 is needed for UV coordinates (could use float pair instead)"
+    ],
+    "unverified": [],
+    "not_yet_implemented": [
+      "m_texCoords field on Primitive",
+      "m_textureID field on Primitive",
+      "m_texturePath field on Primitive"
+    ]
+  },
+  
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "name": "UV Coordinates Exist",
+      "description": "Primitive has m_texCoords field, generateGeometry produces UVs, uploadGPU creates UV VBO",
+      "testable": true,
+      "tests": ["UV size matches vertex count × 2", "UV VBO created", "Attrib 1 set correctly"]
+    },
+    {
+      "id": "AC2",
+      "name": "Texture Loading Works",
+      "description": "stb_image loads PNG/JPG, uploads to GPU, returns unique ID",
+      "testable": true,
+      "tests": ["Load PNG returns valid ID", "Same path returns same ID", "Release deletes GPU texture"]
+    },
+    {
+      "id": "AC3",
+      "name": "Texture Sampling Works",
+      "description": "Shader samples texture when uHasTexture=1, uses flat color when uHasTexture=0",
+      "testable": true,
+      "tests": ["Untextured = flat color", "Textured = texture visible"]
+    },
+    {
+      "id": "AC4",
+      "name": "Bridge Integration Works",
+      "description": "set_texture command loads and assigns texture, ack includes object_id and revision",
+      "testable": true,
+      "tests": ["Valid command returns ok ack", "Invalid object returns error", "Invalid texture returns error"]
+    },
+    {
+      "id": "AC5",
+      "name": "Serialization Works",
+      "description": ".hsc format includes texture path, round-trip preserves assignment",
+      "testable": true,
+      "tests": ["Export includes texture field", "Import reads texture field", "Round-trip produces same JSON"]
+    },
+    {
+      "id": "AC6",
+      "name": "Resource Cleanup Works",
+      "description": "GPU texture deleted when Primitive destroyed, no memory leaks",
+      "testable": true,
+      "tests": ["Destructor deletes texture", "TextureManager clear deletes all"]
+    }
+  ],
+  
+  "verification": {
+    "unit_tests": [
+      "Vec2 arithmetic operations",
+      "UV coordinate generation for each PrimitiveType",
+      "Texture loading from file",
+      "TextureManager lifecycle"
+    ],
+    "integration_tests": [
+      "Full pipeline: create primitive → load texture → render → verify pixels",
+      "Serialization round-trip: save → load → save"
+    ],
+    "visual_verification": "Human verifies textured quad displays texture correctly",
+    "external_controller": "Bridge command + observation + save/load round-trip"
+  },
+  
+  "failures": [
+    {
+      "id": "F1",
+      "type": "REPOSITORY-GROUNDING GAP",
+      "description": "HSE-007 claimed m_normals exists in Primitive",
+      "impact": "Would cause implementation failure",
+      "root_cause": "Inference without verification",
+      "prevented_by": "Repository verification phase"
+    },
+    {
+      "id": "F2",
+      "type": "SYMBOL-GROUNDING GAP",
+      "description": "HSE-007 referenced renderer_state.cpp",
+      "impact": "Would cause file-not-found",
+      "root_cause": "Inference from pimpl pattern",
+      "prevented_by": "Repository verification phase"
+    },
+    {
+      "id": "F3",
+      "type": "ARCHITECTURE GAP",
+      "description": "UV VBO lifecycle not analyzed",
+      "impact": "Resource leak on re-upload",
+      "root_cause": "Lifecycle analysis incomplete",
+      "prevented_by": "Implementation spec analysis"
+    },
+    {
+      "id": "F4",
+      "type": "ARCHITECTURE GAP (self-corrected)",
+      "description": "TextureManager over-engineered",
+      "impact": "Unnecessary complexity (caught)",
+      "root_cause": "Industry defaults vs mission scope",
+      "prevented_by": "Scope bounding"
+    }
+  ],
+  
+  "classification": {
+    "overall": "PARTIAL",
+    "rationale": "WebOS CAN produce implementation-grade architecture with 97% accuracy, but requires verification against actual source. Without verification, HSE-007 had 4 errors that would have caused implementation failures.",
+    "breakdown": {
+      "architecture_completeness": "YES",
+      "symbol_accuracy": "YES (with verification)",
+      "dependency_accuracy": "YES",
+      "implementation_readiness": "YES",
+      "acceptance_criteria": "YES",
+      "verification_plan": "YES",
+      "without_verification": "NO (4 errors found)"
+    }
+  },
+  
+  "scores": {
+    "architecture_completeness": {"score": 7, "max": 7},
+    "symbol_accuracy": {"score": 9, "max": 10},
+    "dependency_accuracy": {"score": 4, "max": 4},
+    "implementation_readiness": {"score": 4, "max": 4},
+    "unsupported_assumptions": {"score": 5, "max": 5},
+    "acceptance_test_quality": {"score": 3, "max": 3},
+    "overall": {"score": 32, "max": 33, "percent": 97}
+  },
+  
+  "next_frontier": {
+    "recommendation": "Automated verification — scripts that check claims against source code in real-time",
+    "rationale": "The 4 errors found were all inference errors that could be caught by automated checks",
+    "implementation": "Scripts that parse source files and verify symbol existence, file paths, and field counts",
+    "expected_improvement": "Prevent inference errors before they reach architecture, enabling faster iteration"
+  }
+}

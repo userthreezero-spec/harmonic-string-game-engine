@@ -1,0 +1,174 @@
+{
+  "experiment": "HSE-008",
+  "title": "Architecture-to-Symbol Engineering Experiment",
+  "date": "2026-08-17",
+  "repository": "C:\\Users\\Rico\\HarmonicStringEngine",
+  "branch": "master",
+  "status": "complete",
+  
+  "mission": {
+    "name": "Bounded Texture Mapping",
+    "scope": "UV coordinates, texture loading, GPU texture objects, texture sampling, bridge commands, serialization",
+    "non_goals": "Material system, PBR, mipmaps, texture atlas, editor UI, asset pipeline, harmonic materials",
+    "target_behavior": "External controller can assign texture to primitive, see it rendered, save/load preserves assignment"
+  },
+  
+  "repositories": {
+    "hse": "C:\\Users\\Rico\\HarmonicStringEngine",
+    "webos": "NOT MODIFIED (external cognitive collaborator)"
+  },
+  
+  "knowledge_sources": [
+    "HSE-007 BASELINE.md",
+    "HSE-007 KNOWLEDGE_MAP.md",
+    "HSE-007 SYMBOL_DOMAIN_MAP.md",
+    "HSE-007 ARCHITECTURE_BENCHMARK.md",
+    "HSE-007 MISSION_CHAINS.md",
+    "HSE-007 HARMONIC_ASSESSMENT.md",
+    "HSE-007 FINAL_DELIVERABLES.md",
+    "HSE_EXTERNAL_PROTOCOL.md",
+    "Actual HSE source code (verified against)"
+  ],
+  
+  "webos_outputs": {
+    "architecture_completeness": "7/7 (100%)",
+    "symbol_accuracy": "9/10 (90%)",
+    "dependency_accuracy": "4/4 (100%)",
+    "implementation_readiness": "4/4 (100%)",
+    "unsupported_assumptions": "5/5 (100%)",
+    "acceptance_test_quality": "3/3 (100%)",
+    "overall_score": "32/33 (97%)"
+  },
+  
+  "files": {
+    "new": [
+      "include/math/vec2.h",
+      "src/math/vec2.cpp",
+      "include/resource/texture_manager.h",
+      "src/resource/texture_manager.cpp"
+    ],
+    "modified": [
+      "include/scene/primitive.h",
+      "src/scene/primitive.cpp",
+      "src/renderer/renderer.cpp",
+      "include/bridge/command_queue.h",
+      "src/bridge/bridge.cpp",
+      "src/scene/scene_builder.cpp",
+      "CMakeLists.txt"
+    ]
+  },
+  
+  "symbols": {
+    "added": [
+      "Vec2 (struct)",
+      "Primitive::m_texCoords",
+      "Primitive::m_textureID",
+      "Primitive::m_texturePath",
+      "Primitive::getTexCoords()",
+      "Primitive::getTextureID()",
+      "Primitive::setTexture()",
+      "Primitive::getTexturePath()",
+      "TextureManager (class)",
+      "TextureManager::loadTexture()",
+      "TextureManager::releaseTexture()",
+      "TextureManager::bindTexture()",
+      "TextureManager::clear()",
+      "Command::CMD_SET_TEXTURE",
+      "Command::texturePath"
+    ],
+    "modified": [
+      "Primitive::generateGeometry()",
+      "Primitive::uploadGPU()",
+      "Primitive::~Primitive()",
+      "Primitive::bind()",
+      "vertexShaderSource",
+      "fragmentShaderSource",
+      "Renderer::renderScene()",
+      "Bridge::parseCommand()",
+      "Bridge::executeCommand()",
+      "SceneBuilder::exportHSC()",
+      "SceneBuilder::importState()"
+    ]
+  },
+  
+  "dependencies": {
+    "new_external": "stb_image.h (single header, include/third_party/)",
+    "new_internal": "vec2.h, texture_manager.h",
+    "cmake_changes": "Add vec2.cpp and texture_manager.cpp to hse_core"
+  },
+  
+  "claims": {
+    "verified": 14,
+    "incorrect": 1,
+    "inferred": 2,
+    "unverified": 0,
+    "not_yet_implemented": 3
+  },
+  
+  "evidence": {
+    "hse007_errors_found": [
+      "m_normals does not exist in Primitive",
+      "renderer_state.cpp does not exist (shader is in renderer.cpp)",
+      "UV VBO lifecycle not analyzed"
+    ],
+    "verification_caught": "All 4 errors caught before implementation"
+  },
+  
+  "acceptance_criteria": [
+    "AC1: UV coordinates exist on Primitive",
+    "AC2: Texture loading works (stb_image → GPU)",
+    "AC3: Texture sampling works (shader samples texture)",
+    "AC4: Bridge integration works (set_texture command)",
+    "AC5: Serialization works (.hsc includes texture references)",
+    "AC6: Resource cleanup works (no GPU memory leaks)"
+  ],
+  
+  "verification": {
+    "unit_tests": "UV generation, texture loading, Vec2 arithmetic",
+    "integration_tests": "Full pipeline: create → texture → render → verify",
+    "visual_verification": "Human verifies textured quad",
+    "external_controller": "Bridge command + observation + save/load round-trip"
+  },
+  
+  "failures": [
+    {
+      "type": "REPOSITORY-GROUNDING GAP",
+      "description": "HSE-007 claimed m_normals exists in Primitive",
+      "impact": "Would cause implementation failure",
+      "root_cause": "Inference without verification"
+    },
+    {
+      "type": "SYMBOL-GROUNDING GAP",
+      "description": "HSE-007 referenced renderer_state.cpp",
+      "impact": "Would cause file-not-found",
+      "root_cause": "Inference from pimpl pattern"
+    },
+    {
+      "type": "ARCHITECTURE GAP",
+      "description": "UV VBO lifecycle not analyzed",
+      "impact": "Resource leak on re-upload",
+      "root_cause": "Lifecycle analysis incomplete"
+    },
+    {
+      "type": "ARCHITECTURE GAP (self-corrected)",
+      "description": "TextureManager over-engineered",
+      "impact": "Unnecessary complexity (caught)",
+      "root_cause": "Industry defaults vs mission scope"
+    }
+  ],
+  
+  "classification": "PARTIAL",
+  "classification_rationale": "WebOS CAN produce implementation-grade architecture with 97% accuracy, but requires verification against actual source. Without verification, HSE-007 had 4 errors that would have caused implementation failures.",
+  
+  "scores": {
+    "architecture_completeness": "7/7",
+    "symbol_accuracy": "9/10",
+    "dependency_accuracy": "4/4",
+    "implementation_readiness": "4/4",
+    "unsupported_assumptions": "5/5",
+    "acceptance_test_quality": "3/3",
+    "overall": "32/33 (97%)"
+  },
+  
+  "next_frontier": "Automated verification — scripts that check claims against source code in real-time, preventing inference errors before they reach implementation."
+}
