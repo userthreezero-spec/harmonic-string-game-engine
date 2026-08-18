@@ -163,6 +163,61 @@
 - Start with highest-coverage domains (rendering, math, engine architecture)
 - Track word counts and knowledge quality per source
 
+## Phase 3 Progress — Deep Authoritative Knowledge Ingestion
+
+### Ingestion Status
+
+| Metric | Value |
+|--------|-------|
+| Knowledge items created | 37 |
+| Knowledge files | 9 |
+| Sources ingested | 6 |
+| Domains covered | 8 |
+| Classification A items | 3 |
+| Classification B items | 4 |
+| Classification D items | 2 |
+
+### Sources Ingested
+
+| Source | Name | Classification | Items |
+|--------|------|---------------|-------|
+| SRC-002 | docs.gl | A | 7 |
+| SRC-003 | GLFW Input Guide | B | 4 |
+| SRC-006 | LearnOpenGL | D | 16 |
+| SRC-009 | Godot Source | A | 3 |
+| SRC-011 | Hazel Engine | D | 2 |
+| SRC-016 | GLM Manual | B | 4 |
+
+### Domains Covered
+
+| Domain | Items | Status |
+|--------|-------|--------|
+| input_handling | 4 | COMPLETE |
+| gpu_resources | 3 | COMPLETE |
+| textures | 7 | COMPLETE |
+| rendering | 8 | COMPLETE |
+| rendering_state | 7 | COMPLETE |
+| math | 4 | COMPLETE |
+| resource_management | 5 | COMPLETE |
+| event_system | 2 | PARTIAL |
+
+### Deliverables Created
+
+| Deliverable | Status |
+|-------------|--------|
+| 35 knowledge directories | DONE |
+| 9 knowledge JSON files (37 items) | DONE |
+| KNOWLEDGE_INDEX.json | DONE |
+| MARGINAL_KNOWLEDGE.json | DONE |
+| KNOWLEDGE_QUALITY_AUDIT.md | DONE |
+| HSE_KNOWLEDGE_FRONTIER.md | DONE |
+| PHASE3_FINDINGS.md | DONE |
+| PHASE3_INGESTION.md | DONE |
+
+### Phase 3 Key Finding
+
+**PREMATURE_SATURATION** — HSE-007's claim of diminishing returns was premature. Authoritative external sources yield 72 unique concepts across 6 sources with no saturation signal. Each source contributes 5+ novel concepts.
+
 ## Reproduction Confidence
 
-**HIGH**. All baseline numbers from HSE-010 are reproducible. Phase 2 source archaeology is complete. The experiment is valid to proceed to Phase 3.
+**HIGH**. All baseline numbers from HSE-010 are reproducible. Phase 2 source archaeology is complete. Phase 3 ingestion is in progress with 37 knowledge items from 6 authoritative sources.

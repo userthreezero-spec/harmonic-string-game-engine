@@ -1,0 +1,77 @@
+[
+  {
+    "knowledge_id": "KNOW-CUBEMAP-001",
+    "domain": "rendering",
+    "topic": "Cubemap Texture Creation",
+    "source_id": "SRC-006",
+    "source_url": "https://learnopengl.com/Advanced-OpenGL/Cubemaps",
+    "source_organization": "LearnOpenGL / Joey DeVries",
+    "source_classification": "D",
+    "source_version": "N/A",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "LearnOpenGL Advanced-OpenGL/Cubemaps, 'Creating a cubemap' section",
+    "extracted_claim": "A cubemap is 6 textures bound to GL_TEXTURE_CUBE_MAP. Create via glGenTextures + glBindTexture(GL_TEXTURE_CUBE_MAP). Load 6 faces with glTexImage2D targeting GL_TEXTURE_CUBE_MAP_POSITIVE_X through GL_TEXTURE_CUBE_MAP_NEGATIVE_Z. Use samplerCube in fragment shader. Wrap R coordinate for 3D sampling. Set GL_TEXTURE_WRAP_R to GL_CLAMP_TO_EDGE.",
+    "terminology": ["GL_TEXTURE_CUBE_MAP", "samplerCube", "GL_TEXTURE_WRAP_R", "GL_TEXTURE_CUBE_MAP_POSITIVE_X"],
+    "implementation_relevance": "HSE textures module currently supports only GL_TEXTURE_2D. Cubemap support would enable skyboxes and environment mapping.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["textures_2d"],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE only has 2D textures"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-CUBEMAP-002",
+    "domain": "rendering",
+    "topic": "Skybox Rendering with Depth Trick",
+    "source_id": "SRC-006",
+    "source_url": "https://learnopengl.com/Advanced-OpenGL/Cubemaps",
+    "source_organization": "LearnOpenGL / Joey DeVries",
+    "source_classification": "D",
+    "source_version": "N/A",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "LearnOpenGL Advanced-OpenGL/Cubemaps, 'Skybox' and 'An optimization' sections",
+    "extracted_claim": "Skybox is rendered as a unit cube with cubemap texture. To render efficiently: draw LAST (not first) so early-z rejects occluded fragments. Set gl_Position = pos.xyww so z always equals 1.0 (max depth). Use GL_LEQUAL depth function. Strip translation from view matrix via glm::mat4(glm::mat3(view)) so skybox doesn't move with camera.",
+    "terminology": ["skybox", "pos.xyww", "GL_LEQUAL", "early depth test", "view matrix translation removal"],
+    "implementation_relevance": "HSE has no skybox. This provides the complete algorithm.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "algorithm",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["Renderer"],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no skybox system"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-CUBEMAP-003",
+    "domain": "rendering",
+    "topic": "Environment Mapping (Reflection and Refraction)",
+    "source_id": "SRC-006",
+    "source_url": "https://learnopengl.com/Advanced-OpenGL/Cubemaps",
+    "source_organization": "LearnOpenGL / Joey DeVries",
+    "source_classification": "D",
+    "source_version": "N/A",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "LearnOpenGL Advanced-OpenGL/Cubemaps, 'Environment mapping' section",
+    "extracted_claim": "Cubemaps enable reflection (reflect(viewDir, normal) -> sample cubemap) and refraction (refract(viewDir, normal, ratio) -> sample cubemap). Refractive indices: Air=1.00, Water=1.33, Glass=1.52, Diamond=2.42. Dynamic environment maps require rendering scene 6 times per reflective object (expensive).",
+    "terminology": ["reflection", "refraction", "refractive index", "environment mapping", "dynamic environment map"],
+    "implementation_relevance": "HSE materials module is missing reflection/refraction — these are advanced material properties.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "concept",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["materials"],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE materials only have basic color"
+    }
+  }
+]

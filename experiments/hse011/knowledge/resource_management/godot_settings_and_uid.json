@@ -1,0 +1,77 @@
+[
+  {
+    "knowledge_id": "KNOW-GODOT-PS-001",
+    "domain": "resource_management",
+    "topic": "Godot ProjectSettings Versioned Property Storage",
+    "source_id": "SRC-009",
+    "source_url": "https://github.com/godotengine/godot/blob/master/core/config/project_settings.h",
+    "source_organization": "Godot Engine contributors",
+    "source_classification": "A",
+    "source_version": "master (4.x)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Godot source, core/config/project_settings.h",
+    "extracted_claim": "Godot ProjectSettings stores properties in an RBMap<StringName, VariantContainer> where each container holds: variant value, ordering int, persist flag, basic flag, internal flag, initial value, hide_from_editor flag, restart_if_changed flag. Version tracking uses uint32_t _version with HashSet<StringName> changed_settings for dirty tracking. GLOBAL_DEF macros auto-register settings. GLOBAL_GET_CACHED uses SpinLock + version check for thread-safe cached reads.",
+    "terminology": ["VariantContainer", "RBMap", "GLOBAL_DEF", "GLOBAL_GET", "GLOBAL_GET_CACHED", "SpinLock", "version tracking", "dirty tracking"],
+    "implementation_relevance": "HSE has no project settings system. Godot's approach shows how to do versioned, thread-safe settings with dirty tracking.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no equivalent system"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GODOT-PS-002",
+    "domain": "resource_management",
+    "topic": "Godot ProjectSettings Autoload System",
+    "source_id": "SRC-009",
+    "source_url": "https://github.com/godotengine/godot/blob/master/core/config/project_settings.h",
+    "source_organization": "Godot Engine contributors",
+    "source_classification": "A",
+    "source_version": "master (4.x)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Godot source, core/config/project_settings.h, AutoloadInfo struct",
+    "extracted_claim": "Godot's autoload system stores: StringName name, String path, bool is_singleton. Managed via HashMap<StringName, AutoloadInfo> with add/remove/has/get operations. Autoloads are project-level singletons auto-instantiated at startup. fix_autoload_paths handles path migration.",
+    "terminology": ["autoload", "singleton", "AutoloadInfo", "project-level services"],
+    "implementation_relevance": "HSE has no service locator or global registry pattern. Autoload is a form of dependency injection.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no equivalent system"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GODOT-UID-001",
+    "domain": "resource_management",
+    "topic": "Godot ResourceUID System",
+    "source_id": "SRC-009",
+    "source_url": "https://github.com/godotengine/godot/blob/master/core/io/resource_uid.h",
+    "source_organization": "Godot Engine contributors",
+    "source_classification": "A",
+    "source_version": "master (4.x)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Godot source, core/io/resource_uid.h",
+    "extracted_claim": "Godot ResourceUID maps int64_t IDs to CharString paths via HashMap<ID, Cache>. Uses dual cache: forward (ID->path) and reverse (path->ID) for bidirectional lookup. create_id_for_path generates deterministic IDs from path strings. Cache persisted to disk via encode_binary_cache. Mutex-protected for thread safety. uid_to_path/path_to_uid static helpers for runtime resolution.",
+    "terminology": ["ResourceUID", "unique ID", "bidirectional cache", "binary cache", "thread-safe resource lookup"],
+    "implementation_relevance": "HSE has no resource UID system. This is essential for stable references across file renames.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "architecture_pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no resource ID system"
+    }
+  }
+]

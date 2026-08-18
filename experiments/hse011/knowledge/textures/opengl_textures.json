@@ -1,0 +1,102 @@
+[
+  {
+    "knowledge_id": "KNOW-GL-TEX-001",
+    "domain": "textures",
+    "topic": "2D Texture Creation",
+    "source_id": "SRC-002",
+    "source_url": "https://docs.gl/gl3/glTexImage2D",
+    "source_organization": "docs.gl community",
+    "source_classification": "B",
+    "source_version": "OpenGL 3.3",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "glTexImage2D reference page",
+    "extracted_claim": "glTexImage2D defines a 2D texture. Parameters: target (GL_TEXTURE_2D), level (mipmap level, 0=base), internalFormat (e.g. GL_RGBA8, GL_RGB8, GL_DEPTH_COMPONENT), width, height, border (must be 0), format (pixel data format: GL_RED, GL_RGB, GL_RGBA), type (data type: GL_UNSIGNED_BYTE, GL_FLOAT), data (pointer to image data or NULL for uninitialized).",
+    "terminology": ["glTexImage2D", "GL_TEXTURE_2D", "internalFormat", "mipmap level", "GL_RGBA8", "GL_RGB8"],
+    "implementation_relevance": "HSE does not currently have a texture system. This is the fundamental API for creating textures. The internalFormat parameter determines GPU storage format.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "UNSUPPORTED",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no texture system. m_textureID does not exist (verified by HSE-009 CONTRADICTION)."
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GL-TEX-002",
+    "domain": "textures",
+    "topic": "Texture Parameters",
+    "source_id": "SRC-002",
+    "source_url": "https://docs.gl/gl3/glTexImage2D",
+    "source_organization": "docs.gl community",
+    "source_classification": "B",
+    "source_version": "OpenGL 3.3",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "glTexImage2D reference page, Examples section",
+    "extracted_claim": "Texture parameters control filtering and wrapping: GL_TEXTURE_MIN_FILTER/GL_TEXTURE_MAG_FILTER (GL_LINEAR, GL_NEAREST, GL_LINEAR_MIPMAP_LINEAR), GL_TEXTURE_WRAP_S/GL_TEXTURE_WRAP_T (GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER, GL_REPEAT). Mipmaps generated with glGenerateMipmap after base level upload.",
+    "terminology": ["glTexParameteri", "GL_TEXTURE_MIN_FILTER", "GL_TEXTURE_MAG_FILTER", "GL_TEXTURE_WRAP_S", "GL_LINEAR_MIPMAP_LINEAR", "glGenerateMipmap"],
+    "implementation_relevance": "A future HSE texture system should set filtering/wrapping parameters after creation. Mipmap generation is automatic with glGenerateMipmap.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "UNSUPPORTED",
+      "verification_status": "UNKNOWN",
+      "notes": "No texture system in HSE"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GL-TEX-003",
+    "domain": "textures",
+    "topic": "sRGB Texture Handling",
+    "source_id": "SRC-002",
+    "source_url": "https://docs.gl/gl3/glTexImage2D",
+    "source_organization": "docs.gl community",
+    "source_classification": "B",
+    "source_version": "OpenGL 3.3",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "glTexImage2D reference page",
+    "extracted_claim": "When internalFormat is GL_SRGB8_ALPHA8, the texture is treated as sRGB encoded. Conversion from sRGB to linear uses: cl = cs/12.92 if cs <= 0.04045, cl = ((cs+0.055)/1.055)^2.4 if cs > 0.04045. Alpha channel is left unchanged.",
+    "terminology": ["sRGB", "GL_SRGB8_ALPHA8", "gamma correction", "linear color space"],
+    "implementation_relevance": "For correct lighting, textures (especially color/albedo maps) should be stored as sRGB and sampled as linear. This is critical for PBR rendering.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "UNSUPPORTED",
+      "verification_status": "UNKNOWN",
+      "notes": "No texture or PBR system in HSE"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GL-TEX-004",
+    "domain": "textures",
+    "topic": "Framebuffer Texture Attachment",
+    "source_id": "SRC-002",
+    "source_url": "https://docs.gl/gl3/glTexImage2D",
+    "source_organization": "docs.gl community",
+    "source_classification": "B",
+    "source_version": "OpenGL 3.3",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "glTexImage2D reference page, Examples section",
+    "extracted_claim": "Textures can be used as framebuffer attachments. Create texture with glTexImage2D (data=NULL for uninitialized), attach with glFramebufferTexture2D. Color attachment uses GL_RGBA format, depth attachment uses GL_DEPTH_COMPONENT. Check framebuffer completeness with glCheckFramebufferStatus.",
+    "terminology": ["glFramebufferTexture2D", "GL_COLOR_ATTACHMENT0", "GL_DEPTH_ATTACHMENT", "GL_FRAMEBUFFER_COMPLETE"],
+    "implementation_relevance": "HSE could use framebuffer textures for render-to-texture, shadow mapping, and post-processing effects.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "UNSUPPORTED",
+      "verification_status": "UNKNOWN",
+      "notes": "No framebuffer system in HSE"
+    }
+  }
+]

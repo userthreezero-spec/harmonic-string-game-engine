@@ -1,0 +1,77 @@
+[
+  {
+    "knowledge_id": "KNOW-GL-001",
+    "domain": "gpu_resources",
+    "topic": "Buffer Object Creation",
+    "source_id": "SRC-002",
+    "source_url": "https://docs.gl/gl3/glGenBuffers",
+    "source_organization": "docs.gl community",
+    "source_classification": "B",
+    "source_version": "OpenGL 3.3",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "glGenBuffers reference page",
+    "extracted_claim": "glGenBuffers generates n buffer object names. Names are not guaranteed contiguous. No buffer objects are associated until first bound with glBindBuffer. Names are not reused until deleted with glDeleteBuffers.",
+    "terminology": ["glGenBuffers", "glBindBuffer", "glDeleteBuffers", "buffer object names"],
+    "implementation_relevance": "HSE must generate buffers with glGenBuffers, bind them before use, and delete with glDeleteBuffers when done. The VBO lifecycle in HSE follows this pattern.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["m_vao", "m_vbo", "m_ebo"],
+      "mapping_type": "DIRECT",
+      "verification_status": "VERIFIED",
+      "notes": "HSE Primitive class has m_vao, m_vbo, m_ebo. These are OpenGL buffer objects created via glGenBuffers."
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GL-002",
+    "domain": "gpu_resources",
+    "topic": "Buffer Data Upload",
+    "source_id": "SRC-002",
+    "source_url": "https://docs.gl/gl3/glGenBuffers",
+    "source_organization": "docs.gl community",
+    "source_classification": "B",
+    "source_version": "OpenGL 3.3",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "glGenBuffers reference page, Examples section",
+    "extracted_claim": "After binding a buffer with glBindBuffer, data is uploaded with glBufferData. The usage hint (GL_STATIC_DRAW, GL_DYNAMIC_DRAW, GL_STREAM_DRAW) tells the driver how the buffer will be used. glBufferSubData can update a sub-region. glGetBufferParameteriv with GL_BUFFER_SIZE verifies upload success.",
+    "terminology": ["glBufferData", "GL_STATIC_DRAW", "GL_DYNAMIC_DRAW", "GL_STREAM_DRAW", "glBufferSubData", "GL_BUFFER_SIZE"],
+    "implementation_relevance": "HSE uses GL_STATIC_DRAW for vertex data that doesn't change. The verification pattern (check GL_BUFFER_SIZE after upload) is a robust practice HSE should adopt.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["m_vbo", "m_ebo"],
+      "mapping_type": "DIRECT",
+      "verification_status": "VERIFIED",
+      "notes": "HSE uploads vertex/index data via glBufferData. No verification of upload success is currently implemented."
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GL-003",
+    "domain": "gpu_resources",
+    "topic": "Buffer Lifecycle Pattern",
+    "source_id": "SRC-002",
+    "source_url": "https://docs.gl/gl3/glGenBuffers",
+    "source_organization": "docs.gl community",
+    "source_classification": "B",
+    "source_version": "OpenGL 3.3",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "glGenBuffers reference page, Examples section",
+    "extracted_claim": "Standard buffer lifecycle: (1) glGenBuffers to create, (2) glBindBuffer to bind to target, (3) glBufferData to allocate and upload, (4) verify with glGetBufferParameteriv, (5) use for rendering, (6) glDeleteBuffers when done. For vertex buffers: bind to GL_ARRAY_BUFFER. For index buffers: bind to GL_ELEMENT_ARRAY_BUFFER.",
+    "terminology": ["buffer lifecycle", "GL_ARRAY_BUFFER", "GL_ELEMENT_ARRAY_BUFFER"],
+    "implementation_relevance": "HSE Primitive class follows this lifecycle for m_vao (vertex array), m_vbo (vertex buffer), and m_ebo (element buffer). The cleanup (glDeleteBuffers) should be called in the destructor.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "pattern",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["Primitive", "m_vao", "m_vbo", "m_ebo"],
+      "mapping_type": "DIRECT",
+      "verification_status": "VERIFIED",
+      "notes": "HSE Primitive constructor creates VAO/VBO/EBO. Destructor should clean them up."
+    }
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "knowledge_id": "KNOW-GLFW-001",
+    "domain": "input_handling",
+    "topic": "Event Processing",
+    "source_id": "SRC-003",
+    "source_url": "https://www.glfw.org/docs/3.4/input_guide.html",
+    "source_organization": "GLFW Organization",
+    "source_classification": "B",
+    "source_version": "3.4",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Input guide, Event processing section",
+    "extracted_claim": "GLFW provides three event processing functions: glfwPollEvents (processes pending events immediately, best for continuous rendering), glfwWaitEvents (blocks until events arrive, best for editors), glfwWaitEventsTimeout (blocks with timeout, best for mixed UI/refresh).",
+    "terminology": ["glfwPollEvents", "glfwWaitEvents", "glfwWaitEventsTimeout", "event processing"],
+    "implementation_relevance": "HSE main loop must call one of these functions each frame. Currently uses glfwPollEvents in the render loop.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["GLFWwindow", "main loop"],
+      "mapping_type": "DIRECT",
+      "verification_status": "UNVERIFIED",
+      "notes": "HSE already uses glfwPollEvents but source confirms the three-function pattern"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GLFW-002",
+    "domain": "input_handling",
+    "topic": "Key Input",
+    "source_id": "SRC-003",
+    "source_url": "https://www.glfw.org/docs/3.4/input_guide.html",
+    "source_organization": "GLFW Organization",
+    "source_classification": "B",
+    "source_version": "3.4",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Input guide, Keyboard input section",
+    "extracted_claim": "GLFW key input provides both callbacks (glfwSetKeyCallback) and polling (glfwGetKey). Key actions are GLFW_PRESS, GLFW_RELEASE, GLFW_REPEAT. GLFW_REPEAT is intended for text input and should not be used to drive animation. For held-key detection, use GLFW_STICKY_KEYS mode or save state from PRESS/RELEASE events.",
+    "terminology": ["glfwSetKeyCallback", "glfwGetKey", "GLFW_PRESS", "GLFW_RELEASE", "GLFW_REPEAT", "GLFW_STICKY_KEYS"],
+    "implementation_relevance": "HSE should use callbacks for reliable key detection rather than polling alone, which can miss rapid press/release sequences.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE input handling not yet implemented in detail"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GLFW-003",
+    "domain": "input_handling",
+    "topic": "Mouse Input",
+    "source_id": "SRC-003",
+    "source_url": "https://www.glfw.org/docs/3.4/input_guide.html",
+    "source_organization": "GLFW Organization",
+    "source_classification": "B",
+    "source_version": "3.4",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Input guide, Mouse input section",
+    "extracted_claim": "Mouse input includes cursor position (glfwSetCursorPosCallback/glfwGetCursorPos), cursor modes (GLFW_CURSOR_NORMAL, GLFW_CURSOR_DISABLED for FPS camera, GLFW_CURSOR_HIDDEN, GLFW_CURSOR_CAPTURED), raw mouse motion (glfwRawMouseMotionSupported, GLFW_RAW_MOUSE_MOTION), mouse buttons (glfwSetMouseButtonCallback/glfwGetMouseButton), and scroll (glfwSetScrollCallback).",
+    "terminology": ["glfwSetCursorPosCallback", "GLFW_CURSOR_DISABLED", "GLFW_RAW_MOUSE_MOTION", "glfwSetMouseButtonCallback", "glfwSetScrollCallback"],
+    "implementation_relevance": "GLFW_CURSOR_DISABLED is the standard pattern for FPS-style camera controls. Raw mouse motion provides unscaled/unaccelerated input for precise camera control.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has a Camera class but mouse-based camera control not yet implemented"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GLFW-004",
+    "domain": "input_handling",
+    "topic": "Gamepad Input",
+    "source_id": "SRC-003",
+    "source_url": "https://www.glfw.org/docs/3.4/input_guide.html",
+    "source_organization": "GLFW Organization",
+    "source_classification": "B",
+    "source_version": "3.4",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Input guide, Gamepad input section",
+    "extracted_claim": "GLFW supports gamepad input via SDL_GameControllerDB mapping format. Gamepads are identified by GUID and mapped to standard Xbox-like layout with 15 buttons and 6 axes. glfwJoystickIsGamepad checks if a joystick has a gamepad mapping. glfwGetGamepadState retrieves mapped button/axis state.",
+    "terminology": ["glfwJoystickIsGamepad", "glfwGetGamepadState", "GLFWgamepadstate", "SDL_GameControllerDB"],
+    "implementation_relevance": "HSE can support gamepad input by leveraging GLFW's built-in SDL_GameControllerDB mappings rather than implementing custom mapping.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "Gamepad support not yet in HSE"
+    }
+  }
+]

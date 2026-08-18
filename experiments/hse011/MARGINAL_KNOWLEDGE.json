@@ -1,0 +1,67 @@
+{
+  "hse_phase": "HSE-011 Phase 3",
+  "generated_date": "2026-08-18T12:00:00Z",
+  "purpose": "Track unique knowledge contributions per source to measure marginal returns",
+  "marginal_knowledge_by_source": [
+    {
+      "source_id": "SRC-003",
+      "source_name": "GLFW Input Guide",
+      "classification": "B",
+      "unique_concepts": 12,
+      "new_api_patterns": 4,
+      "hse_gaps_addressed": ["Input polling vs callback", "Gamepad API", "Key repeat control"],
+      "cumulative_unique_concepts": 12
+    },
+    {
+      "source_id": "SRC-002",
+      "source_name": "docs.gl (OpenGL Reference)",
+      "classification": "A",
+      "unique_concepts": 15,
+      "new_api_patterns": 7,
+      "hse_gaps_addressed": ["Buffer creation lifecycle", "Buffer orphaning", "Texture parameter API", "sRGB texture handling", "Framebuffer attachment"],
+      "cumulative_unique_concepts": 27
+    },
+    {
+      "source_id": "SRC-006",
+      "source_name": "LearnOpenGL Tutorial Series",
+      "classification": "D",
+      "unique_concepts": 22,
+      "new_api_patterns": 8,
+      "hse_gaps_addressed": ["Full graphics pipeline", "VAO/VBO/EBO workflow", "Shader compilation", "Depth testing", "Alpha blending", "Cubemap textures", "Skybox rendering", "Environment mapping"],
+      "cumulative_unique_concepts": 49
+    },
+    {
+      "source_id": "SRC-016",
+      "source_name": "GLM Manual",
+      "classification": "B",
+      "unique_concepts": 8,
+      "new_api_patterns": 4,
+      "hse_gaps_addressed": ["Transform functions", "Quaternion support", "Preprocessor configuration", "Matrix types"],
+      "cumulative_unique_concepts": 57
+    },
+    {
+      "source_id": "SRC-009",
+      "source_name": "Godot Engine Source",
+      "classification": "A",
+      "unique_concepts": 10,
+      "new_api_patterns": 3,
+      "hse_gaps_addressed": ["Versioned settings storage", "Autoload/singleton pattern", "Resource UID system", "Dirty tracking"],
+      "cumulative_unique_concepts": 67
+    },
+    {
+      "source_id": "SRC-011",
+      "source_name": "Hazel Engine (TheCherno)",
+      "classification": "D",
+      "unique_concepts": 5,
+      "new_api_patterns": 2,
+      "hse_gaps_addressed": ["Event dispatcher pattern", "Layer stack architecture"],
+      "cumulative_unique_concepts": 72
+    }
+  ],
+  "total_unique_concepts": 72,
+  "marginal_return_curve": {
+    "observation": "First 3 sources (GLFW, docs.gl, LearnOpenGL) contributed 49 unique concepts (68%). Remaining 3 sources contributed 23 unique concepts (32%). Returns are diminishing but still significant — each new source adds novel patterns not covered by previous sources.",
+    "diminishing_threshold": "NOT YET REACHED — each source still contributes 5+ unique concepts",
+    "saturation_estimate": "~15-20 authoritative sources needed for core OpenGL/game engine knowledge"
+  }
+}

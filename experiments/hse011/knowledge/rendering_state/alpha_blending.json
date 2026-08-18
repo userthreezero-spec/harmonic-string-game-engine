@@ -1,0 +1,77 @@
+[
+  {
+    "knowledge_id": "KNOW-BLEND-001",
+    "domain": "rendering_state",
+    "topic": "Alpha Blending Enable and Blend Function",
+    "source_id": "SRC-006",
+    "source_url": "https://learnopengl.com/Advanced-OpenGL/Blending",
+    "source_organization": "LearnOpenGL / Joey DeVries",
+    "source_classification": "D",
+    "source_version": "N/A",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "LearnOpenGL Advanced-OpenGL/Blending",
+    "extracted_claim": "Alpha blending is enabled via glEnable(GL_BLEND). The standard blend equation is: C_result = C_source * F_source + C_destination * F_destination. The standard function for alpha transparency is glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) which multiplies source by its alpha and destination by (1 - source alpha). For separate RGB/alpha control use glBlendFuncSeparate.",
+    "terminology": ["GL_BLEND", "glBlendFunc", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA", "glBlendFuncSeparate", "alpha blending"],
+    "implementation_relevance": "HSE renderer does not currently support alpha blending. This knowledge enables transparent object rendering.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["Renderer"],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE has no blending support; this is new capability"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-BLEND-002",
+    "domain": "rendering_state",
+    "topic": "Transparent Object Sort Requirement",
+    "source_id": "SRC-006",
+    "source_url": "https://learnopengl.com/Advanced-OpenGL/Blending",
+    "source_organization": "LearnOpenGL / Joey DeVries",
+    "source_classification": "D",
+    "source_version": "N/A",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "LearnOpenGL Advanced-OpenGL/Blending, 'Don't break the order' section",
+    "extracted_claim": "For correct alpha blending, transparent objects MUST be drawn back-to-front (furthest first). Depth testing is unaware of transparency — transparent fragments write to the depth buffer normally, occluding objects behind them. The rendering order must be: (1) draw all opaque objects first, (2) sort transparent objects by distance from camera, (3) draw transparent objects in sorted order.",
+    "terminology": ["back-to-front sorting", "depth buffer conflict", "transparent object rendering order"],
+    "implementation_relevance": "HSE would need a sorting step for transparent objects before draw calls.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "concept",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["Renderer"],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE draws all primitives in insertion order, no sort step"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-BLEND-003",
+    "domain": "rendering_state",
+    "topic": "Fragment Discard for Binary Transparency",
+    "source_id": "SRC-006",
+    "source_url": "https://learnopengl.com/Advanced-OpenGL/Blending",
+    "source_organization": "LearnOpenGL / Joey DeVries",
+    "source_classification": "D",
+    "source_version": "N/A",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "LearnOpenGL Advanced-OpenGL/Blending, 'Discarding fragments' section",
+    "extracted_claim": "For textures that are either fully opaque or fully transparent (like grass), use the GLSL 'discard' command when alpha < threshold (typically 0.1). This avoids the sorting requirement entirely. Texture wrapping must be set to GL_CLAMP_TO_EDGE to avoid alpha interpolation artifacts at borders.",
+    "terminology": ["discard", "GL_CLAMP_TO_EDGE", "alpha threshold", "binary transparency"],
+    "implementation_relevance": "Simpler path for particle effects and vegetation — no sort needed.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE fragment shaders do not use discard"
+    }
+  }
+]

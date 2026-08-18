@@ -1,0 +1,102 @@
+[
+  {
+    "knowledge_id": "KNOW-GLM-001",
+    "domain": "math",
+    "topic": "GLM Core Types",
+    "source_id": "SRC-016",
+    "source_url": "https://github.com/g-truc/glm/blob/master/manual.md",
+    "source_organization": "G-Truc",
+    "source_classification": "B",
+    "source_version": "1.0.0",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "GLM Manual, Section 1.2 Using separated headers",
+    "extracted_claim": "GLM provides GLSL-compatible types: vec2/vec3/vec4 (float), dvec2/dvec3/dvec4 (double), ivec2/ivec3/ivec4 (int), uvec2/uvec3/uvec4 (unsigned), bvec2/bvec3/bvec4 (bool), mat2/mat3/mat4 (float matrices), dmat2/dmat3/dmat4 (double matrices). Header-only library, no compilation needed.",
+    "terminology": ["vec2", "vec3", "vec4", "mat2", "mat3", "mat4", "glm"],
+    "implementation_relevance": "HSE uses glm::vec3 for positions, colors, and normals. GLM is the standard math library for OpenGL C++ projects.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["m_vertices", "m_color"],
+      "mapping_type": "DIRECT",
+      "verification_status": "VERIFIED",
+      "notes": "HSE Primitive uses glm::vec3 for vertex positions and colors"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GLM-002",
+    "domain": "math",
+    "topic": "GLM Transform Functions",
+    "source_id": "SRC-016",
+    "source_url": "https://github.com/g-truc/glm/blob/master/manual.md",
+    "source_organization": "G-Truc",
+    "source_classification": "B",
+    "source_version": "1.0.0",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "GLM Manual, Section 8.2 Matrix transform",
+    "extracted_claim": "GLM provides transformation functions: glm::perspective(fov, aspect, near, far) for projection matrices, glm::translate(mat4, vec3) for translation, glm::rotate(mat4, angle, vec3) for rotation, glm::scale(mat4, vec3) for scaling. These are in <glm/ext/matrix_transform.hpp>.",
+    "terminology": ["glm::perspective", "glm::translate", "glm::rotate", "glm::scale", "projection matrix"],
+    "implementation_relevance": "HSE uses these functions for camera projection and model transformations.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["Renderer"],
+      "mapping_type": "DIRECT",
+      "verification_status": "VERIFIED",
+      "notes": "HSE Renderer uses glm::perspective and glm::translate for view/projection matrices"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GLM-003",
+    "domain": "math",
+    "topic": "GLM Quaternion Support",
+    "source_id": "SRC-016",
+    "source_url": "https://github.com/g-truc/glm/blob/master/manual.md",
+    "source_organization": "G-Truc",
+    "source_classification": "B",
+    "source_version": "1.0.0",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "GLM Manual, Section 3.9 Quaternion types, 3.11 Quaternion functions",
+    "extracted_claim": "GLM provides quaternion types: quat (float), dquat (double), and functions for quaternion operations. Default storage order is w,x,y,z (can be changed with GLM_FORCE_QUAT_DATA_XYZW). Quaternions are used for rotation representations avoiding gimbal lock.",
+    "terminology": ["glm::quat", "quaternion", "gimbal lock", "rotation"],
+    "implementation_relevance": "HSE could use quaternions for rotation instead of Euler angles to avoid gimbal lock.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "concept",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "HSE does not currently use quaternions"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-GLM-004",
+    "domain": "math",
+    "topic": "GLM Preprocessor Configuration",
+    "source_id": "SRC-016",
+    "source_url": "https://github.com/g-truc/glm/blob/master/manual.md",
+    "source_organization": "G-Truc",
+    "source_classification": "B",
+    "source_version": "1.0.0",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "GLM Manual, Section 2 Preprocessor configurations",
+    "extracted_claim": "Key GLM configuration defines: GLM_FORCE_CXX17 (force C++17), GLM_FORCE_ALIGNED_GENTYPES (aligned types for SIMD), GLM_FORCE_LEFT_HANDED (left-handed coordinates), GLM_FORCE_DEPTH_ZERO_TO_ONE (Direct3D clip space), GLM_FORCE_SWIZZLE (enable .xyzw/.rgba/.stpq swizzling).",
+    "terminology": ["GLM_FORCE_CXX17", "GLM_FORCE_SWIZZLE", "GLM_FORCE_LEFT_HANDED", "GLM_FORCE_DEPTH_ZERO_TO_ONE"],
+    "implementation_relevance": "HSE should use GLM_FORCE_CXX17 and potentially GLM_FORCE_SWIZZLE for cleaner vector access patterns.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "GLM configuration not checked in HSE"
+    }
+  }
+]

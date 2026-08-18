@@ -1,0 +1,102 @@
+[
+  {
+    "knowledge_id": "KNOW-DEPTH-001",
+    "domain": "rendering_state",
+    "topic": "Depth Testing",
+    "source_id": "SRC-006",
+    "source_url": "https://learnopengl.com/Advanced-OpenGL/Depth-testing",
+    "source_organization": "Joey de Vries",
+    "source_classification": "F",
+    "source_version": "Current (2024+)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Depth testing chapter",
+    "extracted_claim": "Depth buffer stores depth values per fragment (16, 24, or 32 bit). Depth testing is disabled by default. Enable with glEnable(GL_DEPTH_TEST). Must clear depth buffer each frame with glClear(GL_DEPTH_BUFFER_BIT). Depth test compares fragment depth against buffer value. If test passes, fragment is rendered and depth buffer updated.",
+    "terminology": ["depth buffer", "z-buffer", "GL_DEPTH_TEST", "GL_DEPTH_BUFFER_BIT", "depth testing"],
+    "implementation_relevance": "HSE should enable depth testing for correct 3D rendering. Currently HSE may not enable depth testing, which could cause rendering artifacts.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["Renderer"],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNVERIFIED",
+      "notes": "HSE Renderer may or may not enable GL_DEPTH_TEST. Need to check."
+    }
+  },
+  {
+    "knowledge_id": "KNOW-DEPTH-002",
+    "domain": "rendering_state",
+    "topic": "Depth Function",
+    "source_id": "SRC-006",
+    "source_url": "https://learnopengl.com/Advanced-OpenGL/Depth-testing",
+    "source_organization": "Joey de Vries",
+    "source_classification": "F",
+    "source_version": "Current (2024+)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Depth testing chapter, Depth test function section",
+    "extracted_claim": "glDepthFunc controls depth comparison: GL_LESS (default, passes if fragment depth < buffer depth), GL_LEQUAL, GL_EQUAL, GL_GREATER, GL_GEQUAL, GL_NOTEQUAL, GL_ALWAYS, GL_NEVER. glDepthMask(GL_FALSE) makes depth buffer read-only.",
+    "terminology": ["glDepthFunc", "GL_LESS", "GL_LEQUAL", "GL_GREATER", "glDepthMask"],
+    "implementation_relevance": "HSE uses GL_LESS by default. Advanced techniques (shadow mapping) may require different depth functions.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "api_behavior",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "Depth function configuration not yet in HSE"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-DEPTH-003",
+    "domain": "rendering_state",
+    "topic": "Depth Buffer Precision and Z-fighting",
+    "source_id": "SRC-006",
+    "source_url": "https://learnopengl.com/Advanced-OpenGL/Depth-testing",
+    "source_organization": "Joey de Vries",
+    "source_classification": "F",
+    "source_version": "Current (2024+)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Depth testing chapter, Depth value precision and Z-fighting sections",
+    "extracted_claim": "Depth values are non-linear (proportional to 1/z), giving high precision near the camera and low precision far away. Z-fighting occurs when two surfaces are too close for depth buffer precision. Prevention: (1) Never place objects too close, (2) Set near plane as far as possible, (3) Use higher precision depth buffer (32-bit).",
+    "terminology": ["z-fighting", "depth precision", "near plane", "far plane", "non-linear depth"],
+    "implementation_relevance": "HSE should use 24-bit or 32-bit depth buffer. The near/far plane ratio affects depth precision.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "concept",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": [],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNKNOWN",
+      "notes": "Depth buffer precision not configured in HSE"
+    }
+  },
+  {
+    "knowledge_id": "KNOW-DEPTH-004",
+    "domain": "rendering_state",
+    "topic": "Early Depth Testing",
+    "source_id": "SRC-006",
+    "source_url": "https://learnopengl.com/Advanced-OpenGL/Depth-testing",
+    "source_organization": "Joey de Vries",
+    "source_classification": "F",
+    "source_version": "Current (2024+)",
+    "source_date_accessed": "2026-08-18",
+    "document_reference": "Depth testing chapter",
+    "extracted_claim": "Early depth testing runs depth test before fragment shader, discarding invisible fragments early. Restriction: fragment shader must not write to gl_FragDepth. If fragment shader writes depth, early depth testing is impossible.",
+    "terminology": ["early depth testing", "gl_FragDepth", "fragment shader optimization"],
+    "implementation_relevance": "HSE shaders should avoid writing to gl_FragDepth to enable early depth testing optimization.",
+    "hse_relevant": true,
+    "confidence": "PROVEN",
+    "knowledge_type": "concept",
+    "directly_supported": true,
+    "hse_symbol_grounding": {
+      "affected_symbols": ["m_shaderProgram"],
+      "mapping_type": "POSSIBLE",
+      "verification_status": "UNVERIFIED",
+      "notes": "HSE shaders should be checked for gl_FragDepth writes"
+    }
+  }
+]

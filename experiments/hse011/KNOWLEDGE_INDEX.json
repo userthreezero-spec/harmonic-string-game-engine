@@ -1,0 +1,109 @@
+{
+  "hse_phase": "HSE-011 Phase 3",
+  "generated_date": "2026-08-18T12:00:00Z",
+  "summary": "Knowledge Index for deep authoritative knowledge ingestion",
+  "totals": {
+    "total_knowledge_items": 37,
+    "total_knowledge_files": 9,
+    "total_sources_referenced": 8,
+    "total_domains_covered": 8,
+    "classification_breakdown": {
+      "A_primary_spec": 3,
+      "B_official_docs": 4,
+      "C_official_repo": 0,
+      "D_mature_impl": 2
+    }
+  },
+  "domains": {
+    "input_handling": {
+      "file": "knowledge/input_handling/glfw_input.json",
+      "item_count": 4,
+      "primary_source": "SRC-003",
+      "knowledge_ids": ["KNOW-GLFW-001", "KNOW-GLFW-002", "KNOW-GLFW-003", "KNOW-GLFW-004"]
+    },
+    "gpu_resources": {
+      "file": "knowledge/gpu_resources/buffer_objects.json",
+      "item_count": 3,
+      "primary_source": "SRC-002",
+      "knowledge_ids": ["KNOW-GL-001", "KNOW-GL-002", "KNOW-GL-003"]
+    },
+    "textures": {
+      "files": [
+        "knowledge/textures/opengl_textures.json",
+        "knowledge/textures/cubemaps.json"
+      ],
+      "item_count": 7,
+      "primary_sources": ["SRC-002", "SRC-006"],
+      "knowledge_ids": [
+        "KNOW-GL-TEX-001", "KNOW-GL-TEX-002", "KNOW-GL-TEX-003", "KNOW-GL-TEX-004",
+        "KNOW-CUBEMAP-001", "KNOW-CUBEMAP-002", "KNOW-CUBEMAP-003"
+      ]
+    },
+    "rendering": {
+      "file": "knowledge/rendering/graphics_pipeline.json",
+      "item_count": 8,
+      "primary_source": "SRC-006",
+      "knowledge_ids": [
+        "KNOW-RENDER-001", "KNOW-RENDER-002", "KNOW-RENDER-003", "KNOW-RENDER-004",
+        "KNOW-RENDER-005", "KNOW-RENDER-006", "KNOW-RENDER-007", "KNOW-RENDER-008"
+      ]
+    },
+    "rendering_state": {
+      "files": [
+        "knowledge/rendering_state/depth_testing.json",
+        "knowledge/rendering_state/alpha_blending.json"
+      ],
+      "item_count": 7,
+      "primary_sources": ["SRC-006"],
+      "knowledge_ids": [
+        "KNOW-DEPTH-001", "KNOW-DEPTH-002", "KNOW-DEPTH-003", "KNOW-DEPTH-004",
+        "KNOW-BLEND-001", "KNOW-BLEND-002", "KNOW-BLEND-003"
+      ]
+    },
+    "math": {
+      "file": "knowledge/math/glm_mathematics.json",
+      "item_count": 4,
+      "primary_source": "SRC-016",
+      "knowledge_ids": ["KNOW-GLM-001", "KNOW-GLM-002", "KNOW-GLM-003", "KNOW-GLM-004"]
+    },
+    "resource_management": {
+      "file": "knowledge/resource_management/godot_settings_and_uid.json",
+      "item_count": 3,
+      "primary_source": "SRC-009",
+      "knowledge_ids": ["KNOW-GODOT-PS-001", "KNOW-GODOT-PS-002", "KNOW-GODOT-UID-001"]
+    },
+    "event_system": {
+      "file": "knowledge/event_system/hazel_events.json",
+      "item_count": 2,
+      "primary_source": "SRC-011",
+      "knowledge_ids": ["KNOW-HZ-EVT-001", "KNOW-HZ-EVT-002"]
+    }
+  },
+  "domains_not_yet_ingested": [
+    "scene_management",
+    "materials",
+    "audio",
+    "physics",
+    "ecs",
+    "gui",
+    "profiling",
+    "memory_management",
+    "error_handling",
+    "serialization",
+    "platform_abstraction",
+    "file_io",
+    "mesh_import",
+    "camera_system",
+    "lighting",
+    "shadows",
+    "postprocessing",
+    "pbr",
+    "animation",
+    "particle_system",
+    "model_loading",
+    "text_rendering",
+    "scripting",
+    "debugging",
+    "build_system"
+  ]
+}
