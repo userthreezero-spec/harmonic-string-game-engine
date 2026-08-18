@@ -1,0 +1,17 @@
+[
+  {"claim_id":"C100","claim_type":"file_exists","description":"Camera header","file_path":"include/scene/camera.h"},
+  {"claim_id":"C101","claim_type":"class_exists","description":"Camera class","symbol_name":"Camera","symbol_type":"class"},
+  {"claim_id":"C102","claim_type":"class_exists","description":"Bridge class","symbol_name":"Bridge","symbol_type":"class"},
+  {"claim_id":"C103","claim_type":"member_exists","description":"Primitive::m_position","symbol_name":"m_position","symbol_type":"member","owner_class":"Primitive"},
+  {"claim_id":"C104","claim_type":"member_exists","description":"Camera::m_fovDeg","symbol_name":"m_fovDeg","symbol_type":"member","owner_class":"Camera"},
+  {"claim_id":"C105","claim_type":"member_exists","description":"Bridge::m_running","symbol_name":"m_running","symbol_type":"member","owner_class":"Bridge"},
+  {"claim_id":"C106","claim_type":"enum_exists","description":"ProjectionType","symbol_name":"ProjectionType","symbol_type":"enum"},
+  {"claim_id":"C107","claim_type":"function_exists","description":"Primitive::uploadGPU","symbol_name":"uploadGPU","symbol_type":"function","owner_class":"Primitive"},
+  {"claim_id":"C108","claim_type":"function_exists","description":"Renderer::renderScene","symbol_name":"renderScene","symbol_type":"function","owner_class":"Renderer"},
+  {"claim_id":"C109","claim_type":"namespace_exists","description":"hse namespace","symbol_name":"hse","symbol_type":"namespace"},
+  {"claim_id":"C110","claim_type":"member_exists","description":"INVALID: Primitive::m_normals","symbol_name":"m_normals","symbol_type":"member","owner_class":"Primitive"},
+  {"claim_id":"C111","claim_type":"file_exists","description":"INVALID: renderer_state.cpp","file_path":"src/renderer/renderer_state.cpp"},
+  {"claim_id":"C112","claim_type":"class_exists","description":"INVALID: TextureManager","symbol_name":"TextureManager","symbol_type":"class"},
+  {"claim_id":"C113","claim_type":"member_exists","description":"INVALID: Primitive::m_textureID","symbol_name":"m_textureID","symbol_type":"member","owner_class":"Primitive"},
+  {"claim_id":"C114","claim_type":"file_exists","description":"INVALID: texture_manager.cpp","file_path":"src/resource/texture_manager.cpp"}
+]

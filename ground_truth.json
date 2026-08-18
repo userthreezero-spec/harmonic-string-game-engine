@@ -1,0 +1,3383 @@
+{
+  "files": [
+    "include/bridge/bridge.h",
+    "include/bridge/command_queue.h",
+    "include/bridge/pipe_transport.h",
+    "include/core/window.h",
+    "include/math/mat4.h",
+    "include/math/vec3.h",
+    "include/renderer/renderer.h",
+    "include/scene/camera.h",
+    "include/scene/primitive.h",
+    "include/scene/scene.h",
+    "include/scene/scene_builder.h",
+    "src/bridge/bridge.cpp",
+    "src/bridge/pipe_transport.cpp",
+    "src/bridge_main.cpp",
+    "src/core/window.cpp",
+    "src/main.cpp",
+    "src/math/mat4.cpp",
+    "src/math/vec3.cpp",
+    "src/renderer/renderer.cpp",
+    "src/room_demo.cpp",
+    "src/scene/camera.cpp",
+    "src/scene/primitive.cpp",
+    "src/scene/scene.cpp",
+    "src/scene/scene_builder.cpp",
+    "src/workspace_main.cpp",
+    "tests/test_math.cpp",
+    "tests/test_scene.cpp"
+  ],
+  "namespaces": [
+    "hse"
+  ],
+  "classes": {
+    "Bridge": {
+      "name": "Bridge",
+      "namespace": "hse",
+      "header_file": "include/bridge/bridge.h",
+      "source_file": "",
+      "line": 42,
+      "fields": [
+        {
+          "name": "m_pipe",
+          "type": "PipeServer",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_queue",
+          "type": "CommandQueue",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_readerThread",
+          "type": "std::thread",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_running",
+          "type": "std::atomic<bool>",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_readerReady",
+          "type": "std::atomic<bool>",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_commandsProcessed",
+          "type": "int",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_sceneRevision",
+          "type": "int",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_frameCount",
+          "type": "uint64_t",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_seqCounter",
+          "type": "uint64_t",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_snapshots",
+          "type": "std::deque<SceneSnapshot>",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "MAX_SNAPSHOTS",
+          "type": "constexpr size_t",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_lastCommandID",
+          "type": "std::string",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_lastCommandStatus",
+          "type": "std::string",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_manifest",
+          "type": "ProjectManifest",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "methods": [
+        {
+          "name": "start",
+          "signature": "bool start();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "stop",
+          "signature": "void stop();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "pumpCommands",
+          "signature": "void pumpCommands(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera, Renderer& renderer);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getObservation",
+          "signature": "std::string getObservation(const Scene& scene, const Camera& camera, const Renderer& renderer);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getObjectObservation",
+          "signature": "std::string getObjectObservation(uint64_t objectID, const Scene& scene);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getCameraObservation",
+          "signature": "std::string getCameraObservation(const Camera& camera);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getHealthObservation",
+          "signature": "std::string getHealthObservation(const Scene& scene, const Renderer& renderer);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getDeltaObservation",
+          "signature": "std::string getDeltaObservation(uint64_t sinceRevision);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getCaptureFrame",
+          "signature": "std::string getCaptureFrame(Renderer& renderer);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setProjectManifest",
+          "signature": "void setProjectManifest(const ProjectManifest& manifest) { m_manifest = manifest; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getProjectManifest",
+          "signature": "const ProjectManifest& getProjectManifest() const { return m_manifest; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "isRunning",
+          "signature": "bool isRunning() const { return m_running.load(); }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getCommandsProcessed",
+          "signature": "int getCommandsProcessed() const { return m_commandsProcessed; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getSceneRevision",
+          "signature": "int getSceneRevision() const { return m_sceneRevision; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getFrameCount",
+          "signature": "uint64_t getFrameCount() const { return m_frameCount; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "readerThread",
+          "signature": "void readerThread();",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "parseCommand",
+          "signature": "std::string parseCommand(const std::string& json, Command& cmd);",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "executeCommand",
+          "signature": "void executeCommand(const Command& cmd, std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera, Renderer& renderer",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "makeAck",
+          "signature": "std::string makeAck(uint64_t seq, bool ok, const std::string& extra = \"\");",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "recordSnapshot",
+          "signature": "void recordSnapshot(const Scene& scene, const Camera& camera);",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "diffSnapshots",
+          "signature": "std::vector<PropertyChange> diffSnapshots(const SceneSnapshot& old, const SceneSnapshot& cur) const;",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "base_classes": []
+    },
+    "CommandQueue": {
+      "name": "CommandQueue",
+      "namespace": "hse",
+      "header_file": "include/bridge/command_queue.h",
+      "source_file": "",
+      "line": 47,
+      "fields": [
+        {
+          "name": "false",
+          "type": "return",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "true",
+          "type": "return",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "false",
+          "type": "return",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "true",
+          "type": "return",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "m_read",
+          "type": "std::atomic<size_t>",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_write",
+          "type": "std::atomic<size_t>",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "methods": [
+        {
+          "name": "push",
+          "signature": "bool push(const Command& cmd) {",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "pop",
+          "signature": "bool pop(Command& cmd) {",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "empty",
+          "signature": "bool empty() const {",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "clear",
+          "signature": "void clear() {",
+          "access": "public",
+          "line": 0
+        }
+      ],
+      "base_classes": []
+    },
+    "PipeServer": {
+      "name": "PipeServer",
+      "namespace": "hse",
+      "header_file": "include/bridge/pipe_transport.h",
+      "source_file": "",
+      "line": 11,
+      "fields": [
+        {
+          "name": "m_pipeName",
+          "type": "std::string",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_running",
+          "type": "bool",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_clientConnected",
+          "type": "bool",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_pipe",
+          "type": "HANDLE",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "methods": [
+        {
+          "name": "start",
+          "signature": "bool start();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "stop",
+          "signature": "void stop();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "waitClient",
+          "signature": "bool waitClient(int timeoutMs = 5000);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "readLine",
+          "signature": "bool readLine(std::string& line);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "writeLine",
+          "signature": "bool writeLine(const std::string& line);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "isClientConnected",
+          "signature": "bool isClientConnected() const;",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "disconnectClient",
+          "signature": "void disconnectClient();",
+          "access": "public",
+          "line": 0
+        }
+      ],
+      "base_classes": []
+    },
+    "Window": {
+      "name": "Window",
+      "namespace": "hse",
+      "header_file": "include/core/window.h",
+      "source_file": "",
+      "line": 16,
+      "fields": [
+        {
+          "name": "m_window",
+          "type": "GLFWwindow*",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_width",
+          "type": "int",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_height",
+          "type": "int",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_lastFrameTime",
+          "type": "double",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "methods": [
+        {
+          "name": "isValid",
+          "signature": "bool isValid() const { return m_window != nullptr; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "shouldClose",
+          "signature": "bool shouldClose() const;",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "pollEvents",
+          "signature": "void pollEvents();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "swapBuffers",
+          "signature": "void swapBuffers();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getDeltaTime",
+          "signature": "float getDeltaTime();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getWidth",
+          "signature": "int getWidth() const { return m_width; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getHeight",
+          "signature": "int getHeight() const { return m_height; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getNative",
+          "signature": "GLFWwindow* getNative() const { return m_window; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setResizeCallback",
+          "signature": "void setResizeCallback(std::function<void(int, int)> callback);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "framebufferSizeCallback",
+          "signature": "friend void framebufferSizeCallback(GLFWwindow* window, int width, int height);",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "base_classes": []
+    },
+    "Mat4": {
+      "name": "Mat4",
+      "namespace": "hse",
+      "header_file": "include/math/mat4.h",
+      "source_file": "",
+      "line": 6,
+      "fields": [],
+      "methods": [
+        {
+          "name": "identity",
+          "signature": "static Mat4 identity();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "perspective",
+          "signature": "static Mat4 perspective(float fovDeg, float aspect, float near, float far);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "ortho",
+          "signature": "static Mat4 ortho(float left, float right, float bottom, float top, float near, float far);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "lookAt",
+          "signature": "static Mat4 lookAt(const Vec3& eye, const Vec3& center, const Vec3& up);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "translate",
+          "signature": "static Mat4 translate(const Vec3& v);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "rotate",
+          "signature": "static Mat4 rotate(float angleDeg, const Vec3& axis);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "scale",
+          "signature": "static Mat4 scale(const Vec3& v);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "ptr",
+          "signature": "const float* ptr() const { return data; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "toRadians",
+          "signature": "static float toRadians(float deg);",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "base_classes": []
+    },
+    "Renderer": {
+      "name": "Renderer",
+      "namespace": "hse",
+      "header_file": "include/renderer/renderer.h",
+      "source_file": "",
+      "line": 11,
+      "fields": [
+        {
+          "name": "RendererState",
+          "type": "struct",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_state",
+          "type": "std::unique_ptr<RendererState>",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_frameCount",
+          "type": "uint64_t",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "methods": [
+        {
+          "name": "initialize",
+          "signature": "bool initialize();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "shutdown",
+          "signature": "void shutdown();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "beginFrame",
+          "signature": "void beginFrame();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "renderScene",
+          "signature": "void renderScene(const Scene& scene, const Camera& camera);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "endFrame",
+          "signature": "void endFrame();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setClearColor",
+          "signature": "void setClearColor(float r, float g, float b, float a = 1.0f);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getClearColor",
+          "signature": "void getClearColor(float& r, float& g, float& b) const;",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setViewport",
+          "signature": "void setViewport(int x, int y, int width, int height);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "readPixels",
+          "signature": "bool readPixels(std::vector<uint8_t>& rgba, int& width, int& height);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getFrameCount",
+          "signature": "uint64_t getFrameCount() const { return m_frameCount; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "incrementFrameCount",
+          "signature": "void incrementFrameCount() { m_frameCount++; }",
+          "access": "public",
+          "line": 0
+        }
+      ],
+      "base_classes": []
+    },
+    "Camera": {
+      "name": "Camera",
+      "namespace": "hse",
+      "header_file": "include/scene/camera.h",
+      "source_file": "",
+      "line": 9,
+      "fields": [
+        {
+          "name": "m_type",
+          "type": "ProjectionType",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_position",
+          "type": "Vec3",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_target",
+          "type": "Vec3",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_up",
+          "type": "Vec3",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_fovDeg",
+          "type": "float",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_nearPlane",
+          "type": "float",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_farPlane",
+          "type": "float",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_aspectRatio",
+          "type": "float",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_viewMatrix",
+          "type": "Mat4",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_projectionMatrix",
+          "type": "Mat4",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "methods": [
+        {
+          "name": "setPosition",
+          "signature": "void setPosition(const Vec3& position);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "lookAt",
+          "signature": "void lookAt(const Vec3& target);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setFOV",
+          "signature": "void setFOV(float fovDeg);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setNearPlane",
+          "signature": "void setNearPlane(float near);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setFarPlane",
+          "signature": "void setFarPlane(float far);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setAspectRatio",
+          "signature": "void setAspectRatio(float ratio);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getProjectionType",
+          "signature": "ProjectionType getProjectionType() const { return m_type; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getPosition",
+          "signature": "const Vec3& getPosition() const { return m_position; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getTarget",
+          "signature": "const Vec3& getTarget() const { return m_target; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getFOV",
+          "signature": "float getFOV() const { return m_fovDeg; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getNearPlane",
+          "signature": "float getNearPlane() const { return m_nearPlane; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getFarPlane",
+          "signature": "float getFarPlane() const { return m_farPlane; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getAspectRatio",
+          "signature": "float getAspectRatio() const { return m_aspectRatio; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getViewMatrix",
+          "signature": "const Mat4& getViewMatrix() const { return m_viewMatrix; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getProjectionMatrix",
+          "signature": "const Mat4& getProjectionMatrix() const { return m_projectionMatrix; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "update",
+          "signature": "void update();",
+          "access": "public",
+          "line": 0
+        }
+      ],
+      "base_classes": []
+    },
+    "Primitive": {
+      "name": "Primitive",
+      "namespace": "hse",
+      "header_file": "include/scene/primitive.h",
+      "source_file": "",
+      "line": 12,
+      "fields": [
+        {
+          "name": "s_nextID",
+          "type": "uint64_t",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_id",
+          "type": "uint64_t",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_name",
+          "type": "std::string",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_type",
+          "type": "PrimitiveType",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_position",
+          "type": "Vec3",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_rotation",
+          "type": "Vec3",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_scale",
+          "type": "Vec3",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_color",
+          "type": "Vec3",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_rotationSpeed",
+          "type": "Vec3",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_vertices",
+          "type": "std::vector<float>",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_indices",
+          "type": "std::vector<uint32_t>",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_vao",
+          "type": "unsigned int",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_vbo",
+          "type": "unsigned int",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_ebo",
+          "type": "unsigned int",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_uploaded",
+          "type": "bool",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "methods": [
+        {
+          "name": "getID",
+          "signature": "uint64_t getID() const { return m_id; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getName",
+          "signature": "const std::string& getName() const { return m_name; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setName",
+          "signature": "void setName(const std::string& name) { m_name = name; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setPosition",
+          "signature": "void setPosition(const Vec3& position);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setRotation",
+          "signature": "void setRotation(const Vec3& rotation);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setScale",
+          "signature": "void setScale(const Vec3& scale);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setColor",
+          "signature": "void setColor(const Vec3& color);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setRotationSpeed",
+          "signature": "void setRotationSpeed(const Vec3& speed);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getType",
+          "signature": "PrimitiveType getType() const { return m_type; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getPosition",
+          "signature": "const Vec3& getPosition() const { return m_position; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getRotation",
+          "signature": "const Vec3& getRotation() const { return m_rotation; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getScale",
+          "signature": "const Vec3& getScale() const { return m_scale; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getColor",
+          "signature": "const Vec3& getColor() const { return m_color; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getRotationSpeed",
+          "signature": "const Vec3& getRotationSpeed() const { return m_rotationSpeed; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getVertices",
+          "signature": "const std::vector<float>& getVertices() const { return m_vertices; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getIndices",
+          "signature": "const std::vector<uint32_t>& getIndices() const { return m_indices; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getVAO",
+          "signature": "unsigned int getVAO() const { return m_vao; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getVBO",
+          "signature": "unsigned int getVBO() const { return m_vbo; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getEBO",
+          "signature": "unsigned int getEBO() const { return m_ebo; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getIndexCount",
+          "signature": "size_t getIndexCount() const { return m_indices.size(); }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "uploadGPU",
+          "signature": "void uploadGPU();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "bind",
+          "signature": "void bind() const;",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "unbind",
+          "signature": "void unbind() const;",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "nextID",
+          "signature": "static uint64_t nextID();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "generateGeometry",
+          "signature": "void generateGeometry();",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "base_classes": []
+    },
+    "Scene": {
+      "name": "Scene",
+      "namespace": "hse",
+      "header_file": "include/scene/scene.h",
+      "source_file": "",
+      "line": 13,
+      "fields": [
+        {
+          "name": "m_primitives",
+          "type": "return",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "m_name",
+          "type": "std::string",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_primitives",
+          "type": "std::vector<std::shared_ptr<Primitive>>",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_cameras",
+          "type": "std::vector<std::shared_ptr<Camera>>",
+          "access": "private",
+          "line": 0
+        },
+        {
+          "name": "m_activeCameraIndex",
+          "type": "int",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "methods": [
+        {
+          "name": "getName",
+          "signature": "const std::string& getName() const { return m_name; }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getPrimitiveCount",
+          "signature": "size_t getPrimitiveCount() const { return m_primitives.size(); }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getCameraCount",
+          "signature": "size_t getCameraCount() const { return m_cameras.size(); }",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "addPrimitive",
+          "signature": "void addPrimitive(std::shared_ptr<Primitive> primitive);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "removePrimitive",
+          "signature": "void removePrimitive(int index);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "removePrimitiveByID",
+          "signature": "bool removePrimitiveByID(uint64_t id);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "update",
+          "signature": "void update(float deltaTime);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "findByID",
+          "signature": "std::shared_ptr<Primitive> findByID(uint64_t id) const;",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "findByName",
+          "signature": "std::shared_ptr<Primitive> findByName(const std::string& name) const;",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "findIndexByID",
+          "signature": "int findIndexByID(uint64_t id) const;",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getPrimitives",
+          "signature": "const std::vector<std::shared_ptr<Primitive>>& getPrimitives() const {",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "addCamera",
+          "signature": "void addCamera(std::shared_ptr<Camera> camera);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "setActiveCamera",
+          "signature": "void setActiveCamera(int index);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "getActiveCamera",
+          "signature": "std::shared_ptr<Camera> getActiveCamera() const;",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "rebuildIDIndex",
+          "signature": "void rebuildIDIndex();",
+          "access": "private",
+          "line": 0
+        }
+      ],
+      "base_classes": []
+    },
+    "SceneBuilder": {
+      "name": "SceneBuilder",
+      "namespace": "hse",
+      "header_file": "include/scene/scene_builder.h",
+      "source_file": "",
+      "line": 30,
+      "fields": [],
+      "methods": [
+        {
+          "name": "buildRoom",
+          "signature": "static std::shared_ptr<Scene> buildRoom();",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "importState",
+          "signature": "static std::shared_ptr<Scene> importState(const std::string& path, ProjectManifest& manifest);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "exportState",
+          "signature": "static void exportState(const Scene& scene, const std::string& path);",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "exportHSC",
+          "signature": "static void exportHSC(const Scene& scene, const Camera& camera, const ProjectManifest& manifest, const std::string& path",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "createProject",
+          "signature": "static bool createProject(const std::string& dir, const std::string& name);",
+          "access": "public",
+          "line": 0
+        }
+      ],
+      "base_classes": []
+    }
+  },
+  "structs": {
+    "PropertyChange": {
+      "name": "PropertyChange",
+      "namespace": "hse",
+      "header_file": "include/bridge/bridge.h",
+      "source_file": "",
+      "line": 17,
+      "fields": [
+        {
+          "name": "objectID",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "property",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "oldValue",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "newValue",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        }
+      ]
+    },
+    "SceneSnapshot": {
+      "name": "SceneSnapshot",
+      "namespace": "hse",
+      "header_file": "include/bridge/bridge.h",
+      "source_file": "",
+      "line": 24,
+      "fields": [
+        {
+          "name": "revision",
+          "type": "uint64_t",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "timestamp",
+          "type": "double",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "id",
+          "type": "uint64_t",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "name",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "type",
+          "type": "int",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "objects",
+          "type": "std::vector<ObjSnapshot>",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "camFov",
+          "type": "float",
+          "access": "public",
+          "line": 0
+        }
+      ]
+    },
+    "ObjSnapshot": {
+      "name": "ObjSnapshot",
+      "namespace": "hse",
+      "header_file": "include/bridge/bridge.h",
+      "source_file": "",
+      "line": 27,
+      "fields": [
+        {
+          "name": "id",
+          "type": "uint64_t",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "name",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "type",
+          "type": "int",
+          "access": "public",
+          "line": 0
+        }
+      ]
+    },
+    "Command": {
+      "name": "Command",
+      "namespace": "hse",
+      "header_file": "include/bridge/command_queue.h",
+      "source_file": "",
+      "line": 9,
+      "fields": [
+        {
+          "name": "type",
+          "type": "Type",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "seq",
+          "type": "uint64_t",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "index",
+          "type": "int",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "objectID",
+          "type": "uint64_t",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "px",
+          "type": "float",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "rx",
+          "type": "float",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "sx",
+          "type": "float",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "cr",
+          "type": "float",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "primType",
+          "type": "int",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "fov",
+          "type": "float",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "sinceRevision",
+          "type": "uint64_t",
+          "access": "public",
+          "line": 0
+        }
+      ]
+    },
+    "WindowProps": {
+      "name": "WindowProps",
+      "namespace": "hse",
+      "header_file": "include/core/window.h",
+      "source_file": "",
+      "line": 9,
+      "fields": [
+        {
+          "name": "title",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "width",
+          "type": "int",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "height",
+          "type": "int",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "vsync",
+          "type": "bool",
+          "access": "public",
+          "line": 0
+        }
+      ]
+    },
+    "Vec3": {
+      "name": "Vec3",
+      "namespace": "hse",
+      "header_file": "include/math/vec3.h",
+      "source_file": "",
+      "line": 5,
+      "fields": []
+    },
+    "WorldObject": {
+      "name": "WorldObject",
+      "namespace": "hse",
+      "header_file": "include/scene/scene_builder.h",
+      "source_file": "",
+      "line": 8,
+      "fields": [
+        {
+          "name": "id",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "type",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        }
+      ]
+    },
+    "ProjectManifest": {
+      "name": "ProjectManifest",
+      "namespace": "hse",
+      "header_file": "include/scene/scene_builder.h",
+      "source_file": "",
+      "line": 17,
+      "fields": [
+        {
+          "name": "hscVersion",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "engineVersion",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "projectName",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "description",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "sceneName",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "clearColorR",
+          "type": "float",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "clearColorG",
+          "type": "float",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "clearColorB",
+          "type": "float",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "worldRevision",
+          "type": "uint64_t",
+          "access": "public",
+          "line": 0
+        },
+        {
+          "name": "filePath",
+          "type": "std::string",
+          "access": "public",
+          "line": 0
+        }
+      ]
+    }
+  },
+  "enums": [
+    {
+      "name": "Type",
+      "namespace": "hse",
+      "header_file": "include/bridge/command_queue.h",
+      "values": [
+        "CMD_NONE",
+        "CMD_ADD_PRIMITIVE",
+        "CMD_REMOVE_PRIMITIVE",
+        "CMD_SET_POSITION",
+        "CMD_SET_ROTATION",
+        "CMD_SET_SCALE",
+        "CMD_SET_COLOR",
+        "CMD_SET_CAMERA",
+        "CMD_SET_CLEAR_COLOR",
+        "CMD_SCENE_STATE",
+        "CMD_OBSERVE_SCENE",
+        "CMD_OBSERVE_OBJECT",
+        "CMD_OBSERVE_CAMERA",
+        "CMD_OBSERVE_HEALTH",
+        "CMD_CAPTURE_FRAME",
+        "CMD_SAVE_PROJECT",
+        "CMD_LOAD_PROJECT",
+        "CMD_HEALTH"
+      ],
+      "line": 10
+    },
+    {
+      "name": "ProjectionType",
+      "namespace": "hse",
+      "header_file": "include/scene/camera.h",
+      "values": [],
+      "line": 7
+    },
+    {
+      "name": "PrimitiveType",
+      "namespace": "hse",
+      "header_file": "include/scene/primitive.h",
+      "values": [],
+      "line": 10
+    }
+  ],
+  "functions": [
+    {
+      "name": "main",
+      "owner": "",
+      "namespace": "",
+      "signature": "int main(int argc, char* argv[]) {",
+      "header_file": "",
+      "source_file": "src/bridge_main.cpp",
+      "definition_line": 10
+    },
+    {
+      "name": "main",
+      "owner": "",
+      "namespace": "",
+      "signature": "int main() {",
+      "header_file": "",
+      "source_file": "src/main.cpp",
+      "definition_line": 9
+    },
+    {
+      "name": "main",
+      "owner": "",
+      "namespace": "",
+      "signature": "int main() {",
+      "header_file": "",
+      "source_file": "src/room_demo.cpp",
+      "definition_line": 10
+    },
+    {
+      "name": "main",
+      "owner": "",
+      "namespace": "",
+      "signature": "int main(int argc, char* argv[]) {",
+      "header_file": "",
+      "source_file": "src/workspace_main.cpp",
+      "definition_line": 12
+    },
+    {
+      "name": "Bridge::start",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool Bridge::start() {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 16
+    },
+    {
+      "name": "Bridge::stop",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Bridge::stop() {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 25
+    },
+    {
+      "name": "Bridge::readerThread",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Bridge::readerThread() {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 31
+    },
+    {
+      "name": "Bridge::makeAck",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::string Bridge::makeAck(uint64_t seq, bool ok, const std::string& extra) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 54
+    },
+    {
+      "name": "Bridge::parseCommand",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::string Bridge::parseCommand(const std::string& json, Command& cmd) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 63
+    },
+    {
+      "name": "resolveObject",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "static std::shared_ptr<Primitive> resolveObject(const Command& cmd, std::shared_ptr<Scene> scene) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 207
+    },
+    {
+      "name": "Bridge::executeCommand",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Bridge::executeCommand(const Command& cmd, std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera, Renderer& ",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 215
+    },
+    {
+      "name": "Bridge::pumpCommands",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Bridge::pumpCommands(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera, Renderer& renderer) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 397
+    },
+    {
+      "name": "typeToString",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "static std::string typeToString(PrimitiveType t) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 407
+    },
+    {
+      "name": "Bridge::recordSnapshot",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Bridge::recordSnapshot(const Scene& scene, const Camera& camera) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 417
+    },
+    {
+      "name": "Bridge::diffSnapshots",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::vector<PropertyChange> Bridge::diffSnapshots(const SceneSnapshot& old, const SceneSnapshot& cur) const {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 440
+    },
+    {
+      "name": "Bridge::getObservation",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::string Bridge::getObservation(const Scene& scene, const Camera& camera, const Renderer& renderer) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 475
+    },
+    {
+      "name": "Bridge::getObjectObservation",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::string Bridge::getObjectObservation(uint64_t objectID, const Scene& scene) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 512
+    },
+    {
+      "name": "Bridge::getCameraObservation",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::string Bridge::getCameraObservation(const Camera& camera) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 531
+    },
+    {
+      "name": "Bridge::getHealthObservation",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::string Bridge::getHealthObservation(const Scene& scene, const Renderer& renderer) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 546
+    },
+    {
+      "name": "Bridge::getDeltaObservation",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::string Bridge::getDeltaObservation(uint64_t sinceRevision) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 565
+    },
+    {
+      "name": "Bridge::getCaptureFrame",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::string Bridge::getCaptureFrame(Renderer& renderer) {",
+      "header_file": "",
+      "source_file": "src/bridge/bridge.cpp",
+      "definition_line": 599
+    },
+    {
+      "name": "PipeServer::start",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool PipeServer::start() {",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 14
+    },
+    {
+      "name": "PipeServer::waitClient",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool PipeServer::waitClient(int timeoutMs) {",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 35
+    },
+    {
+      "name": "PipeServer::readLine",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool PipeServer::readLine(std::string& line) {",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 59
+    },
+    {
+      "name": "PipeServer::writeLine",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool PipeServer::writeLine(const std::string& line) {",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 82
+    },
+    {
+      "name": "PipeServer::isClientConnected",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool PipeServer::isClientConnected() const {",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 91
+    },
+    {
+      "name": "PipeServer::disconnectClient",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void PipeServer::disconnectClient() {",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 95
+    },
+    {
+      "name": "PipeServer::stop",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void PipeServer::stop() {",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 102
+    },
+    {
+      "name": "PipeServer::start",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool PipeServer::start() { return false; }",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 118
+    },
+    {
+      "name": "PipeServer::waitClient",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool PipeServer::waitClient(int) { return false; }",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 119
+    },
+    {
+      "name": "PipeServer::readLine",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool PipeServer::readLine(std::string&) { return false; }",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 120
+    },
+    {
+      "name": "PipeServer::writeLine",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool PipeServer::writeLine(const std::string&) { return false; }",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 121
+    },
+    {
+      "name": "PipeServer::isClientConnected",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool PipeServer::isClientConnected() const { return false; }",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 122
+    },
+    {
+      "name": "PipeServer::disconnectClient",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void PipeServer::disconnectClient() {}",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 123
+    },
+    {
+      "name": "PipeServer::stop",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void PipeServer::stop() {}",
+      "header_file": "",
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "definition_line": 124
+    },
+    {
+      "name": "framebufferSizeCallback",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void framebufferSizeCallback(GLFWwindow* window, int width, int height) {",
+      "header_file": "",
+      "source_file": "src/core/window.cpp",
+      "definition_line": 8
+    },
+    {
+      "name": "Window::shouldClose",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool Window::shouldClose() const {",
+      "header_file": "",
+      "source_file": "src/core/window.cpp",
+      "definition_line": 56
+    },
+    {
+      "name": "Window::pollEvents",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Window::pollEvents() {",
+      "header_file": "",
+      "source_file": "src/core/window.cpp",
+      "definition_line": 61
+    },
+    {
+      "name": "Window::swapBuffers",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Window::swapBuffers() {",
+      "header_file": "",
+      "source_file": "src/core/window.cpp",
+      "definition_line": 65
+    },
+    {
+      "name": "Window::getDeltaTime",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "float Window::getDeltaTime() {",
+      "header_file": "",
+      "source_file": "src/core/window.cpp",
+      "definition_line": 73
+    },
+    {
+      "name": "Mat4::identity",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "Mat4 Mat4::identity() {",
+      "header_file": "",
+      "source_file": "src/math/mat4.cpp",
+      "definition_line": 12
+    },
+    {
+      "name": "Mat4::toRadians",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "float Mat4::toRadians(float deg) { return deg * 3.14159265358979f / 180.0f; }",
+      "header_file": "",
+      "source_file": "src/math/mat4.cpp",
+      "definition_line": 18
+    },
+    {
+      "name": "Mat4::perspective",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "Mat4 Mat4::perspective(float fovDeg, float aspect, float near, float far) {",
+      "header_file": "",
+      "source_file": "src/math/mat4.cpp",
+      "definition_line": 20
+    },
+    {
+      "name": "Mat4::ortho",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "Mat4 Mat4::ortho(float left, float right, float bottom, float top, float near, float far) {",
+      "header_file": "",
+      "source_file": "src/math/mat4.cpp",
+      "definition_line": 31
+    },
+    {
+      "name": "Mat4::lookAt",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "Mat4 Mat4::lookAt(const Vec3& eye, const Vec3& center, const Vec3& up) {",
+      "header_file": "",
+      "source_file": "src/math/mat4.cpp",
+      "definition_line": 43
+    },
+    {
+      "name": "Mat4::translate",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "Mat4 Mat4::translate(const Vec3& v) {",
+      "header_file": "",
+      "source_file": "src/math/mat4.cpp",
+      "definition_line": 58
+    },
+    {
+      "name": "Mat4::rotate",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "Mat4 Mat4::rotate(float angleDeg, const Vec3& axis) {",
+      "header_file": "",
+      "source_file": "src/math/mat4.cpp",
+      "definition_line": 64
+    },
+    {
+      "name": "Mat4::scale",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "Mat4 Mat4::scale(const Vec3& v) {",
+      "header_file": "",
+      "source_file": "src/math/mat4.cpp",
+      "definition_line": 77
+    },
+    {
+      "name": "Vec3::length",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "float Vec3::length() const { return std::sqrt(x*x + y*y + z*z); }",
+      "header_file": "",
+      "source_file": "src/math/vec3.cpp",
+      "definition_line": 11
+    },
+    {
+      "name": "Vec3::normalized",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "Vec3 Vec3::normalized() const {",
+      "header_file": "",
+      "source_file": "src/math/vec3.cpp",
+      "definition_line": 13
+    },
+    {
+      "name": "Vec3::dot",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "float Vec3::dot(const Vec3& other) const { return x*other.x + y*other.y + z*other.z; }",
+      "header_file": "",
+      "source_file": "src/math/vec3.cpp",
+      "definition_line": 19
+    },
+    {
+      "name": "Vec3::cross",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "Vec3 Vec3::cross(const Vec3& other) const {",
+      "header_file": "",
+      "source_file": "src/math/vec3.cpp",
+      "definition_line": 21
+    },
+    {
+      "name": "main",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void main() {",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 19
+    },
+    {
+      "name": "main",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void main() {",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 28
+    },
+    {
+      "name": "Renderer::initialize",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool Renderer::initialize() {",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 46
+    },
+    {
+      "name": "Renderer::shutdown",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Renderer::shutdown() {",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 108
+    },
+    {
+      "name": "Renderer::beginFrame",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Renderer::beginFrame() {",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 115
+    },
+    {
+      "name": "Renderer::renderScene",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Renderer::renderScene(const Scene& scene, const Camera& camera) {",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 120
+    },
+    {
+      "name": "Renderer::endFrame",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Renderer::endFrame() {}",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 150
+    },
+    {
+      "name": "Renderer::setClearColor",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Renderer::setClearColor(float r, float g, float b, float a) {",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 152
+    },
+    {
+      "name": "Renderer::getClearColor",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Renderer::getClearColor(float& r, float& g, float& b) const {",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 158
+    },
+    {
+      "name": "Renderer::setViewport",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Renderer::setViewport(int x, int y, int width, int height) {",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 164
+    },
+    {
+      "name": "Renderer::readPixels",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool Renderer::readPixels(std::vector<uint8_t>& rgba, int& width, int& height) {",
+      "header_file": "",
+      "source_file": "src/renderer/renderer.cpp",
+      "definition_line": 168
+    },
+    {
+      "name": "Camera::setPosition",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Camera::setPosition(const Vec3& position) {",
+      "header_file": "",
+      "source_file": "src/scene/camera.cpp",
+      "definition_line": 10
+    },
+    {
+      "name": "Camera::lookAt",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Camera::lookAt(const Vec3& target) {",
+      "header_file": "",
+      "source_file": "src/scene/camera.cpp",
+      "definition_line": 15
+    },
+    {
+      "name": "Camera::setFOV",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Camera::setFOV(float fovDeg) {",
+      "header_file": "",
+      "source_file": "src/scene/camera.cpp",
+      "definition_line": 20
+    },
+    {
+      "name": "Camera::setNearPlane",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Camera::setNearPlane(float near) {",
+      "header_file": "",
+      "source_file": "src/scene/camera.cpp",
+      "definition_line": 25
+    },
+    {
+      "name": "Camera::setFarPlane",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Camera::setFarPlane(float far) {",
+      "header_file": "",
+      "source_file": "src/scene/camera.cpp",
+      "definition_line": 30
+    },
+    {
+      "name": "Camera::setAspectRatio",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Camera::setAspectRatio(float ratio) {",
+      "header_file": "",
+      "source_file": "src/scene/camera.cpp",
+      "definition_line": 35
+    },
+    {
+      "name": "Camera::update",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Camera::update() {",
+      "header_file": "",
+      "source_file": "src/scene/camera.cpp",
+      "definition_line": 40
+    },
+    {
+      "name": "Primitive::nextID",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "uint64_t Primitive::nextID() { return s_nextID++; }",
+      "header_file": "",
+      "source_file": "src/scene/primitive.cpp",
+      "definition_line": 7
+    },
+    {
+      "name": "Primitive::setPosition",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Primitive::setPosition(const Vec3& position) { m_position = position; }",
+      "header_file": "",
+      "source_file": "src/scene/primitive.cpp",
+      "definition_line": 21
+    },
+    {
+      "name": "Primitive::setRotation",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Primitive::setRotation(const Vec3& rotation) { m_rotation = rotation; }",
+      "header_file": "",
+      "source_file": "src/scene/primitive.cpp",
+      "definition_line": 22
+    },
+    {
+      "name": "Primitive::setScale",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Primitive::setScale(const Vec3& scale) { m_scale = scale; }",
+      "header_file": "",
+      "source_file": "src/scene/primitive.cpp",
+      "definition_line": 23
+    },
+    {
+      "name": "Primitive::setColor",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Primitive::setColor(const Vec3& color) { m_color = color; }",
+      "header_file": "",
+      "source_file": "src/scene/primitive.cpp",
+      "definition_line": 24
+    },
+    {
+      "name": "Primitive::setRotationSpeed",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Primitive::setRotationSpeed(const Vec3& speed) { m_rotationSpeed = speed; }",
+      "header_file": "",
+      "source_file": "src/scene/primitive.cpp",
+      "definition_line": 25
+    },
+    {
+      "name": "Primitive::generateGeometry",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Primitive::generateGeometry() {",
+      "header_file": "",
+      "source_file": "src/scene/primitive.cpp",
+      "definition_line": 27
+    },
+    {
+      "name": "Primitive::uploadGPU",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Primitive::uploadGPU() {",
+      "header_file": "",
+      "source_file": "src/scene/primitive.cpp",
+      "definition_line": 69
+    },
+    {
+      "name": "Primitive::bind",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Primitive::bind() const {",
+      "header_file": "",
+      "source_file": "src/scene/primitive.cpp",
+      "definition_line": 91
+    },
+    {
+      "name": "Primitive::unbind",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Primitive::unbind() const {",
+      "header_file": "",
+      "source_file": "src/scene/primitive.cpp",
+      "definition_line": 95
+    },
+    {
+      "name": "Scene::addPrimitive",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Scene::addPrimitive(std::shared_ptr<Primitive> primitive) {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 9
+    },
+    {
+      "name": "Scene::removePrimitive",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Scene::removePrimitive(int index) {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 15
+    },
+    {
+      "name": "Scene::removePrimitiveByID",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool Scene::removePrimitiveByID(uint64_t id) {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 22
+    },
+    {
+      "name": "Scene::findByID",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::shared_ptr<Primitive> Scene::findByID(uint64_t id) const {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 32
+    },
+    {
+      "name": "Scene::findByName",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::shared_ptr<Primitive> Scene::findByName(const std::string& name) const {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 39
+    },
+    {
+      "name": "Scene::findIndexByID",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "int Scene::findIndexByID(uint64_t id) const {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 46
+    },
+    {
+      "name": "Scene::rebuildIDIndex",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Scene::rebuildIDIndex() {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 52
+    },
+    {
+      "name": "Scene::addCamera",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Scene::addCamera(std::shared_ptr<Camera> camera) {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 59
+    },
+    {
+      "name": "Scene::setActiveCamera",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Scene::setActiveCamera(int index) {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 66
+    },
+    {
+      "name": "Scene::getActiveCamera",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::shared_ptr<Camera> Scene::getActiveCamera() const {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 72
+    },
+    {
+      "name": "Scene::update",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void Scene::update(float deltaTime) {",
+      "header_file": "",
+      "source_file": "src/scene/scene.cpp",
+      "definition_line": 77
+    },
+    {
+      "name": "SceneBuilder::buildRoom",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::shared_ptr<Scene> SceneBuilder::buildRoom() {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 30
+    },
+    {
+      "name": "jsonFind",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "static std::string jsonFind(const std::string& json, const std::string& key) {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 56
+    },
+    {
+      "name": "jsonFindFloat",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "static float jsonFindFloat(const std::string& json, const std::string& key, float def) {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 75
+    },
+    {
+      "name": "jsonFindInt",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "static int jsonFindInt(const std::string& json, const std::string& key, int def) {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 80
+    },
+    {
+      "name": "jsonFindU64",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "static uint64_t jsonFindU64(const std::string& json, const std::string& key, uint64_t def) {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 85
+    },
+    {
+      "name": "jsonFindVec3",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "static void jsonFindVec3(const std::string& json, const std::string& key, float& x, float& y, float& z) {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 91
+    },
+    {
+      "name": "jsonFindArrayObjects",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "static std::vector<std::string> jsonFindArrayObjects(const std::string& json, const std::string& arrayKey) {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 112
+    },
+    {
+      "name": "SceneBuilder::importState",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "std::shared_ptr<Scene> SceneBuilder::importState(const std::string& path, ProjectManifest& manifest) {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 136
+    },
+    {
+      "name": "SceneBuilder::exportState",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void SceneBuilder::exportState(const Scene& scene, const std::string& path) {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 239
+    },
+    {
+      "name": "typeStr",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "static std::string typeStr(PrimitiveType t) {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 276
+    },
+    {
+      "name": "SceneBuilder::exportHSC",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "void SceneBuilder::exportHSC(const Scene& scene, const Camera& camera, const ProjectManifest& manifest, const std::strin",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 286
+    },
+    {
+      "name": "SceneBuilder::createProject",
+      "owner": "",
+      "namespace": "hse",
+      "signature": "bool SceneBuilder::createProject(const std::string& dir, const std::string& name) {",
+      "header_file": "",
+      "source_file": "src/scene/scene_builder.cpp",
+      "definition_line": 340
+    },
+    {
+      "name": "approxEqual",
+      "owner": "",
+      "namespace": "",
+      "signature": "static bool approxEqual(float a, float b, float eps = 0.001f) {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 7
+    },
+    {
+      "name": "test_vec3_basic_ops",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_vec3_basic_ops() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 11
+    },
+    {
+      "name": "test_vec3_length",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_vec3_length() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 27
+    },
+    {
+      "name": "test_vec3_normalize",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_vec3_normalize() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 33
+    },
+    {
+      "name": "test_vec3_dot",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_vec3_dot() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 40
+    },
+    {
+      "name": "test_vec3_cross",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_vec3_cross() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 47
+    },
+    {
+      "name": "test_mat4_identity",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_mat4_identity() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 55
+    },
+    {
+      "name": "test_mat4_translate",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_mat4_translate() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 62
+    },
+    {
+      "name": "test_mat4_multiply_identity",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_mat4_multiply_identity() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 68
+    },
+    {
+      "name": "test_mat4_perspective",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_mat4_perspective() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 76
+    },
+    {
+      "name": "test_mat4_lookat",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_mat4_lookat() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 84
+    },
+    {
+      "name": "test_mat4_rotate",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_mat4_rotate() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 90
+    },
+    {
+      "name": "test_mat4_scale",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_mat4_scale() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 97
+    },
+    {
+      "name": "main",
+      "owner": "",
+      "namespace": "",
+      "signature": "int main() {",
+      "header_file": "",
+      "source_file": "tests/test_math.cpp",
+      "definition_line": 105
+    },
+    {
+      "name": "test_scene_creation",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_scene_creation() {",
+      "header_file": "",
+      "source_file": "tests/test_scene.cpp",
+      "definition_line": 8
+    },
+    {
+      "name": "test_scene_add_primitive",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_scene_add_primitive() {",
+      "header_file": "",
+      "source_file": "tests/test_scene.cpp",
+      "definition_line": 15
+    },
+    {
+      "name": "test_scene_camera",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_scene_camera() {",
+      "header_file": "",
+      "source_file": "tests/test_scene.cpp",
+      "definition_line": 23
+    },
+    {
+      "name": "test_camera_perspective",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_camera_perspective() {",
+      "header_file": "",
+      "source_file": "tests/test_scene.cpp",
+      "definition_line": 31
+    },
+    {
+      "name": "test_camera_position",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_camera_position() {",
+      "header_file": "",
+      "source_file": "tests/test_scene.cpp",
+      "definition_line": 41
+    },
+    {
+      "name": "test_primitive_triangle",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_primitive_triangle() {",
+      "header_file": "",
+      "source_file": "tests/test_scene.cpp",
+      "definition_line": 50
+    },
+    {
+      "name": "test_primitive_position",
+      "owner": "",
+      "namespace": "",
+      "signature": "void test_primitive_position() {",
+      "header_file": "",
+      "source_file": "tests/test_scene.cpp",
+      "definition_line": 57
+    },
+    {
+      "name": "main",
+      "owner": "",
+      "namespace": "",
+      "signature": "int main() {",
+      "header_file": "",
+      "source_file": "tests/test_scene.cpp",
+      "definition_line": 64
+    }
+  ],
+  "includes": [
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "bridge/command_queue.h",
+      "line": 2
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "bridge/pipe_transport.h",
+      "line": 3
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "scene/scene.h",
+      "line": 4
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "scene/camera.h",
+      "line": 5
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "scene/scene_builder.h",
+      "line": 6
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "renderer/renderer.h",
+      "line": 7
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "memory",
+      "line": 8
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "thread",
+      "line": 9
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "atomic",
+      "line": 10
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "string",
+      "line": 11
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "vector",
+      "line": 12
+    },
+    {
+      "source_file": "include/bridge/bridge.h",
+      "target": "deque",
+      "line": 13
+    },
+    {
+      "source_file": "include/bridge/command_queue.h",
+      "target": "atomic",
+      "line": 2
+    },
+    {
+      "source_file": "include/bridge/command_queue.h",
+      "target": "array",
+      "line": 3
+    },
+    {
+      "source_file": "include/bridge/command_queue.h",
+      "target": "string",
+      "line": 4
+    },
+    {
+      "source_file": "include/bridge/command_queue.h",
+      "target": "cstring",
+      "line": 5
+    },
+    {
+      "source_file": "include/bridge/pipe_transport.h",
+      "target": "string",
+      "line": 2
+    },
+    {
+      "source_file": "include/bridge/pipe_transport.h",
+      "target": "functional",
+      "line": 3
+    },
+    {
+      "source_file": "include/bridge/pipe_transport.h",
+      "target": "windows.h",
+      "line": 6
+    },
+    {
+      "source_file": "include/core/window.h",
+      "target": "string",
+      "line": 2
+    },
+    {
+      "source_file": "include/core/window.h",
+      "target": "functional",
+      "line": 3
+    },
+    {
+      "source_file": "include/math/mat4.h",
+      "target": "vec3.h",
+      "line": 2
+    },
+    {
+      "source_file": "include/renderer/renderer.h",
+      "target": "memory",
+      "line": 2
+    },
+    {
+      "source_file": "include/renderer/renderer.h",
+      "target": "vector",
+      "line": 3
+    },
+    {
+      "source_file": "include/renderer/renderer.h",
+      "target": "cstdint",
+      "line": 4
+    },
+    {
+      "source_file": "include/scene/camera.h",
+      "target": "math/vec3.h",
+      "line": 2
+    },
+    {
+      "source_file": "include/scene/camera.h",
+      "target": "math/mat4.h",
+      "line": 3
+    },
+    {
+      "source_file": "include/scene/primitive.h",
+      "target": "math/vec3.h",
+      "line": 2
+    },
+    {
+      "source_file": "include/scene/primitive.h",
+      "target": "math/mat4.h",
+      "line": 3
+    },
+    {
+      "source_file": "include/scene/primitive.h",
+      "target": "vector",
+      "line": 4
+    },
+    {
+      "source_file": "include/scene/primitive.h",
+      "target": "cstdint",
+      "line": 5
+    },
+    {
+      "source_file": "include/scene/primitive.h",
+      "target": "string",
+      "line": 6
+    },
+    {
+      "source_file": "include/scene/scene.h",
+      "target": "vector",
+      "line": 2
+    },
+    {
+      "source_file": "include/scene/scene.h",
+      "target": "memory",
+      "line": 3
+    },
+    {
+      "source_file": "include/scene/scene.h",
+      "target": "string",
+      "line": 4
+    },
+    {
+      "source_file": "include/scene/scene.h",
+      "target": "unordered_map",
+      "line": 5
+    },
+    {
+      "source_file": "include/scene/scene.h",
+      "target": "cstdint",
+      "line": 6
+    },
+    {
+      "source_file": "include/scene/scene_builder.h",
+      "target": "scene/scene.h",
+      "line": 2
+    },
+    {
+      "source_file": "include/scene/scene_builder.h",
+      "target": "string",
+      "line": 3
+    },
+    {
+      "source_file": "include/scene/scene_builder.h",
+      "target": "memory",
+      "line": 4
+    },
+    {
+      "source_file": "src/bridge_main.cpp",
+      "target": "core/window.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/bridge_main.cpp",
+      "target": "renderer/renderer.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/bridge_main.cpp",
+      "target": "scene/scene.h",
+      "line": 3
+    },
+    {
+      "source_file": "src/bridge_main.cpp",
+      "target": "scene/camera.h",
+      "line": 4
+    },
+    {
+      "source_file": "src/bridge_main.cpp",
+      "target": "scene/primitive.h",
+      "line": 5
+    },
+    {
+      "source_file": "src/bridge_main.cpp",
+      "target": "bridge/bridge.h",
+      "line": 6
+    },
+    {
+      "source_file": "src/bridge_main.cpp",
+      "target": "iostream",
+      "line": 7
+    },
+    {
+      "source_file": "src/bridge_main.cpp",
+      "target": "memory",
+      "line": 8
+    },
+    {
+      "source_file": "src/main.cpp",
+      "target": "core/window.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/main.cpp",
+      "target": "renderer/renderer.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/main.cpp",
+      "target": "scene/scene.h",
+      "line": 3
+    },
+    {
+      "source_file": "src/main.cpp",
+      "target": "scene/camera.h",
+      "line": 4
+    },
+    {
+      "source_file": "src/main.cpp",
+      "target": "scene/primitive.h",
+      "line": 5
+    },
+    {
+      "source_file": "src/main.cpp",
+      "target": "iostream",
+      "line": 6
+    },
+    {
+      "source_file": "src/main.cpp",
+      "target": "memory",
+      "line": 7
+    },
+    {
+      "source_file": "src/room_demo.cpp",
+      "target": "core/window.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/room_demo.cpp",
+      "target": "renderer/renderer.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/room_demo.cpp",
+      "target": "scene/scene.h",
+      "line": 3
+    },
+    {
+      "source_file": "src/room_demo.cpp",
+      "target": "scene/camera.h",
+      "line": 4
+    },
+    {
+      "source_file": "src/room_demo.cpp",
+      "target": "scene/primitive.h",
+      "line": 5
+    },
+    {
+      "source_file": "src/room_demo.cpp",
+      "target": "scene/scene_builder.h",
+      "line": 6
+    },
+    {
+      "source_file": "src/room_demo.cpp",
+      "target": "iostream",
+      "line": 7
+    },
+    {
+      "source_file": "src/room_demo.cpp",
+      "target": "memory",
+      "line": 8
+    },
+    {
+      "source_file": "src/workspace_main.cpp",
+      "target": "core/window.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/workspace_main.cpp",
+      "target": "renderer/renderer.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/workspace_main.cpp",
+      "target": "scene/scene.h",
+      "line": 3
+    },
+    {
+      "source_file": "src/workspace_main.cpp",
+      "target": "scene/camera.h",
+      "line": 4
+    },
+    {
+      "source_file": "src/workspace_main.cpp",
+      "target": "scene/primitive.h",
+      "line": 5
+    },
+    {
+      "source_file": "src/workspace_main.cpp",
+      "target": "scene/scene_builder.h",
+      "line": 6
+    },
+    {
+      "source_file": "src/workspace_main.cpp",
+      "target": "bridge/bridge.h",
+      "line": 7
+    },
+    {
+      "source_file": "src/workspace_main.cpp",
+      "target": "iostream",
+      "line": 8
+    },
+    {
+      "source_file": "src/workspace_main.cpp",
+      "target": "memory",
+      "line": 9
+    },
+    {
+      "source_file": "src/workspace_main.cpp",
+      "target": "string",
+      "line": 10
+    },
+    {
+      "source_file": "src/bridge/bridge.cpp",
+      "target": "bridge/bridge.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/bridge/bridge.cpp",
+      "target": "scene/primitive.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/bridge/bridge.cpp",
+      "target": "GLFW/glfw3.h",
+      "line": 3
+    },
+    {
+      "source_file": "src/bridge/bridge.cpp",
+      "target": "iostream",
+      "line": 4
+    },
+    {
+      "source_file": "src/bridge/bridge.cpp",
+      "target": "sstream",
+      "line": 5
+    },
+    {
+      "source_file": "src/bridge/bridge.cpp",
+      "target": "iomanip",
+      "line": 6
+    },
+    {
+      "source_file": "src/bridge/bridge.cpp",
+      "target": "thread",
+      "line": 7
+    },
+    {
+      "source_file": "src/bridge/bridge.cpp",
+      "target": "cmath",
+      "line": 8
+    },
+    {
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "target": "bridge/pipe_transport.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/bridge/pipe_transport.cpp",
+      "target": "iostream",
+      "line": 2
+    },
+    {
+      "source_file": "src/core/window.cpp",
+      "target": "core/window.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/core/window.cpp",
+      "target": "GL/glew.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/core/window.cpp",
+      "target": "GLFW/glfw3.h",
+      "line": 3
+    },
+    {
+      "source_file": "src/core/window.cpp",
+      "target": "iostream",
+      "line": 4
+    },
+    {
+      "source_file": "src/math/mat4.cpp",
+      "target": "math/mat4.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/math/mat4.cpp",
+      "target": "math/vec3.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/math/mat4.cpp",
+      "target": "cmath",
+      "line": 3
+    },
+    {
+      "source_file": "src/math/mat4.cpp",
+      "target": "cstring",
+      "line": 4
+    },
+    {
+      "source_file": "src/math/vec3.cpp",
+      "target": "math/vec3.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/math/vec3.cpp",
+      "target": "cmath",
+      "line": 2
+    },
+    {
+      "source_file": "src/renderer/renderer.cpp",
+      "target": "renderer/renderer.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/renderer/renderer.cpp",
+      "target": "scene/scene.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/renderer/renderer.cpp",
+      "target": "scene/camera.h",
+      "line": 3
+    },
+    {
+      "source_file": "src/renderer/renderer.cpp",
+      "target": "scene/primitive.h",
+      "line": 4
+    },
+    {
+      "source_file": "src/renderer/renderer.cpp",
+      "target": "math/vec3.h",
+      "line": 5
+    },
+    {
+      "source_file": "src/renderer/renderer.cpp",
+      "target": "GL/glew.h",
+      "line": 6
+    },
+    {
+      "source_file": "src/renderer/renderer.cpp",
+      "target": "iostream",
+      "line": 7
+    },
+    {
+      "source_file": "src/renderer/renderer.cpp",
+      "target": "fstream",
+      "line": 8
+    },
+    {
+      "source_file": "src/renderer/renderer.cpp",
+      "target": "sstream",
+      "line": 9
+    },
+    {
+      "source_file": "src/scene/camera.cpp",
+      "target": "scene/camera.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/scene/camera.cpp",
+      "target": "cmath",
+      "line": 2
+    },
+    {
+      "source_file": "src/scene/primitive.cpp",
+      "target": "scene/primitive.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/scene/primitive.cpp",
+      "target": "GL/glew.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/scene/scene.cpp",
+      "target": "scene/scene.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/scene/scene.cpp",
+      "target": "scene/primitive.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/scene/scene_builder.cpp",
+      "target": "scene/scene_builder.h",
+      "line": 1
+    },
+    {
+      "source_file": "src/scene/scene_builder.cpp",
+      "target": "scene/primitive.h",
+      "line": 2
+    },
+    {
+      "source_file": "src/scene/scene_builder.cpp",
+      "target": "scene/camera.h",
+      "line": 3
+    },
+    {
+      "source_file": "src/scene/scene_builder.cpp",
+      "target": "fstream",
+      "line": 4
+    },
+    {
+      "source_file": "src/scene/scene_builder.cpp",
+      "target": "iostream",
+      "line": 5
+    },
+    {
+      "source_file": "src/scene/scene_builder.cpp",
+      "target": "sstream",
+      "line": 6
+    },
+    {
+      "source_file": "src/scene/scene_builder.cpp",
+      "target": "algorithm",
+      "line": 7
+    },
+    {
+      "source_file": "src/scene/scene_builder.cpp",
+      "target": "windows.h",
+      "line": 9
+    },
+    {
+      "source_file": "tests/test_math.cpp",
+      "target": "cassert",
+      "line": 1
+    },
+    {
+      "source_file": "tests/test_math.cpp",
+      "target": "iostream",
+      "line": 2
+    },
+    {
+      "source_file": "tests/test_math.cpp",
+      "target": "cmath",
+      "line": 3
+    },
+    {
+      "source_file": "tests/test_math.cpp",
+      "target": "math/vec3.h",
+      "line": 4
+    },
+    {
+      "source_file": "tests/test_math.cpp",
+      "target": "math/mat4.h",
+      "line": 5
+    },
+    {
+      "source_file": "tests/test_scene.cpp",
+      "target": "cassert",
+      "line": 1
+    },
+    {
+      "source_file": "tests/test_scene.cpp",
+      "target": "iostream",
+      "line": 2
+    },
+    {
+      "source_file": "tests/test_scene.cpp",
+      "target": "memory",
+      "line": 3
+    },
+    {
+      "source_file": "tests/test_scene.cpp",
+      "target": "scene/scene.h",
+      "line": 4
+    },
+    {
+      "source_file": "tests/test_scene.cpp",
+      "target": "scene/camera.h",
+      "line": 5
+    },
+    {
+      "source_file": "tests/test_scene.cpp",
+      "target": "scene/primitive.h",
+      "line": 6
+    }
+  ]
+}
