@@ -1,6 +1,7 @@
 #pragma once
 #include "math/vec3.h"
 #include "math/mat4.h"
+#include "math/bounding_box.h"
 #include "renderer/material.h"
 #include <vector>
 #include <cstdint>
@@ -57,6 +58,8 @@ public:
     unsigned int getVBO() const { return m_vbo; }
     unsigned int getEBO() const { return m_ebo; }
     size_t getIndexCount() const { return m_indices.size(); }
+
+    BoundingBox getBoundingBox() const;
 
     void uploadGPU();
     void bind() const;

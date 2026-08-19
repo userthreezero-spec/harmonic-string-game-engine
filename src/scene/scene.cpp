@@ -2,6 +2,7 @@
 #include "scene/camera.h"
 #include "scene/primitive.h"
 #include "scene/light.h"
+#include "math/bounding_box.h"
 #include "renderer/material.h"
 
 namespace hse {
@@ -140,6 +141,32 @@ void Scene::update(float deltaTime) {
     if (cam) {
         cam->updateOrbit(deltaTime);
     }
+}
+
+bool Scene::checkCollision(uint64_t id1, uint64_t id2) {
+    auto p1 = findByID(id1);
+    auto p2 = findByID(id2);
+    if (!p1 || !p2) return false;
+
+    computeAllWorldMatrices(); // Ensure transforms are up to date
+    return p1->getBoundingBox().intersects(p2->getBoundingBox());
+}
+
+std::vector<uint64_t> Scene::getCollisions(uint64_t id) {
+    std::vector<uint64_t> collisions;
+    auto p = findByID(id);
+    if (!p) return collisions;
+
+    computeAllWorldMatrices();
+    BoundingBox bb = p->getBoundingBox();
+
+    for (auto& other : m_primitives) {
+        if (other->getID() == id) continue;
+        if (bb.intersects(other->getBoundingBox())) {
+            collisions.push_back(other->getID());
+        }
+    }
+    return collisions;
 }
 
 } // namespace hse

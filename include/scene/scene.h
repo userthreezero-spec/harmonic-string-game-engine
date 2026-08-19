@@ -54,6 +54,10 @@ public:
     std::vector<std::shared_ptr<Primitive>> getRoots() const;
     void computeAllWorldMatrices();
 
+    // Spatial Reasoning
+    bool checkCollision(uint64_t id1, uint64_t id2);
+    std::vector<uint64_t> getCollisions(uint64_t id);
+
 private:
     std::string m_name;
     std::vector<std::shared_ptr<Primitive>> m_primitives;

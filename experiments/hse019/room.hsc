@@ -238,9 +238,9 @@
       "id": "table_top",
       "type": "Cube",
       "position": [
-        0,
+        1.5,
         -0.7,
-        0
+        -1.8
       ],
       "rotation": [
         0,
@@ -338,13 +338,13 @@
       "id": "chair_1",
       "type": "Cube",
       "position": [
-        -1.2,
+        1.5,
         -1.0,
-        0
+        -1.1
       ],
       "rotation": [
         0,
-        90,
+        180,
         0
       ],
       "scale": [
@@ -363,13 +363,13 @@
       "id": "chair_1_back",
       "type": "Cube",
       "position": [
-        -1.5,
+        1.5,
         -0.6,
-        0
+        -0.8
       ],
       "rotation": [
         0,
-        90,
+        180,
         0
       ],
       "scale": [
@@ -383,13 +383,13 @@
       "id": "chair_2",
       "type": "Cube",
       "position": [
-        1.2,
+        1.5,
         -1.0,
-        0
+        -2.5
       ],
       "rotation": [
         0,
-        -90,
+        0,
         0
       ],
       "scale": [
@@ -405,11 +405,11 @@
       "position": [
         1.5,
         -0.6,
-        0
+        -2.8
       ],
       "rotation": [
         0,
-        -90,
+        0,
         0
       ],
       "scale": [

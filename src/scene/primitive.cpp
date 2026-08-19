@@ -181,4 +181,22 @@ void Primitive::unbind() const {
     glBindVertexArray(0);
 }
 
+BoundingBox Primitive::getBoundingBox() const {
+    // Basic implementation: Transform unit cube corners
+    BoundingBox bb;
+    const Mat4& world = getWorldMatrix();
+
+    float corners[8][3] = {
+        {-0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f},
+        {-0.5f,  0.5f, -0.5f}, {0.5f,  0.5f, -0.5f},
+        {-0.5f, -0.5f,  0.5f}, {0.5f, -0.5f,  0.5f},
+        {-0.5f,  0.5f,  0.5f}, {0.5f,  0.5f,  0.5f}
+    };
+
+    for (int i = 0; i < 8; i++) {
+        bb.expand(world * Vec3(corners[i][0], corners[i][1], corners[i][2]));
+    }
+    return bb;
+}
+
 } // namespace hse

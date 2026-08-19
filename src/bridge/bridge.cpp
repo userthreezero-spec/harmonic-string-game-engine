@@ -176,6 +176,11 @@ std::string Bridge::parseCommand(const std::string& json, Command& cmd) {
         cmd.type = Command::CMD_OBSERVE_CAMERA;
         return "";
     }
+    if (cmdType == "observe_collisions") {
+        cmd.type = Command::CMD_OBSERVE_COLLISIONS;
+        cmd.objectID = findU64("object_id", 0);
+        return "";
+    }
     if (cmdType == "observe_health" || cmdType == "health") {
         cmd.type = Command::CMD_OBSERVE_HEALTH;
         return "";
@@ -383,6 +388,10 @@ void Bridge::executeCommand(const Command& cmd, std::shared_ptr<Scene> scene, st
         }
         case Command::CMD_OBSERVE_CAMERA: {
             m_pipe.writeLine(getCameraObservation(*camera));
+            break;
+        }
+        case Command::CMD_OBSERVE_COLLISIONS: {
+            m_pipe.writeLine(getCollisionObservation(cmd.objectID, *scene));
             break;
         }
         case Command::CMD_OBSERVE_HEALTH: {
@@ -694,6 +703,19 @@ std::string Bridge::getDeltaObservation(uint64_t sinceRevision) {
         o << ",\"old\":" << (c.oldValue.empty() ? "null" : "\"" + c.oldValue + "\"");
         o << ",\"new\":" << (c.newValue.empty() ? "null" : "\"" + c.newValue + "\"");
         o << "}";
+    }
+    o << "]}";
+    return o.str();
+}
+
+std::string Bridge::getCollisionObservation(uint64_t objectID, const Scene& scene) {
+    std::vector<uint64_t> collisions = const_cast<Scene&>(scene).getCollisions(objectID);
+    std::ostringstream o;
+    o << "{\"type\":\"collision_observation\",\"object_id\":" << objectID;
+    o << ",\"collision_count\":" << collisions.size();
+    o << ",\"collisions\":[";
+    for (size_t i = 0; i < collisions.size(); i++) {
+        o << collisions[i] << (i < collisions.size() - 1 ? "," : "");
     }
     o << "]}";
     return o.str();

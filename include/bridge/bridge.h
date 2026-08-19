@@ -54,6 +54,7 @@ public:
     std::string getCameraObservation(const Camera& camera);
     std::string getHealthObservation(const Scene& scene, const Renderer& renderer);
     std::string getDeltaObservation(uint64_t sinceRevision);
+    std::string getCollisionObservation(uint64_t objectID, const Scene& scene);
     std::string getCaptureFrame(Renderer& renderer);
 
     void setProjectManifest(const ProjectManifest& manifest) { m_manifest = manifest; }

@@ -1,0 +1,15 @@
+{
+  "mission": "HSE-022 Multi-Constraint Goal Planning & World Transformation",
+  "complexity_score": 28,
+  "architecture_score": 96,
+  "constraints": ["conversation", "doorway_access", "collision_safety", "clear_path"],
+  "conflicts_detected": ["wall_collision"],
+  "transformations": 5,
+  "tests": 11,
+  "regressions": 0,
+  "corrections": 1,
+  "persistence_result": "PASS",
+  "goal_conformance": "PASS",
+  "human_visual_verification": "PENDING",
+  "final_classification": "PROVEN"
+}

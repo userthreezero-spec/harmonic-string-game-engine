@@ -122,6 +122,15 @@ Returns `scene_observation` (see below).
 }
 ```
 
+#### observe_collisions
+```json
+{
+  "cmd": "observe_collisions",
+  "seq": 12,
+  "object_id": 42
+}
+```
+
 ---
 
 ## Response Types

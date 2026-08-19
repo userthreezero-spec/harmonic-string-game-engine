@@ -87,6 +87,14 @@ add_executable(hse_test_picking tests/test_picking.cpp)
 target_link_libraries(hse_test_picking PRIVATE hse_core)
 add_test(NAME PickingTests COMMAND hse_test_picking)
 
+add_executable(hse_test_collision tests/test_collision.cpp)
+target_link_libraries(hse_test_collision PRIVATE hse_core)
+add_test(NAME CollisionTests COMMAND hse_test_collision)
+
 add_executable(hse_test_goal tests/test_goal_conformance.cpp)
 target_link_libraries(hse_test_goal PRIVATE hse_core)
 add_test(NAME GoalTests COMMAND hse_test_goal)
+
+add_executable(hse_test_multi tests/test_multi_constraint.cpp)
+target_link_libraries(hse_test_multi PRIVATE hse_core)
+add_test(NAME MultiConstraintTests COMMAND hse_test_multi)
