@@ -1,0 +1,40 @@
+{
+  "mission": "MATERIAL_SYSTEM",
+  "entities": [
+    {
+      "id": "Material",
+      "type": "Class",
+      "file": "include/renderer/material.h",
+      "members": ["albedoColor", "albedoMap", "roughness", "metallic"],
+      "methods": ["apply"]
+    },
+    {
+      "id": "Primitive",
+      "type": "Class",
+      "file": "include/scene/primitive.h",
+      "modifications": [
+        { "action": "remove", "symbol": "m_color" },
+        { "action": "remove", "symbol": "m_texture" },
+        { "action": "add", "symbol": "m_material", "type": "shared_ptr<Material>" }
+      ]
+    },
+    {
+      "id": "Renderer",
+      "type": "Class",
+      "file": "src/renderer/renderer.cpp",
+      "modifications": [
+        { "action": "update", "target": "shader", "reason": "Support Material struct uniforms" },
+        { "action": "update", "target": "renderLoop", "reason": "Bind material per primitive" }
+      ]
+    }
+  ],
+  "data_flow": [
+    { "from": "Material", "to": "Shader", "via": "uniforms", "description": "Surface properties mapping" },
+    { "from": "SceneBuilder", "to": "Scene", "via": "HSC", "description": "Material project state" }
+  ],
+  "provenance": {
+    "resource_sharing": "HSE-011 L4 Synthesis",
+    "raii_ownership": "C++ Core Guidelines R.1",
+    "shader_struct": "LearnOpenGL Chapter 13"
+  }
+}

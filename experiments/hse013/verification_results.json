@@ -1,0 +1,62 @@
+{
+  "summary": {
+    "total": 6,
+    "verified": 2,
+    "contradicted": 4,
+    "unverified": 0,
+    "inferred": 0,
+    "accuracy": "2/6 (33%)"
+  },
+  "results": [
+    {
+      "claim_id": "C01",
+      "status": "VERIFIED",
+      "evidence": "Class 'Primitive' found in include/scene/primitive.h:14",
+      "location": "include/scene/primitive.h:14",
+      "details": ""
+    },
+    {
+      "claim_id": "C02",
+      "status": "VERIFIED",
+      "evidence": "Class 'Renderer' found in include/renderer/renderer.h:11",
+      "location": "include/renderer/renderer.h:11",
+      "details": ""
+    },
+    {
+      "claim_id": "C03",
+      "status": "CONTRADICTED",
+      "evidence": "Member 'Primitive::m_material' NOT found. Primitive has 16 members: s_nextID, m_id, m_name, m_type, m_position, m_rotation, m_scale, m_color, m_rotationSpeed, m_vertices",
+      "location": "",
+      "details": ""
+    },
+    {
+      "claim_id": "C04",
+      "status": "CONTRADICTED",
+      "evidence": "Class 'Material' NOT found in repository",
+      "location": "",
+      "details": ""
+    },
+    {
+      "claim_id": "C05",
+      "status": "CONTRADICTED",
+      "evidence": "File NOT found: include/renderer/material.h",
+      "location": "",
+      "details": ""
+    },
+    {
+      "claim_id": "C06",
+      "status": "CONTRADICTED",
+      "evidence": "Member 'Scene::m_materials' NOT found. Scene has 5 members: m_primitives, m_name, m_primitives, m_cameras, m_activeCameraIndex",
+      "location": "",
+      "details": ""
+    }
+  ],
+  "ground_truth_stats": {
+    "files": 31,
+    "classes": 11,
+    "structs": 8,
+    "enums": 3,
+    "functions": 129,
+    "includes": 157
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "experiment": "HSE-013",
+  "description": "Material system symbol ground truth from working tree",
+  "files": [
+    {
+      "path": "include/renderer/material.h",
+      "status": "new",
+      "classes": [
+        {
+          "name": "Material",
+          "fields": [
+            {"name": "m_name", "type": "std::string"},
+            {"name": "m_albedo", "type": "Vec3"},
+            {"name": "m_albedoMap", "type": "std::shared_ptr<Texture>"},
+            {"name": "m_roughness", "type": "float"},
+            {"name": "m_metallic", "type": "float"}
+          ],
+          "methods": [
+            {"name": "Material", "signature": "Material(const std::string& name)", "category": "constructor"},
+            {"name": "getName", "signature": "const std::string& getName() const", "category": "getter"},
+            {"name": "setAlbedo", "signature": "void setAlbedo(const Vec3& color)", "category": "setter"},
+            {"name": "getAlbedo", "signature": "const Vec3& getAlbedo() const", "category": "getter"},
+            {"name": "setAlbedoMap", "signature": "void setAlbedoMap(std::shared_ptr<Texture> texture)", "category": "setter"},
+            {"name": "getAlbedoMap", "signature": "std::shared_ptr<Texture> getAlbedoMap() const", "category": "getter"},
+            {"name": "hasAlbedoMap", "signature": "bool hasAlbedoMap() const", "category": "query"},
+            {"name": "setRoughness", "signature": "void setRoughness(float r)", "category": "setter"},
+            {"name": "getRoughness", "signature": "float getRoughness() const", "category": "getter"},
+            {"name": "setMetallic", "signature": "void setMetallic(float m)", "category": "setter"},
+            {"name": "getMetallic", "signature": "float getMetallic() const", "category": "getter"},
+            {"name": "apply", "signature": "void apply(unsigned int shaderProgram) const", "category": "action"}
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/renderer/material.cpp",
+      "status": "new",
+      "functions": [
+        {"name": "Material::Material", "category": "constructor_impl"},
+        {"name": "Material::apply", "category": "uniform_upload"}
+      ]
+    },
+    {
+      "path": "include/scene/primitive.h",
+      "status": "modified",
+      "material_additions": [
+        {"field": "m_material", "type": "std::shared_ptr<Material>"},
+        {"method": "setMaterial", "signature": "void setMaterial(std::shared_ptr<Material> material)"},
+        {"method": "getMaterial", "signature": "std::shared_ptr<Material> getMaterial() const"}
+      ]
+    },
+    {
+      "path": "include/scene/scene.h",
+      "status": "modified",
+      "material_additions": [
+        {"field": "m_materials", "type": "std::unordered_map<std::string, std::shared_ptr<Material>>"},
+        {"method": "addMaterial", "signature": "void addMaterial(std::shared_ptr<Material> material)"},
+        {"method": "getMaterial", "signature": "std::shared_ptr<Material> getMaterial(const std::string& name) const"},
+        {"method": "getMaterials", "signature": "const std::unordered_map<std::string, std::shared_ptr<Material>>& getMaterials() const"}
+      ]
+    },
+    {
+      "path": "src/renderer/renderer.cpp",
+      "status": "modified",
+      "material_additions": [
+        {"include": "#include \"renderer/material.h\""},
+        {"glsl_struct": "Material { albedo, roughness, metallic, hasAlbedoMap, albedoMap }"},
+        {"uniform": "uniform Material uMaterial"},
+        {"call": "material->apply(m_state->shaderProgram) in renderScene loop"}
+      ]
+    },
+    {
+      "path": "src/scene/scene.cpp",
+      "status": "modified",
+      "material_additions": [
+        {"function": "Scene::addMaterial", "category": "material_management"},
+        {"function": "Scene::getMaterial", "category": "material_management"}
+      ]
+    },
+    {
+      "path": "src/scene/scene_builder.cpp",
+      "status": "modified",
+      "material_additions": [
+        {"function": "SceneBuilder::buildRoom", "creates": ["mat_floor", "mat_wall", "mat_ceiling"]},
+        {"function": "SceneBuilder::importState", "parses": "materials array from JSON"},
+        {"function": "SceneBuilder::exportHSC", "serializes": "materials with id, albedo, roughness, metallic, albedo_map"}
+      ]
+    },
+    {
+      "path": "src/material_demo.cpp",
+      "status": "new",
+      "content": "Demo with 4 primitives (Triangle, Quad, Cube, Quad) using 3 materials (Red, Logo-textured, Gold)"
+    }
+  ],
+  "totals": {
+    "classes_with_material": 3,
+    "new_methods": 11,
+    "new_fields": 3,
+    "new_files": 3,
+    "modified_files": 5
+  }
+}

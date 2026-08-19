@@ -1,5 +1,6 @@
 #include "bridge/bridge.h"
 #include "scene/primitive.h"
+#include "renderer/material.h"
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <sstream>
@@ -221,7 +222,10 @@ void Bridge::executeCommand(const Command& cmd, std::shared_ptr<Scene> scene, st
             prim->setPosition({cmd.px, cmd.py, cmd.pz});
             prim->setRotation({cmd.rx, cmd.ry, cmd.rz});
             prim->setScale({cmd.sx, cmd.sy, cmd.sz});
-            prim->setColor({cmd.cr, cmd.cg, cmd.cb});
+            auto primMat = std::make_shared<Material>("prim_" + std::to_string(prim->getID()));
+            primMat->setAlbedo({cmd.cr, cmd.cg, cmd.cb});
+            prim->setMaterial(primMat);
+            scene->addMaterial(primMat);
             if (cmd.name[0] != '\0') prim->setName(cmd.name);
             prim->uploadGPU();
             scene->addPrimitive(prim);
@@ -295,7 +299,13 @@ void Bridge::executeCommand(const Command& cmd, std::shared_ptr<Scene> scene, st
         case Command::CMD_SET_COLOR: {
             auto obj = resolveObject(cmd, scene);
             if (obj) {
-                obj->setColor({cmd.cr, cmd.cg, cmd.cb});
+                auto mat = obj->getMaterial();
+                if (!mat) {
+                    mat = std::make_shared<Material>("auto_" + std::to_string(obj->getID()));
+                    obj->setMaterial(mat);
+                    scene->addMaterial(mat);
+                }
+                mat->setAlbedo({cmd.cr, cmd.cg, cmd.cb});
                 m_sceneRevision++;
                 m_commandsProcessed++;
                 m_lastCommandStatus = "accepted";
@@ -426,7 +436,10 @@ void Bridge::recordSnapshot(const Scene& scene, const Camera& camera) {
         os.px = p->getPosition().x; os.py = p->getPosition().y; os.pz = p->getPosition().z;
         os.rx = p->getRotation().x; os.ry = p->getRotation().y; os.rz = p->getRotation().z;
         os.sx = p->getScale().x; os.sy = p->getScale().y; os.sz = p->getScale().z;
-        os.cr = p->getColor().x; os.cg = p->getColor().y; os.cb = p->getColor().z;
+        auto pmat = p->getMaterial();
+        os.cr = pmat ? pmat->getAlbedo().x : 1.0f;
+        os.cg = pmat ? pmat->getAlbedo().y : 1.0f;
+        os.cb = pmat ? pmat->getAlbedo().z : 1.0f;
         snap.objects.push_back(os);
     }
     snap.camPx = camera.getPosition().x; snap.camPy = camera.getPosition().y; snap.camPz = camera.getPosition().z;
@@ -502,7 +515,8 @@ std::string Bridge::getObservation(const Scene& scene, const Camera& camera, con
         o << ",\"position\":[" << p->getPosition().x << "," << p->getPosition().y << "," << p->getPosition().z << "]";
         o << ",\"rotation\":[" << p->getRotation().x << "," << p->getRotation().y << "," << p->getRotation().z << "]";
         o << ",\"scale\":[" << p->getScale().x << "," << p->getScale().y << "," << p->getScale().z << "]";
-        o << ",\"color\":[" << p->getColor().x << "," << p->getColor().y << "," << p->getColor().z << "]";
+        auto pmat = p->getMaterial();
+        o << ",\"color\":[" << (pmat ? pmat->getAlbedo().x : 1.0f) << "," << (pmat ? pmat->getAlbedo().y : 1.0f) << "," << (pmat ? pmat->getAlbedo().z : 1.0f) << "]";
         o << "}";
     }
     o << "]}";
@@ -523,7 +537,8 @@ std::string Bridge::getObjectObservation(uint64_t objectID, const Scene& scene) 
     o << ",\"position\":[" << obj->getPosition().x << "," << obj->getPosition().y << "," << obj->getPosition().z << "]";
     o << ",\"rotation\":[" << obj->getRotation().x << "," << obj->getRotation().y << "," << obj->getRotation().z << "]";
     o << ",\"scale\":[" << obj->getScale().x << "," << obj->getScale().y << "," << obj->getScale().z << "]";
-    o << ",\"color\":[" << obj->getColor().x << "," << obj->getColor().y << "," << obj->getColor().z << "]";
+    auto omat = obj->getMaterial();
+    o << ",\"color\":[" << (omat ? omat->getAlbedo().x : 1.0f) << "," << (omat ? omat->getAlbedo().y : 1.0f) << "," << (omat ? omat->getAlbedo().z : 1.0f) << "]";
     o << "}";
     return o.str();
 }

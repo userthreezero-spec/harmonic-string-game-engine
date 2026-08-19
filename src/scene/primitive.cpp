@@ -21,9 +21,7 @@ Primitive::~Primitive() {
 void Primitive::setPosition(const Vec3& position) { m_position = position; }
 void Primitive::setRotation(const Vec3& rotation) { m_rotation = rotation; }
 void Primitive::setScale(const Vec3& scale) { m_scale = scale; }
-void Primitive::setColor(const Vec3& color) { m_color = color; }
 void Primitive::setRotationSpeed(const Vec3& speed) { m_rotationSpeed = speed; }
-void Primitive::setTexture(std::shared_ptr<Texture> texture) { m_texture = texture; }
 
 void Primitive::generateGeometry() {
     switch (m_type) {
@@ -90,7 +88,7 @@ void Primitive::generateGeometry() {
             break;
 
         case PrimitiveType::Sphere:
-            m_vertices = { 0.0f, 0.0f, 0.0f };
+            m_vertices = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
             m_indices = { 0 };
             break;
     }

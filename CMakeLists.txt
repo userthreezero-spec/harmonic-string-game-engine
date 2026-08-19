@@ -12,6 +12,7 @@ add_library(hse_core STATIC
     src/core/window.cpp
     src/renderer/renderer.cpp
     src/renderer/texture.cpp
+    src/renderer/material.cpp
     src/scene/scene.cpp
     src/scene/camera.cpp
     src/scene/primitive.cpp
@@ -35,6 +36,9 @@ target_link_libraries(hse_test_math PRIVATE hse_core)
 add_executable(hse_test_scene tests/test_scene.cpp)
 target_link_libraries(hse_test_scene PRIVATE hse_core)
 
+add_executable(hse_test_material tests/test_material.cpp)
+target_link_libraries(hse_test_material PRIVATE hse_core)
+
 add_library(hse_bridge STATIC
     src/bridge/pipe_transport.cpp
     src/bridge/bridge.cpp
@@ -51,6 +55,10 @@ target_link_libraries(hse_workspace_app PRIVATE hse_bridge)
 add_executable(hse_texture_demo src/texture_demo.cpp)
 target_link_libraries(hse_texture_demo PRIVATE hse_core)
 
+add_executable(hse_material_demo src/material_demo.cpp)
+target_link_libraries(hse_material_demo PRIVATE hse_core)
+
 enable_testing()
 add_test(NAME MathTests COMMAND hse_test_math)
 add_test(NAME SceneTests COMMAND hse_test_scene)
+add_test(NAME MaterialTests COMMAND hse_test_material)

@@ -1,0 +1,55 @@
+{
+  "experiment": "HSE-013",
+  "description": "Material System implementation and verification results",
+  "classification": "SUCCESS_WITH_MINOR_FIXUP",
+  "scores": {
+    "symbol_accuracy": 1.0,
+    "architecture_completeness": 0.95,
+    "build_success": 1.0,
+    "test_pass_rate": 1.0,
+    "human_intervention_rate": 0.07,
+    "pre_implementation_score": 0.96,
+    "post_implementation_score": 0.95
+  },
+  "hse012_comparison": {
+    "symbol_f1_hse012": 0.824,
+    "symbol_f1_hse013": 1.0,
+    "architecture_completeness_hse012": 0.735,
+    "architecture_completeness_hse013": 0.95,
+    "human_intervention_hse012": 0.143,
+    "human_intervention_hse013": 0.07,
+    "primary_bottleneck_confirmed": "architectural_reasoning"
+  },
+  "implementation_stats": {
+    "files_added": 3,
+    "files_modified": 5,
+    "total_files_changed": 8,
+    "total_symbols_verified": 41,
+    "symbol_matches": 41,
+    "symbol_mismatches": 0,
+    "tests_created": 10,
+    "tests_total": 29,
+    "tests_passed": 29,
+    "fixes_required": 1,
+    "fix_description": "SceneBuilder::exportState() declared in header but not implemented in .cpp"
+  },
+  "knowledge_grounding": {
+    "sources_used": 15,
+    "knowledge_items_used": 64,
+    "knowledge_files": 18,
+    "saturation": "NOT_SATURATED",
+    "bottleneck": "architectural_reasoning_not_knowledge"
+  },
+  "failure_classification": {
+    "KNOWLEDGE_GAP": 0,
+    "REASONING_ERROR": 0,
+    "REPOSITORY_GROUNDING_ERROR": 0,
+    "SYMBOL_GROUNDING_ERROR": 0,
+    "IMPLEMENTATION_ERROR": 1,
+    "VERIFICATION_GAP": 0,
+    "EXECUTION_ENVIRONMENT_GAP": 0
+  },
+  "confidence": "HIGH",
+  "commits": [],
+  "notes": "Material system existed in working tree from prior HSE-012 attempt. HSE-013 verified architecture, fixed exportState gap, updated bridge/texture_demo to Material API, added automated tests, and built successfully."
+}

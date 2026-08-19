@@ -1,0 +1,43 @@
+[
+  {
+    "claim_id": "C01",
+    "claim_type": "class_exists",
+    "symbol_name": "Primitive",
+    "namespace": "hse",
+    "description": "Base class for renderable objects."
+  },
+  {
+    "claim_id": "C02",
+    "claim_type": "class_exists",
+    "symbol_name": "Renderer",
+    "namespace": "hse",
+    "description": "Core rendering engine."
+  },
+  {
+    "claim_id": "C03",
+    "claim_type": "member_exists",
+    "symbol_name": "m_material",
+    "owner_class": "Primitive",
+    "description": "Reference to Material (Proposed)."
+  },
+  {
+    "claim_id": "C04",
+    "claim_type": "class_exists",
+    "symbol_name": "Material",
+    "namespace": "hse",
+    "description": "New material abstraction (Proposed)."
+  },
+  {
+    "claim_id": "C05",
+    "claim_type": "file_exists",
+    "file_path": "include/renderer/material.h",
+    "description": "Material header (Proposed)."
+  },
+  {
+    "claim_id": "C06",
+    "claim_type": "member_exists",
+    "symbol_name": "m_materials",
+    "owner_class": "Scene",
+    "description": "Collection of materials in the scene (Proposed)."
+  }
+]

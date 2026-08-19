@@ -1,5 +1,6 @@
 #include "core/window.h"
 #include "renderer/renderer.h"
+#include "renderer/material.h"
 #include "scene/scene.h"
 #include "scene/camera.h"
 #include "scene/primitive.h"
@@ -28,16 +29,20 @@ int main() {
     camera->update();
     scene->addCamera(camera);
 
+    auto matGreen = std::make_shared<hse::Material>("Green");
+    matGreen->setAlbedo({0.2f, 0.8f, 0.3f});
+    scene->addMaterial(matGreen);
+
     auto triangle = std::make_shared<hse::Primitive>(hse::PrimitiveType::Triangle);
     triangle->setPosition({0.0f, 0.0f, 0.0f});
-    triangle->setColor({0.2f, 0.8f, 0.3f});
+    triangle->setMaterial(matGreen);
     triangle->setRotationSpeed({0.0f, 1.0f, 0.0f});
     triangle->uploadGPU();
     scene->addPrimitive(triangle);
 
     renderer.setClearColor(0.1f, 0.1f, 0.15f);
 
-    std::cout << "Harmonic String Engine v0.1 - Rendering Foundation" << std::endl;
+    std::cout << "Harmonic String Engine v0.1 - Material System Foundation" << std::endl;
     std::cout << "Press ESC to exit" << std::endl;
 
     while (!window.shouldClose()) {

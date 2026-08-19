@@ -1,188 +1,125 @@
 {
   "summary": {
-    "total": 24,
-    "verified": 16,
-    "contradicted": 8,
+    "total": 15,
+    "verified": 10,
+    "contradicted": 5,
     "unverified": 0,
     "inferred": 0,
-    "accuracy": "16/24 (66%)"
+    "accuracy": "10/15 (66%)"
   },
   "results": [
     {
-      "claim_id": "C000",
+      "claim_id": "C100",
       "status": "VERIFIED",
-      "evidence": "File found: include/scene/primitive.h",
+      "evidence": "File found: include/scene/camera.h",
+      "location": "include/scene/camera.h",
+      "details": ""
+    },
+    {
+      "claim_id": "C101",
+      "status": "VERIFIED",
+      "evidence": "Class 'Camera' found in include/scene/camera.h:9",
+      "location": "include/scene/camera.h:9",
+      "details": ""
+    },
+    {
+      "claim_id": "C102",
+      "status": "VERIFIED",
+      "evidence": "Class 'Bridge' found in include/bridge/bridge.h:42",
+      "location": "include/bridge/bridge.h:42",
+      "details": ""
+    },
+    {
+      "claim_id": "C103",
+      "status": "VERIFIED",
+      "evidence": "Member 'Primitive::m_position' found (type: Vec3) in include/scene/primitive.h",
       "location": "include/scene/primitive.h",
       "details": ""
     },
     {
-      "claim_id": "C001",
+      "claim_id": "C104",
       "status": "VERIFIED",
-      "evidence": "File found: src/renderer/renderer.cpp",
-      "location": "src/renderer/renderer.cpp",
+      "evidence": "Member 'Camera::m_fovDeg' found (type: float) in include/scene/camera.h",
+      "location": "include/scene/camera.h",
       "details": ""
     },
     {
-      "claim_id": "C002",
+      "claim_id": "C105",
       "status": "VERIFIED",
-      "evidence": "File found: src/scene/scene_builder.cpp",
-      "location": "src/scene/scene_builder.cpp",
+      "evidence": "Member 'Bridge::m_running' found (type: std::atomic<bool>) in include/bridge/bridge.h",
+      "location": "include/bridge/bridge.h",
       "details": ""
     },
     {
-      "claim_id": "C003",
+      "claim_id": "C106",
       "status": "VERIFIED",
-      "evidence": "File found: src/bridge/bridge.cpp",
-      "location": "src/bridge/bridge.cpp",
+      "evidence": "Enum 'ProjectionType' found with values: ",
+      "location": "include/scene/camera.h:7",
       "details": ""
     },
     {
-      "claim_id": "C004",
+      "claim_id": "C107",
       "status": "VERIFIED",
-      "evidence": "File found: include/bridge/command_queue.h",
-      "location": "include/bridge/command_queue.h",
+      "evidence": "Method 'Primitive::uploadGPU' found in include/scene/primitive.h",
+      "location": "",
       "details": ""
     },
     {
-      "claim_id": "C005",
+      "claim_id": "C108",
       "status": "VERIFIED",
-      "evidence": "Class 'Primitive' found in include/scene/primitive.h:12",
-      "location": "include/scene/primitive.h:12",
+      "evidence": "Method 'Renderer::renderScene' found in include/renderer/renderer.h",
+      "location": "",
       "details": ""
     },
     {
-      "claim_id": "C006",
-      "status": "VERIFIED",
-      "evidence": "Class 'Renderer' found in include/renderer/renderer.h:11",
-      "location": "include/renderer/renderer.h:11",
-      "details": ""
-    },
-    {
-      "claim_id": "C007",
-      "status": "VERIFIED",
-      "evidence": "Class 'Scene' found in include/scene/scene.h:13",
-      "location": "include/scene/scene.h:13",
-      "details": ""
-    },
-    {
-      "claim_id": "C008",
-      "status": "VERIFIED",
-      "evidence": "Member 'Primitive::m_color' found (type: Vec3) in include/scene/primitive.h",
-      "location": "include/scene/primitive.h",
-      "details": ""
-    },
-    {
-      "claim_id": "C009",
-      "status": "VERIFIED",
-      "evidence": "Member 'Primitive::m_vertices' found (type: std::vector<float>) in include/scene/primitive.h",
-      "location": "include/scene/primitive.h",
-      "details": ""
-    },
-    {
-      "claim_id": "C010",
-      "status": "VERIFIED",
-      "evidence": "Member 'Primitive::m_vao' found (type: unsigned int) in include/scene/primitive.h",
-      "location": "include/scene/primitive.h",
-      "details": ""
-    },
-    {
-      "claim_id": "C011",
-      "status": "VERIFIED",
-      "evidence": "Member 'Primitive::m_id' found (type: uint64_t) in include/scene/primitive.h",
-      "location": "include/scene/primitive.h",
-      "details": ""
-    },
-    {
-      "claim_id": "C012",
-      "status": "VERIFIED",
-      "evidence": "Enum 'PrimitiveType' found with values: ",
-      "location": "include/scene/primitive.h:10",
-      "details": ""
-    },
-    {
-      "claim_id": "C013",
+      "claim_id": "C109",
       "status": "VERIFIED",
       "evidence": "Namespace 'hse' found",
       "location": "",
       "details": ""
     },
     {
-      "claim_id": "C014",
+      "claim_id": "C110",
       "status": "CONTRADICTED",
-      "evidence": "Member 'Primitive::m_normals' NOT found. Primitive has 15 members: s_nextID, m_id, m_name, m_type, m_position, m_rotation, m_scale, m_color, m_rotationSpeed, m_vertices",
+      "evidence": "Member 'Primitive::m_normals' NOT found. Primitive has 15 members: s_nextID, m_id, m_name, m_type, m_position, m_rotation, m_scale, m_rotationSpeed, m_material, m_vertices",
       "location": "",
       "details": ""
     },
     {
-      "claim_id": "C015",
+      "claim_id": "C111",
       "status": "CONTRADICTED",
       "evidence": "File NOT found: src/renderer/renderer_state.cpp",
       "location": "",
       "details": ""
     },
     {
-      "claim_id": "C016",
-      "status": "CONTRADICTED",
-      "evidence": "Member 'Primitive::m_textureID' NOT found. Primitive has 15 members: s_nextID, m_id, m_name, m_type, m_position, m_rotation, m_scale, m_color, m_rotationSpeed, m_vertices",
-      "location": "",
-      "details": ""
-    },
-    {
-      "claim_id": "C017",
-      "status": "CONTRADICTED",
-      "evidence": "Member 'Primitive::m_texCoords' NOT found. Primitive has 15 members: s_nextID, m_id, m_name, m_type, m_position, m_rotation, m_scale, m_color, m_rotationSpeed, m_vertices",
-      "location": "",
-      "details": ""
-    },
-    {
-      "claim_id": "C018",
+      "claim_id": "C112",
       "status": "CONTRADICTED",
       "evidence": "Class 'TextureManager' NOT found in repository",
       "location": "",
       "details": ""
     },
     {
-      "claim_id": "C019",
+      "claim_id": "C113",
+      "status": "CONTRADICTED",
+      "evidence": "Member 'Primitive::m_textureID' NOT found. Primitive has 15 members: s_nextID, m_id, m_name, m_type, m_position, m_rotation, m_scale, m_rotationSpeed, m_material, m_vertices",
+      "location": "",
+      "details": ""
+    },
+    {
+      "claim_id": "C114",
       "status": "CONTRADICTED",
       "evidence": "File NOT found: src/resource/texture_manager.cpp",
-      "location": "",
-      "details": ""
-    },
-    {
-      "claim_id": "C020",
-      "status": "CONTRADICTED",
-      "evidence": "Member 'Primitive::m_uvbo' NOT found. Primitive has 15 members: s_nextID, m_id, m_name, m_type, m_position, m_rotation, m_scale, m_color, m_rotationSpeed, m_vertices",
-      "location": "",
-      "details": ""
-    },
-    {
-      "claim_id": "C021",
-      "status": "VERIFIED",
-      "evidence": "Scene owns m_primitives (type: return)",
-      "location": "",
-      "details": ""
-    },
-    {
-      "claim_id": "C022",
-      "status": "VERIFIED",
-      "evidence": "Primitive owns m_vao (type: unsigned int)",
-      "location": "",
-      "details": ""
-    },
-    {
-      "claim_id": "C023",
-      "status": "CONTRADICTED",
-      "evidence": "Primitive does NOT own m_normals",
       "location": "",
       "details": ""
     }
   ],
   "ground_truth_stats": {
-    "files": 27,
-    "classes": 10,
+    "files": 34,
+    "classes": 12,
     "structs": 8,
     "enums": 3,
-    "functions": 125,
-    "includes": 127
+    "functions": 127,
+    "includes": 176
   }
 }

@@ -1,4 +1,5 @@
 #include "renderer/renderer.h"
+#include "renderer/material.h"
 #include "scene/scene.h"
 #include "scene/camera.h"
 #include "scene/primitive.h"
@@ -28,15 +29,30 @@ static const char* fragmentShaderSource = R"(
 #version 330 core
 out vec4 FragColor;
 in vec2 vUV;
-uniform vec3 uColor;
-uniform sampler2D uTexture;
-uniform bool uHasTexture;
+
+struct Material {
+    vec3 albedo;
+    float roughness;
+    float metallic;
+    bool hasAlbedoMap;
+    sampler2D albedoMap;
+};
+
+uniform Material uMaterial;
+
 void main() {
-    if (uHasTexture) {
-        FragColor = texture(uTexture, vUV) * vec4(uColor, 1.0);
-    } else {
-        FragColor = vec4(uColor, 1.0);
+    vec4 texColor = vec4(1.0);
+    if (uMaterial.hasAlbedoMap) {
+        texColor = texture(uMaterial.albedoMap, vUV);
     }
+
+    // Simple PBR-lite visualization
+    // Albedo * Texture * (Basic Lighting simulation using normals would go here)
+    FragColor = texColor * vec4(uMaterial.albedo, 1.0);
+
+    // Visualize roughness/metallic in a very basic way for now
+    // (e.g. blend with a "specular" highlight approximation or just tint)
+    // For HSE-013 we just ensure the uniforms are passed.
 }
 )";
 
@@ -133,15 +149,15 @@ void Renderer::renderScene(const Scene& scene, const Camera& camera) {
     GLint viewLoc = glGetUniformLocation(m_state->shaderProgram, "uView");
     GLint projLoc = glGetUniformLocation(m_state->shaderProgram, "uProjection");
     GLint modelLoc = glGetUniformLocation(m_state->shaderProgram, "uModel");
-    GLint colorLoc = glGetUniformLocation(m_state->shaderProgram, "uColor");
-    GLint hasTexLoc = glGetUniformLocation(m_state->shaderProgram, "uHasTexture");
-    GLint texLoc = glGetUniformLocation(m_state->shaderProgram, "uTexture");
 
     Mat4 view = camera.getViewMatrix();
     Mat4 proj = camera.getProjectionMatrix();
 
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view.ptr());
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, proj.ptr());
+
+    // Create a fallback material if primitive has none
+    static auto defaultMaterial = std::make_shared<Material>("Default");
 
     for (const auto& prim : scene.getPrimitives()) {
         Mat4 model = Mat4::translate(prim->getPosition())
@@ -150,16 +166,11 @@ void Renderer::renderScene(const Scene& scene, const Camera& camera) {
                    * Mat4::rotate(prim->getRotation().z, {0, 0, 1})
                    * Mat4::scale(prim->getScale());
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model.ptr());
-        Vec3 color = prim->getColor();
-        glUniform3f(colorLoc, color.x, color.y, color.z);
 
-        if (prim->hasTexture()) {
-            prim->getTexture()->bind(0);
-            glUniform1i(hasTexLoc, 1);
-            glUniform1i(texLoc, 0);
-        } else {
-            glUniform1i(hasTexLoc, 0);
-        }
+        auto material = prim->getMaterial();
+        if (!material) material = defaultMaterial;
+
+        material->apply(m_state->shaderProgram);
 
         prim->bind();
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(prim->getIndexCount()), GL_UNSIGNED_INT, 0);

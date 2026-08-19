@@ -1,6 +1,7 @@
 #include "core/window.h"
 #include "renderer/renderer.h"
 #include "renderer/texture.h"
+#include "renderer/material.h"
 #include "scene/scene.h"
 #include "scene/camera.h"
 #include "scene/primitive.h"
@@ -32,10 +33,13 @@ int main() {
     // Create a textured quad
     auto quad = std::make_shared<hse::Primitive>(hse::PrimitiveType::Quad);
     quad->setPosition({0.0f, 0.0f, 0.0f});
-    quad->setColor({1.0f, 1.0f, 1.0f}); // No tint
 
     auto texture = std::make_shared<hse::Texture>("assets/textures/logo.png");
-    quad->setTexture(texture);
+    auto quadMat = std::make_shared<hse::Material>("textured_quad");
+    quadMat->setAlbedo({1.0f, 1.0f, 1.0f});
+    quadMat->setAlbedoMap(texture);
+    quad->setMaterial(quadMat);
+    scene->addMaterial(quadMat);
 
     quad->uploadGPU();
     scene->addPrimitive(quad);

@@ -9,6 +9,7 @@ namespace hse {
 
 class Primitive;
 class Camera;
+class Material;
 
 class Scene {
 public:
@@ -36,12 +37,18 @@ public:
     void setActiveCamera(int index);
     std::shared_ptr<Camera> getActiveCamera() const;
 
+    // Material management
+    void addMaterial(std::shared_ptr<Material> material);
+    std::shared_ptr<Material> getMaterial(const std::string& name) const;
+    const std::unordered_map<std::string, std::shared_ptr<Material>>& getMaterials() const { return m_materials; }
+
 private:
     std::string m_name;
     std::vector<std::shared_ptr<Primitive>> m_primitives;
     std::unordered_map<uint64_t, size_t> m_idIndex;
     std::vector<std::shared_ptr<Camera>> m_cameras;
     int m_activeCameraIndex = 0;
+    std::unordered_map<std::string, std::shared_ptr<Material>> m_materials;
 
     void rebuildIDIndex();
 };

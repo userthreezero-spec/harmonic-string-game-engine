@@ -1,0 +1,115 @@
+{
+  "experiment": "HSE-013",
+  "description": "Symbol-level implementation plan — mapping architecture to exact code",
+  "implementation_status": "EXISTING_IN_WORKING_TREE",
+  "files": [
+    {
+      "file": "include/renderer/material.h",
+      "action": "VERIFIED",
+      "symbols": [
+        {"symbol": "Material::Material", "line": 11, "status": "EXISTS", "signature": "Material(const std::string& name)"},
+        {"symbol": "Material::getName", "line": 13, "status": "EXISTS", "signature": "const std::string& getName() const"},
+        {"symbol": "Material::setAlbedo", "line": 15, "status": "EXISTS", "signature": "void setAlbedo(const Vec3& color)"},
+        {"symbol": "Material::getAlbedo", "line": 16, "status": "EXISTS", "signature": "const Vec3& getAlbedo() const"},
+        {"symbol": "Material::setAlbedoMap", "line": 18, "status": "EXISTS", "signature": "void setAlbedoMap(std::shared_ptr<Texture> texture)"},
+        {"symbol": "Material::getAlbedoMap", "line": 19, "status": "EXISTS", "signature": "std::shared_ptr<Texture> getAlbedoMap() const"},
+        {"symbol": "Material::hasAlbedoMap", "line": 20, "status": "EXISTS", "signature": "bool hasAlbedoMap() const"},
+        {"symbol": "Material::setRoughness", "line": 22, "status": "EXISTS", "signature": "void setRoughness(float r)"},
+        {"symbol": "Material::getRoughness", "line": 23, "status": "EXISTS", "signature": "float getRoughness() const"},
+        {"symbol": "Material::setMetallic", "line": 25, "status": "EXISTS", "signature": "void setMetallic(float m)"},
+        {"symbol": "Material::getMetallic", "line": 26, "status": "EXISTS", "signature": "float getMetallic() const"},
+        {"symbol": "Material::apply", "line": 29, "status": "EXISTS", "signature": "void apply(unsigned int shaderProgram) const"},
+        {"symbol": "m_name", "line": 32, "status": "EXISTS", "type": "std::string"},
+        {"symbol": "m_albedo", "line": 33, "status": "EXISTS", "type": "Vec3"},
+        {"symbol": "m_albedoMap", "line": 34, "status": "EXISTS", "type": "std::shared_ptr<Texture>"},
+        {"symbol": "m_roughness", "line": 35, "status": "EXISTS", "type": "float"},
+        {"symbol": "m_metallic", "line": 36, "status": "EXISTS", "type": "float"}
+      ]
+    },
+    {
+      "file": "src/renderer/material.cpp",
+      "action": "VERIFIED",
+      "symbols": [
+        {"symbol": "Material::Material", "line": 6, "status": "EXISTS", "category": "constructor_impl"},
+        {"symbol": "Material::apply", "line": 8, "status": "EXISTS", "category": "uniform_upload",
+         "gl_calls": [
+          "glGetUniformLocation(shaderProgram, \"uMaterial.albedo\")",
+          "glGetUniformLocation(shaderProgram, \"uMaterial.roughness\")",
+          "glGetUniformLocation(shaderProgram, \"uMaterial.metallic\")",
+          "glGetUniformLocation(shaderProgram, \"uMaterial.hasAlbedoMap\")",
+          "glGetUniformLocation(shaderProgram, \"uMaterial.albedoMap\")",
+          "glUniform3f(albedoLoc, m_albedo.x, m_albedo.y, m_albedo.z)",
+          "glUniform1f(roughnessLoc, m_roughness)",
+          "glUniform1f(metallicLoc, m_metallic)",
+          "m_albedoMap->bind(0)",
+          "glUniform1i(hasMapLoc, 1)",
+          "glUniform1i(mapLoc, 0)"
+         ]
+        }
+      ]
+    },
+    {
+      "file": "src/renderer/renderer.cpp",
+      "action": "VERIFIED",
+      "material_integrations": [
+        {"line": 2, "symbol": "#include \"renderer/material.h\""},
+        {"line": 33, "symbol": "GLSL struct Material", "fields": ["albedo", "roughness", "metallic", "hasAlbedoMap", "albedoMap"]},
+        {"line": 41, "symbol": "uniform Material uMaterial"},
+        {"line": 160, "symbol": "static auto defaultMaterial"},
+        {"line": 170, "symbol": "prim->getMaterial()"},
+        {"line": 171, "symbol": "material = defaultMaterial"},
+        {"line": 173, "symbol": "material->apply(m_state->shaderProgram)"}
+      ]
+    },
+    {
+      "file": "include/scene/primitive.h",
+      "action": "VERIFIED",
+      "material_additions": [
+        {"line": 4, "symbol": "#include \"renderer/material.h\""},
+        {"line": 34, "symbol": "void setMaterial(std::shared_ptr<Material> material)"},
+        {"line": 35, "symbol": "std::shared_ptr<Material> getMaterial() const"},
+        {"line": 68, "symbol": "std::shared_ptr<Material> m_material = nullptr"}
+      ]
+    },
+    {
+      "file": "include/scene/scene.h",
+      "action": "VERIFIED",
+      "material_additions": [
+        {"line": 12, "symbol": "class Material"},
+        {"line": 41, "symbol": "void addMaterial(std::shared_ptr<Material> material)"},
+        {"line": 42, "symbol": "std::shared_ptr<Material> getMaterial(const std::string& name) const"},
+        {"line": 43, "symbol": "const std::unordered_map<std::string, std::shared_ptr<Material>>& getMaterials() const"},
+        {"line": 51, "symbol": "std::unordered_map<std::string, std::shared_ptr<Material>> m_materials"}
+      ]
+    },
+    {
+      "file": "src/scene/scene.cpp",
+      "action": "VERIFIED",
+      "material_additions": [
+        {"line": 3, "symbol": "#include \"renderer/material.h\""},
+        {"line": 78, "symbol": "Scene::addMaterial"},
+        {"line": 84, "symbol": "Scene::getMaterial"}
+      ]
+    },
+    {
+      "file": "src/scene/scene_builder.cpp",
+      "action": "VERIFIED",
+      "material_additions": [
+        {"line": 4, "symbol": "#include \"renderer/material.h\""},
+        {"line": 34, "symbol": "mat_floor creation"},
+        {"line": 39, "symbol": "mat_wall creation"},
+        {"line": 44, "symbol": "mat_ceiling creation"},
+        {"line": 149, "symbol": "importState material parsing"},
+        {"line": 196, "symbol": "exportHSC material serialization"}
+      ]
+    }
+  ],
+  "summary": {
+    "total_symbols": 11,
+    "total_fields": 3,
+    "total_gl_calls": 11,
+    "total_files": 7,
+    "all_symbols_exist": true,
+    "implementation_complete": true
+  }
+}

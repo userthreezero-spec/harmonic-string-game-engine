@@ -1,5 +1,6 @@
 #include "scene/scene.h"
 #include "scene/primitive.h"
+#include "renderer/material.h"
 
 namespace hse {
 
@@ -72,6 +73,18 @@ void Scene::setActiveCamera(int index) {
 std::shared_ptr<Camera> Scene::getActiveCamera() const {
     if (m_cameras.empty()) return nullptr;
     return m_cameras[m_activeCameraIndex];
+}
+
+void Scene::addMaterial(std::shared_ptr<Material> material) {
+    if (material) {
+        m_materials[material->getName()] = material;
+    }
+}
+
+std::shared_ptr<Material> Scene::getMaterial(const std::string& name) const {
+    auto it = m_materials.find(name);
+    if (it != m_materials.end()) return it->second;
+    return nullptr;
 }
 
 void Scene::update(float deltaTime) {
