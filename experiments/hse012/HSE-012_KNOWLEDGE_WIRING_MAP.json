@@ -1,0 +1,536 @@
+{
+  "experiment_id": "HSE-012",
+  "date": "2026-08-18",
+  "purpose": "Knowledge-provenance map tracking sources, domains, layers, concepts, and their wiring to benchmark missions and scores",
+  
+  "sources": [
+    {
+      "source_id": "SRC-002",
+      "name": "docs.gl",
+      "classification": "A",
+      "domain": "rendering",
+      "items": 7,
+      "concepts": 12,
+      "novelty_rate": 0.90,
+      "architecture_impact": 11,
+      "symbol_impact": 8,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-003",
+      "name": "GLFW Docs",
+      "classification": "B",
+      "domain": "input",
+      "items": 4,
+      "concepts": 8,
+      "novelty_rate": 0.85,
+      "architecture_impact": 3,
+      "symbol_impact": 4,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-006",
+      "name": "LearnOpenGL",
+      "classification": "F",
+      "domain": "rendering",
+      "items": 16,
+      "concepts": 22,
+      "novelty_rate": 0.80,
+      "architecture_impact": 8,
+      "symbol_impact": 6,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-009",
+      "name": "Godot Source",
+      "classification": "D",
+      "domain": "general_engineering",
+      "items": 3,
+      "concepts": 15,
+      "novelty_rate": 0.75,
+      "architecture_impact": 13,
+      "symbol_impact": 2,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-011",
+      "name": "Hazel Source",
+      "classification": "D",
+      "domain": "general_engineering",
+      "items": 2,
+      "concepts": 12,
+      "novelty_rate": 0.80,
+      "architecture_impact": 5,
+      "symbol_impact": 1,
+      "status": "PARTIAL"
+    },
+    {
+      "source_id": "SRC-012",
+      "name": "Dear ImGui",
+      "classification": "D",
+      "domain": "ui",
+      "items": 3,
+      "concepts": 10,
+      "novelty_rate": 0.85,
+      "architecture_impact": 2,
+      "symbol_impact": 0,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-016",
+      "name": "GLM Manual",
+      "classification": "B",
+      "domain": "math",
+      "items": 4,
+      "concepts": 10,
+      "novelty_rate": 0.85,
+      "architecture_impact": 2,
+      "symbol_impact": 4,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-022",
+      "name": "miniaudio",
+      "classification": "D",
+      "domain": "audio",
+      "items": 3,
+      "concepts": 8,
+      "novelty_rate": 0.85,
+      "architecture_impact": 1,
+      "symbol_impact": 0,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-023",
+      "name": "Tracy",
+      "classification": "D",
+      "domain": "profiling",
+      "items": 2,
+      "concepts": 5,
+      "novelty_rate": 0.90,
+      "architecture_impact": 1,
+      "symbol_impact": 0,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-025",
+      "name": "nlohmann/json",
+      "classification": "D",
+      "domain": "serialization",
+      "items": 2,
+      "concepts": 6,
+      "novelty_rate": 0.90,
+      "architecture_impact": 2,
+      "symbol_impact": 1,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-027",
+      "name": "EnTT",
+      "classification": "D",
+      "domain": "ecs",
+      "items": 2,
+      "concepts": 8,
+      "novelty_rate": 0.85,
+      "architecture_impact": 3,
+      "symbol_impact": 0,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-028",
+      "name": "Box2D",
+      "classification": "D",
+      "domain": "physics",
+      "items": 3,
+      "concepts": 10,
+      "novelty_rate": 0.80,
+      "architecture_impact": 2,
+      "symbol_impact": 0,
+      "status": "INGESTED"
+    },
+    {
+      "source_id": "SRC-024",
+      "name": "CMake Documentation",
+      "classification": "B",
+      "domain": "build_systems",
+      "items": 0,
+      "concepts": 0,
+      "novelty_rate": 0,
+      "architecture_impact": 0,
+      "symbol_impact": 0,
+      "status": "NOT_INGESTED",
+      "priority": 1,
+      "reason": "Zero coverage for build systems"
+    },
+    {
+      "source_id": "SRC-010",
+      "name": "OGRE 3D Source",
+      "classification": "D",
+      "domain": "scene_management",
+      "items": 0,
+      "concepts": 0,
+      "novelty_rate": 0,
+      "architecture_impact": 0,
+      "symbol_impact": 0,
+      "status": "NOT_INGESTED",
+      "priority": 2,
+      "reason": "Core HSE architecture underfed"
+    },
+    {
+      "source_id": "SRC-013",
+      "name": "Filament",
+      "classification": "D",
+      "domain": "rendering",
+      "items": 0,
+      "concepts": 0,
+      "novelty_rate": 0,
+      "architecture_impact": 0,
+      "symbol_impact": 0,
+      "status": "NOT_INGESTED",
+      "priority": 3,
+      "reason": "Next rendering frontier (PBR)"
+    }
+  ],
+  
+  "domains": [
+    {
+      "domain": "rendering",
+      "sources": 3,
+      "items": 31,
+      "concepts": 44,
+      "coverage": "STRONG",
+      "hse_relevance": "HIGH",
+      "direct_symbols": ["Renderer", "Primitive", "Texture"]
+    },
+    {
+      "domain": "general_engineering",
+      "sources": 2,
+      "items": 5,
+      "concepts": 27,
+      "coverage": "STRONG",
+      "hse_relevance": "HIGH",
+      "direct_symbols": ["Scene", "Camera", "SceneBuilder"]
+    },
+    {
+      "domain": "input",
+      "sources": 1,
+      "items": 4,
+      "concepts": 8,
+      "coverage": "ADEQUATE",
+      "hse_relevance": "HIGH",
+      "direct_symbols": ["Window"]
+    },
+    {
+      "domain": "math",
+      "sources": 1,
+      "items": 4,
+      "concepts": 10,
+      "coverage": "ADEQUATE",
+      "hse_relevance": "HIGH",
+      "direct_symbols": ["Mat4", "Vec3"]
+    },
+    {
+      "domain": "resources",
+      "sources": 2,
+      "items": 5,
+      "concepts": 8,
+      "coverage": "ADEQUATE",
+      "hse_relevance": "MEDIUM",
+      "direct_symbols": []
+    },
+    {
+      "domain": "scene",
+      "sources": 1,
+      "items": 3,
+      "concepts": 5,
+      "coverage": "UNDERFED",
+      "hse_relevance": "MEDIUM",
+      "direct_symbols": ["Scene", "SceneBuilder"]
+    },
+    {
+      "domain": "physics",
+      "sources": 1,
+      "items": 3,
+      "concepts": 10,
+      "coverage": "UNDERFED",
+      "hse_relevance": "LOW",
+      "direct_symbols": []
+    },
+    {
+      "domain": "audio",
+      "sources": 1,
+      "items": 3,
+      "concepts": 8,
+      "coverage": "UNDERFED",
+      "hse_relevance": "LOW",
+      "direct_symbols": []
+    },
+    {
+      "domain": "ui",
+      "sources": 1,
+      "items": 3,
+      "concepts": 10,
+      "coverage": "UNDERFED",
+      "hse_relevance": "LOW",
+      "direct_symbols": []
+    },
+    {
+      "domain": "profiling",
+      "sources": 1,
+      "items": 2,
+      "concepts": 5,
+      "coverage": "ADEQUATE",
+      "hse_relevance": "LOW",
+      "direct_symbols": []
+    },
+    {
+      "domain": "serialization",
+      "sources": 1,
+      "items": 2,
+      "concepts": 6,
+      "coverage": "UNDERFED",
+      "hse_relevance": "MEDIUM",
+      "direct_symbols": []
+    },
+    {
+      "domain": "ecs",
+      "sources": 1,
+      "items": 2,
+      "concepts": 8,
+      "coverage": "UNDERFED",
+      "hse_relevance": "LOW",
+      "direct_symbols": []
+    },
+    {
+      "domain": "build_systems",
+      "sources": 0,
+      "items": 0,
+      "concepts": 0,
+      "coverage": "CRITICAL_GAP",
+      "hse_relevance": "HIGH",
+      "direct_symbols": []
+    }
+  ],
+  
+  "layers": {
+    "L0Repository": {
+      "description": "Raw repository scan (files, classes, methods)",
+      "items": 27,
+      "status": "COMPLETE"
+    },
+    "L1Knowledge": {
+      "description": "Authoritative external knowledge",
+      "items": 64,
+      "concepts": 167,
+      "status": "COMPLETE"
+    },
+    "L2Synthesis": {
+      "description": "Knowledge + Repository integration",
+      "items": 14,
+      "status": "PARTIAL"
+    },
+    "L3Architecture": {
+      "description": "Architecture generation from knowledge",
+      "score": 95,
+      "status": "MEASURED"
+    },
+    "L4Implementation": {
+      "description": "Code generation from architecture",
+      "success": true,
+      "status": "MEASURED"
+    },
+    "L5Verification": {
+      "description": "Verification against ground truth",
+      "accuracy": 85,
+      "status": "MEASURED"
+    }
+  },
+  
+  "concepts": {
+    "total": 167,
+    "by_domain": {
+      "rendering": 44,
+      "general_engineering": 27,
+      "input": 8,
+      "math": 10,
+      "resources": 8,
+      "scene": 5,
+      "physics": 10,
+      "audio": 8,
+      "ui": 10,
+      "profiling": 5,
+      "serialization": 6,
+      "ecs": 8,
+      "build_systems": 0
+    },
+    "by_layer": {
+      "L0Repository": 0,
+      "L1Knowledge": 167,
+      "L2Synthesis": 14,
+      "L3Architecture": 0,
+      "L4Implementation": 0,
+      "L5Verification": 0
+    }
+  },
+  
+  "provenance": {
+    "knowledge_to_architecture": [
+      {
+        "concept": "RAII texture lifecycle",
+        "source": "C++ Core Guidelines R.1",
+        "architecture_decision": "Texture class with constructor/destructor",
+        "confidence": "HIGH"
+      },
+      {
+        "concept": "Interleaved vertex layout",
+        "source": "docs.gl OpenGL Spec",
+        "architecture_decision": "5-float stride (Pos+UV)",
+        "confidence": "HIGH"
+      },
+      {
+        "concept": "Shared ownership for assets",
+        "source": "HSE-011 Synthesis",
+        "architecture_decision": "std::shared_ptr<Texture>",
+        "confidence": "MEDIUM"
+      },
+      {
+        "concept": "Fragment shader sampling",
+        "source": "LearnOpenGL",
+        "architecture_decision": "uHasTexture uniform check",
+        "confidence": "HIGH"
+      },
+      {
+        "concept": "Image loading via stb_image",
+        "source": "Engineering Best Practice",
+        "architecture_decision": "stbi_load integration",
+        "confidence": "HIGH"
+      },
+      {
+        "concept": "VBO stride calculation",
+        "source": "OpenGL Specification",
+        "architecture_decision": "5 * sizeof(float) stride",
+        "confidence": "HIGH"
+      }
+    ]
+  },
+  
+  "benchmark_missions": {
+    "total_defined": 55,
+    "total_executed": 1,
+    "executed": [
+      {
+        "mission": "TEXTURE MAPPING",
+        "domain": "rendering",
+        "complexity": "MEDIUM",
+        "architecture_score": 95,
+        "symbol_accuracy": 85,
+        "build_success": true,
+        "test_pass": true,
+        "runtime_success": true,
+        "corrections": 1,
+        "status": "COMPLETE"
+      }
+    ],
+    "pending": [
+      "ORBIT CAMERA",
+      "SCENE SERIALIZATION",
+      "RESOURCE MANAGEMENT",
+      "EVENT SYSTEM",
+      "SCENE GRAPH REFACTORING",
+      "PHYSICS INTEGRATION",
+      "AUDIO SYSTEM",
+      "DEBUG UI",
+      "ECS MIGRATION",
+      "PBR RENDERING"
+    ]
+  },
+  
+  "scores": {
+    "architecture_score": 95,
+    "symbol_accuracy_pre_impl": 28,
+    "symbol_accuracy_post_impl": 85,
+    "build_success_rate": 100,
+    "test_pass_rate": 100,
+    "runtime_verification_rate": 100,
+    "correction_rate": 14.3,
+    "knowledge_yield_per_source": 11.1,
+    "saturation_requirements_met": 0,
+    "saturation_requirements_inconclusive": 4,
+    "saturation_requirements_not_met": 3
+  },
+  
+  "marginal_returns": {
+    "per_source_yield": {
+      "average": 11.1,
+      "minimum": 5,
+      "maximum": 22,
+      "deceleration_detected": false,
+      "threshold_for_saturation": 3
+    },
+    "architecture_improvement": {
+      "tier_a_to_b": 35,
+      "tier_b_to_c": 40,
+      "total_improvement": 75,
+      "diminishing_returns_detected": false
+    },
+    "symbol_accuracy_improvement": {
+      "pre_impl_to_post_impl": 57,
+      "diminishing_returns_detected": false
+    }
+  },
+  
+  "saturation_criteria": {
+    "requirements": [
+      {
+        "id": 1,
+        "description": "Multiple consecutive sources produce few novel concepts",
+        "status": "NOT_MET",
+        "evidence": "Per-source yield: 5-22, no deceleration"
+      },
+      {
+        "id": 2,
+        "description": "Architecture score improvement plateaus",
+        "status": "INCONCLUSIVE",
+        "evidence": "Only 1 measurement point (95/100)"
+      },
+      {
+        "id": 3,
+        "description": "Symbol accuracy improvement plateaus",
+        "status": "INCONCLUSIVE",
+        "evidence": "Only 1 measurement point (85%)"
+      },
+      {
+        "id": 4,
+        "description": "Unsupported assumptions stop decreasing",
+        "status": "INCONCLUSIVE",
+        "evidence": "Only 1 measurement point"
+      },
+      {
+        "id": 5,
+        "description": "Acceptance criteria improvement plateaus",
+        "status": "NOT_MET",
+        "evidence": "Test regression unprediction shows room for improvement"
+      },
+      {
+        "id": 6,
+        "description": "Blind holdout performance stops improving",
+        "status": "NOT_APPLICABLE",
+        "evidence": "No blind holdout missions executed"
+      },
+      {
+        "id": 7,
+        "description": "Novelty/generalization stops improving",
+        "status": "INCONCLUSIVE",
+        "evidence": "Only 1 domain measured"
+      },
+      {
+        "id": 8,
+        "description": "Multiple independent domains show same trend",
+        "status": "NOT_MET",
+        "evidence": "Only 1 domain measured (rendering)"
+      }
+    ],
+    "final_decision": "NOT_SATURATED",
+    "rationale": "Insufficient data - only 1 mission executed across 1 domain"
+  }
+}
