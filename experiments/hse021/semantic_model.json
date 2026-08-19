@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "id": "seating_1",
+      "role": "Seating",
+      "members": ["chair_1", "chair_1_back"],
+      "seat_object": "chair_1",
+      "back_object": "chair_1_back"
+    },
+    {
+      "id": "seating_2",
+      "role": "Seating",
+      "members": ["chair_2", "chair_2_back"],
+      "seat_object": "chair_2",
+      "back_object": "chair_2_back"
+    },
+    {
+      "id": "table",
+      "role": "FunctionalSurface",
+      "members": ["table_top", "table_leg_1", "table_leg_2", "table_leg_3", "table_leg_4"]
+    }
+  ],
+  "inferences": [
+    {"source": "name", "target": "chair", "inferred_role": "Seating"},
+    {"source": "name", "target": "table", "inferred_role": "FunctionalSurface"}
+  ]
+}

@@ -304,6 +304,20 @@ void Bridge::executeCommand(const Command& cmd, std::shared_ptr<Scene> scene, st
             }
             break;
         }
+        case Command::CMD_SET_ROTATION_SPEED: {
+            auto obj = resolveObject(cmd, scene);
+            if (obj) {
+                obj->setRotationSpeed({cmd.rx, cmd.ry, cmd.rz});
+                m_sceneRevision++;
+                m_commandsProcessed++;
+                m_lastCommandStatus = "accepted";
+                m_pipe.writeLine(makeAck(cmd.seq, true, "\"revision\":" + std::to_string(m_sceneRevision)));
+            } else {
+                m_lastCommandStatus = "failed";
+                m_pipe.writeLine(makeAck(cmd.seq, false, "\"error\":\"object_not_found\""));
+            }
+            break;
+        }
         case Command::CMD_SET_SCALE: {
             auto obj = resolveObject(cmd, scene);
             if (obj) {

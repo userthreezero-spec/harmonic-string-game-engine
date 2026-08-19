@@ -29,6 +29,7 @@ struct Command {
         CMD_ORBIT_START,
         CMD_ORBIT_STOP,
         CMD_ORBIT_SET,
+        CMD_SET_ROTATION_SPEED,
         CMD_HEALTH
     };
 

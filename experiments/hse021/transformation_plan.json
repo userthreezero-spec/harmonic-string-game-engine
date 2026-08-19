@@ -1,0 +1,26 @@
+{
+  "goal": "Arrange the room so that two people can comfortably sit at the table and face each other for a conversation.",
+  "steps": [
+    {
+      "description": "Stabilize spinning chair (Chair 1)",
+      "target": "chair_1",
+      "action": "set_rotation_speed",
+      "value": [0, 0, 0]
+    },
+    {
+      "description": "Move Seating 1 closer to table",
+      "targets": [
+        {"id": "chair_1", "px": -1.2, "py": -1.0, "pz": 0},
+        {"id": "chair_1_back", "px": -1.5, "py": -0.6, "pz": 0}
+      ]
+    },
+    {
+      "description": "Move Seating 2 closer to table",
+      "targets": [
+        {"id": "chair_2", "px": 1.2, "py": -1.0, "pz": 0},
+        {"id": "chair_2_back", "px": 1.5, "py": -0.6, "pz": 0}
+      ]
+    }
+  ],
+  "constraints_checked": ["stability", "proximity", "facing", "collision"]
+}

@@ -86,3 +86,7 @@ add_test(NAME InputTests COMMAND hse_test_input)
 add_executable(hse_test_picking tests/test_picking.cpp)
 target_link_libraries(hse_test_picking PRIVATE hse_core)
 add_test(NAME PickingTests COMMAND hse_test_picking)
+
+add_executable(hse_test_goal tests/test_goal_conformance.cpp)
+target_link_libraries(hse_test_goal PRIVATE hse_core)
+add_test(NAME GoalTests COMMAND hse_test_goal)

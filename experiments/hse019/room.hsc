@@ -338,7 +338,7 @@
       "id": "chair_1",
       "type": "Cube",
       "position": [
-        -1.5,
+        -1.2,
         -1.0,
         0
       ],
@@ -355,7 +355,7 @@
       "material": "mat_fabric",
       "rotation_speed": [
         0,
-        45,
+        0,
         0
       ]
     },
@@ -363,7 +363,7 @@
       "id": "chair_1_back",
       "type": "Cube",
       "position": [
-        -1.8,
+        -1.5,
         -0.6,
         0
       ],
@@ -383,7 +383,7 @@
       "id": "chair_2",
       "type": "Cube",
       "position": [
-        1.5,
+        1.2,
         -1.0,
         0
       ],
@@ -403,7 +403,7 @@
       "id": "chair_2_back",
       "type": "Cube",
       "position": [
-        1.8,
+        1.5,
         -0.6,
         0
       ],
