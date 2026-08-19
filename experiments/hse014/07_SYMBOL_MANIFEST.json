@@ -1,0 +1,302 @@
+{
+  "experiment": "HSE-014",
+  "description": "Transform Hierarchy symbol manifest — all symbols verified against actual repository",
+  "existing_symbols": [
+    {
+      "symbol": "Primitive::m_position",
+      "file": "include/scene/primitive.h",
+      "line": 63,
+      "kind": "field",
+      "type": "Vec3",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::m_rotation",
+      "file": "include/scene/primitive.h",
+      "line": 64,
+      "kind": "field",
+      "type": "Vec3",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::m_scale",
+      "file": "include/scene/primitive.h",
+      "line": 65,
+      "kind": "field",
+      "type": "Vec3",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::setPosition",
+      "file": "include/scene/primitive.h",
+      "line": 28,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::setRotation",
+      "file": "include/scene/primitive.h",
+      "line": 29,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::setScale",
+      "file": "include/scene/primitive.h",
+      "line": 30,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::getPosition",
+      "file": "include/scene/primitive.h",
+      "line": 39,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::getRotation",
+      "file": "include/scene/primitive.h",
+      "line": 40,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::getScale",
+      "file": "include/scene/primitive.h",
+      "line": 41,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::getID",
+      "file": "include/scene/primitive.h",
+      "line": 24,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::getName",
+      "file": "include/scene/primitive.h",
+      "line": 25,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Primitive::m_material",
+      "file": "include/scene/primitive.h",
+      "line": 68,
+      "kind": "field",
+      "type": "shared_ptr<Material>",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Scene::m_primitives",
+      "file": "include/scene/scene.h",
+      "line": 47,
+      "kind": "field",
+      "type": "vector<shared_ptr<Primitive>>",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Scene::addPrimitive",
+      "file": "include/scene/scene.h",
+      "line": 23,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Scene::removePrimitiveByID",
+      "file": "include/scene/scene.h",
+      "line": 25,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Scene::findByID",
+      "file": "include/scene/scene.h",
+      "line": 28,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Scene::findByName",
+      "file": "include/scene/scene.h",
+      "line": 29,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Renderer::renderScene",
+      "file": "src/renderer/renderer.cpp",
+      "line": 146,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "use worldMatrix instead of local matrix"
+    },
+    {
+      "symbol": "Bridge::executeCommand",
+      "file": "src/bridge/bridge.cpp",
+      "line": 215,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "add CMD_REPARENT case"
+    },
+    {
+      "symbol": "SceneBuilder::importState",
+      "file": "src/scene/scene_builder.cpp",
+      "line": 139,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "parse parent field"
+    },
+    {
+      "symbol": "SceneBuilder::exportHSC",
+      "file": "src/scene/scene_builder.cpp",
+      "line": 196,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "serialize parent field"
+    },
+    {
+      "symbol": "SceneBuilder::exportState",
+      "file": "src/scene/scene_builder.cpp",
+      "line": 237,
+      "kind": "method",
+      "status": "VERIFIED",
+      "planned_change": "serialize parent field"
+    },
+    {
+      "symbol": "Command::CMD_SET_POSITION",
+      "file": "include/bridge/command_queue.h",
+      "line": 12,
+      "kind": "enum",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    },
+    {
+      "symbol": "Command::CMD_ADD_PRIMITIVE",
+      "file": "include/bridge/command_queue.h",
+      "line": 11,
+      "kind": "enum",
+      "status": "VERIFIED",
+      "planned_change": "none"
+    }
+  ],
+  "new_symbols": [
+    {
+      "symbol": "Primitive::m_parent",
+      "file": "include/scene/primitive.h",
+      "kind": "field",
+      "type": "std::weak_ptr<Primitive>",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Primitive::m_children",
+      "file": "include/scene/primitive.h",
+      "kind": "field",
+      "type": "std::vector<std::shared_ptr<Primitive>>",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Primitive::m_worldMatrix",
+      "file": "include/scene/primitive.h",
+      "kind": "field",
+      "type": "Mat4",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Primitive::setParent",
+      "file": "include/scene/primitive.h",
+      "kind": "method",
+      "signature": "void setParent(std::shared_ptr<Primitive> parent)",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Primitive::getParent",
+      "file": "include/scene/primitive.h",
+      "kind": "method",
+      "signature": "std::shared_ptr<Primitive> getParent() const",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Primitive::getChildren",
+      "file": "include/scene/primitive.h",
+      "kind": "method",
+      "signature": "const std::vector<std::shared_ptr<Primitive>>& getChildren() const",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Primitive::getWorldMatrix",
+      "file": "include/scene/primitive.h",
+      "kind": "method",
+      "signature": "const Mat4& getWorldMatrix() const",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Primitive::computeWorldMatrix",
+      "file": "include/scene/primitive.h",
+      "kind": "method",
+      "signature": "void computeWorldMatrix()",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Primitive::addChild",
+      "file": "include/scene/primitive.h",
+      "kind": "method",
+      "signature": "void addChild(std::shared_ptr<Primitive> child)",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Primitive::removeChild",
+      "file": "include/scene/primitive.h",
+      "kind": "method",
+      "signature": "void removeChild(uint64_t childID)",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Scene::reparent",
+      "file": "include/scene/scene.h",
+      "kind": "method",
+      "signature": "bool reparent(uint64_t childID, uint64_t parentID)",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Scene::getRoots",
+      "file": "include/scene/scene.h",
+      "kind": "method",
+      "signature": "std::vector<std::shared_ptr<Primitive>> getRoots() const",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Scene::computeAllWorldMatrices",
+      "file": "include/scene/scene.h",
+      "kind": "method",
+      "signature": "void computeAllWorldMatrices()",
+      "status": "PLANNED"
+    },
+    {
+      "symbol": "Command::CMD_REPARENT",
+      "file": "include/bridge/command_queue.h",
+      "kind": "enum",
+      "status": "PLANNED"
+    }
+  ]
+}

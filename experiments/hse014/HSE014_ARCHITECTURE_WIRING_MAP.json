@@ -1,0 +1,40 @@
+{
+  "experiment": "HSE-014",
+  "description": "Transform Hierarchy architecture wiring map",
+  "subsystems": [
+    {
+      "name": "Primitive",
+      "file": "include/scene/primitive.h",
+      "role": "Core hierarchy entity",
+      "new_fields": ["m_parent", "m_children", "m_worldMatrix"],
+      "new_methods": ["setParent", "getParent", "getChildren", "getWorldMatrix", "computeWorldMatrix", "addChild", "removeChild"]
+    },
+    {
+      "name": "Scene",
+      "file": "include/scene/scene.h",
+      "role": "Hierarchy management",
+      "new_methods": ["reparent", "getRoots", "computeAllWorldMatrices"]
+    },
+    {
+      "name": "Renderer",
+      "file": "src/renderer/renderer.cpp",
+      "role": "World matrix rendering",
+      "changes": ["uses prim->getWorldMatrix() instead of local matrix", "calls computeAllWorldMatrices() before render"]
+    },
+    {
+      "name": "Bridge",
+      "file": "src/bridge/bridge.cpp",
+      "role": "Live hierarchy manipulation",
+      "new_commands": ["reparent"],
+      "observation_changes": ["parent field per object"]
+    },
+    {
+      "name": "SceneBuilder",
+      "file": "src/scene/scene_builder.cpp",
+      "role": "Hierarchy persistence",
+      "changes": ["parent field in .hsc import/export"]
+    }
+  ],
+  "data_flow": "Scene::computeAllWorldMatrices() → roots → Primitive::computeWorldMatrix() → recursive children → Renderer uses world matrix",
+  "ownership": "shared_ptr<Primitive> for children, weak_ptr<Primitive> for parent"
+}

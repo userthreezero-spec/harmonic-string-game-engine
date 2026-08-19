@@ -11,7 +11,7 @@ namespace hse {
 
 enum class PrimitiveType { Triangle, Quad, Cube, Sphere };
 
-class Primitive {
+class Primitive : public std::enable_shared_from_this<Primitive> {
 public:
     Primitive(PrimitiveType type = PrimitiveType::Triangle);
     ~Primitive();
@@ -33,6 +33,15 @@ public:
     // Material management
     void setMaterial(std::shared_ptr<Material> material) { m_material = material; }
     std::shared_ptr<Material> getMaterial() const { return m_material; }
+
+    // Transform hierarchy
+    void setParent(std::shared_ptr<Primitive> parent);
+    std::shared_ptr<Primitive> getParent() const;
+    const std::vector<std::shared_ptr<Primitive>>& getChildren() const { return m_children; }
+    const Mat4& getWorldMatrix() const { return m_worldMatrix; }
+    void computeWorldMatrix();
+    void addChild(std::shared_ptr<Primitive> child);
+    void removeChild(uint64_t childID);
 
     PrimitiveType getType() const { return m_type; }
 
@@ -66,6 +75,11 @@ private:
     Vec3 m_rotationSpeed{0.0f, 0.0f, 0.0f};
 
     std::shared_ptr<Material> m_material = nullptr;
+
+    // Transform hierarchy
+    std::weak_ptr<Primitive> m_parent;
+    std::vector<std::shared_ptr<Primitive>> m_children;
+    Mat4 m_worldMatrix;
 
     std::vector<float> m_vertices;
     std::vector<uint32_t> m_indices;

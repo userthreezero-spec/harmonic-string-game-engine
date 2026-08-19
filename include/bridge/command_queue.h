@@ -25,6 +25,7 @@ struct Command {
         CMD_CAPTURE_FRAME,
         CMD_SAVE_PROJECT,
         CMD_LOAD_PROJECT,
+        CMD_REPARENT,
         CMD_HEALTH
     };
 
@@ -40,6 +41,7 @@ struct Command {
     float fov = 60;
     char name[64] = {};
     uint64_t sinceRevision = 0;
+    uint64_t parentID = 0;
 };
 
 static constexpr int RING_SIZE = 256;

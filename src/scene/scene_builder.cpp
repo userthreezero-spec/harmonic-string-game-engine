@@ -165,6 +165,7 @@ std::shared_ptr<Scene> SceneBuilder::importState(const std::string& path, Projec
 
     // Parse Objects
     auto objects = jsonFindArrayObjects(content, "objects");
+    std::vector<std::pair<std::shared_ptr<Primitive>, std::string>> parentRefs;
     for (auto& objStr : objects) {
         std::string typeStr = jsonFind(objStr, "type");
         PrimitiveType ptype = PrimitiveType::Quad;
@@ -187,7 +188,20 @@ std::shared_ptr<Scene> SceneBuilder::importState(const std::string& path, Projec
         auto mat = scene->getMaterial(matId);
         if (mat) prim->setMaterial(mat);
 
+        std::string parentName = jsonFind(objStr, "parent");
+        if (!parentName.empty()) {
+            parentRefs.push_back({prim, parentName});
+        }
+
         scene->addPrimitive(prim);
+    }
+
+    // Establish parent-child relationships
+    for (auto& [child, parentName] : parentRefs) {
+        auto parent = scene->findByName(parentName);
+        if (parent) {
+            child->setParent(parent);
+        }
     }
 
     return scene;
@@ -222,8 +236,12 @@ void SceneBuilder::exportHSC(const Scene& scene, const Camera& camera, const Pro
         f << "      \"id\": \"" << p->getName() << "\",\n";
         f << "      \"type\": \"" << (p->getType() == PrimitiveType::Triangle ? "Triangle" : (p->getType() == PrimitiveType::Cube ? "Cube" : "Quad")) << "\",\n";
         f << "      \"position\": [" << p->getPosition().x << "," << p->getPosition().y << "," << p->getPosition().z << "],\n";
-        f << "      \"material\": \"" << (p->getMaterial() ? p->getMaterial()->getName() : "Default") << "\"\n";
-        f << "    }" << (i < prims.size() - 1 ? "," : "") << "\n";
+        f << "      \"material\": \"" << (p->getMaterial() ? p->getMaterial()->getName() : "Default") << "\"";
+        auto parentHsc = p->getParent();
+        if (parentHsc) {
+            f << ",\n      \"parent\": \"" << parentHsc->getName() << "\"";
+        }
+        f << "\n    }" << (i < prims.size() - 1 ? "," : "") << "\n";
     }
     f << "  ]\n";
     f << "}\n";
@@ -256,8 +274,12 @@ void SceneBuilder::exportState(const Scene& scene, const std::string& path) {
         f << "      \"id\": \"" << p->getName() << "\",\n";
         f << "      \"type\": \"" << (p->getType() == PrimitiveType::Triangle ? "Triangle" : (p->getType() == PrimitiveType::Cube ? "Cube" : "Quad")) << "\",\n";
         f << "      \"position\": [" << p->getPosition().x << "," << p->getPosition().y << "," << p->getPosition().z << "],\n";
-        f << "      \"material\": \"" << (p->getMaterial() ? p->getMaterial()->getName() : "Default") << "\"\n";
-        f << "    }" << (i < prims.size() - 1 ? "," : "") << "\n";
+        f << "      \"material\": \"" << (p->getMaterial() ? p->getMaterial()->getName() : "Default") << "\"";
+        auto parentState = p->getParent();
+        if (parentState) {
+            f << ",\n      \"parent\": \"" << parentState->getName() << "\"";
+        }
+        f << "\n    }" << (i < prims.size() - 1 ? "," : "") << "\n";
     }
     f << "  ]\n";
     f << "}\n";

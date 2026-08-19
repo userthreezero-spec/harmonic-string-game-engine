@@ -159,12 +159,11 @@ void Renderer::renderScene(const Scene& scene, const Camera& camera) {
     // Create a fallback material if primitive has none
     static auto defaultMaterial = std::make_shared<Material>("Default");
 
+    // Compute all world matrices before rendering
+    const_cast<Scene&>(scene).computeAllWorldMatrices();
+
     for (const auto& prim : scene.getPrimitives()) {
-        Mat4 model = Mat4::translate(prim->getPosition())
-                   * Mat4::rotate(prim->getRotation().x, {1, 0, 0})
-                   * Mat4::rotate(prim->getRotation().y, {0, 1, 0})
-                   * Mat4::rotate(prim->getRotation().z, {0, 0, 1})
-                   * Mat4::scale(prim->getScale());
+        const Mat4& model = prim->getWorldMatrix();
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model.ptr());
 
         auto material = prim->getMaterial();

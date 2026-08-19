@@ -1,5 +1,6 @@
 #include "scene/primitive.h"
 #include <GL/glew.h>
+#include <algorithm>
 
 namespace hse {
 
@@ -22,6 +23,53 @@ void Primitive::setPosition(const Vec3& position) { m_position = position; }
 void Primitive::setRotation(const Vec3& rotation) { m_rotation = rotation; }
 void Primitive::setScale(const Vec3& scale) { m_scale = scale; }
 void Primitive::setRotationSpeed(const Vec3& speed) { m_rotationSpeed = speed; }
+
+void Primitive::setParent(std::shared_ptr<Primitive> parent) {
+    if (auto oldParent = m_parent.lock()) {
+        oldParent->removeChild(m_id);
+    }
+    m_parent = parent;
+    if (parent) {
+        parent->addChild(shared_from_this());
+    }
+}
+
+std::shared_ptr<Primitive> Primitive::getParent() const {
+    return m_parent.lock();
+}
+
+void Primitive::computeWorldMatrix() {
+    Mat4 local = Mat4::translate(m_position)
+               * Mat4::rotate(m_rotation.x, {1, 0, 0})
+               * Mat4::rotate(m_rotation.y, {0, 1, 0})
+               * Mat4::rotate(m_rotation.z, {0, 0, 1})
+               * Mat4::scale(m_scale);
+    auto parentPtr = m_parent.lock();
+    if (parentPtr) {
+        m_worldMatrix = parentPtr->getWorldMatrix() * local;
+    } else {
+        m_worldMatrix = local;
+    }
+    for (auto& child : m_children) {
+        child->computeWorldMatrix();
+    }
+}
+
+void Primitive::addChild(std::shared_ptr<Primitive> child) {
+    if (!child) return;
+    for (auto& c : m_children) {
+        if (c->getID() == child->getID()) return;
+    }
+    child->m_parent = weak_from_this();
+    m_children.push_back(child);
+}
+
+void Primitive::removeChild(uint64_t childID) {
+    m_children.erase(
+        std::remove_if(m_children.begin(), m_children.end(),
+            [childID](const std::shared_ptr<Primitive>& c) { return c->getID() == childID; }),
+        m_children.end());
+}
 
 void Primitive::generateGeometry() {
     switch (m_type) {

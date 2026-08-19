@@ -42,6 +42,11 @@ public:
     std::shared_ptr<Material> getMaterial(const std::string& name) const;
     const std::unordered_map<std::string, std::shared_ptr<Material>>& getMaterials() const { return m_materials; }
 
+    // Transform hierarchy
+    bool reparent(uint64_t childID, uint64_t parentID);
+    std::vector<std::shared_ptr<Primitive>> getRoots() const;
+    void computeAllWorldMatrices();
+
 private:
     std::string m_name;
     std::vector<std::shared_ptr<Primitive>> m_primitives;

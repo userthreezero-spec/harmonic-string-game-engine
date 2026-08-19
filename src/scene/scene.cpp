@@ -87,6 +87,33 @@ std::shared_ptr<Material> Scene::getMaterial(const std::string& name) const {
     return nullptr;
 }
 
+bool Scene::reparent(uint64_t childID, uint64_t parentID) {
+    if (childID == parentID) return false;
+    auto child = findByID(childID);
+    auto parent = findByID(parentID);
+    if (!child) return false;
+    if (parentID != 0 && !parent) return false;
+    child->setParent(parent);
+    return true;
+}
+
+std::vector<std::shared_ptr<Primitive>> Scene::getRoots() const {
+    std::vector<std::shared_ptr<Primitive>> roots;
+    for (auto& p : m_primitives) {
+        if (!p->getParent()) {
+            roots.push_back(p);
+        }
+    }
+    return roots;
+}
+
+void Scene::computeAllWorldMatrices() {
+    auto roots = getRoots();
+    for (auto& root : roots) {
+        root->computeWorldMatrix();
+    }
+}
+
 void Scene::update(float deltaTime) {
     for (auto& prim : m_primitives) {
         Vec3 rot = prim->getRotation();

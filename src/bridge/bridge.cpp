@@ -201,6 +201,12 @@ std::string Bridge::parseCommand(const std::string& json, Command& cmd) {
         if (!path.empty()) strncpy(cmd.name, path.c_str(), sizeof(cmd.name) - 1);
         return "";
     }
+    if (cmdType == "reparent") {
+        cmd.type = Command::CMD_REPARENT;
+        cmd.objectID = findU64("object_id", 0);
+        cmd.parentID = findU64("parent_id", 0);
+        return "";
+    }
     return "unknown cmd: " + cmdType;
 }
 
@@ -397,6 +403,24 @@ void Bridge::executeCommand(const Command& cmd, std::shared_ptr<Scene> scene, st
             }
             break;
         }
+        case Command::CMD_REPARENT: {
+            if (cmd.objectID == 0) {
+                m_lastCommandStatus = "failed";
+                m_pipe.writeLine(makeAck(cmd.seq, false, "\"error\":\"missing_object_id\""));
+            } else {
+                bool ok = scene->reparent(cmd.objectID, cmd.parentID);
+                if (ok) {
+                    m_sceneRevision++;
+                    m_commandsProcessed++;
+                    m_lastCommandStatus = "accepted";
+                    m_pipe.writeLine(makeAck(cmd.seq, true, "\"revision\":" + std::to_string(m_sceneRevision)));
+                } else {
+                    m_lastCommandStatus = "failed";
+                    m_pipe.writeLine(makeAck(cmd.seq, false, "\"error\":\"reparent_failed\""));
+                }
+            }
+            break;
+        }
         default:
             m_lastCommandStatus = "failed";
             m_pipe.writeLine(makeAck(cmd.seq, false, "\"error\":\"unsupported_operation\""));
@@ -517,6 +541,8 @@ std::string Bridge::getObservation(const Scene& scene, const Camera& camera, con
         o << ",\"scale\":[" << p->getScale().x << "," << p->getScale().y << "," << p->getScale().z << "]";
         auto pmat = p->getMaterial();
         o << ",\"color\":[" << (pmat ? pmat->getAlbedo().x : 1.0f) << "," << (pmat ? pmat->getAlbedo().y : 1.0f) << "," << (pmat ? pmat->getAlbedo().z : 1.0f) << "]";
+        auto parent = p->getParent();
+        o << ",\"parent\":" << (parent ? std::to_string(parent->getID()) : "null");
         o << "}";
     }
     o << "]}";
@@ -539,6 +565,8 @@ std::string Bridge::getObjectObservation(uint64_t objectID, const Scene& scene) 
     o << ",\"scale\":[" << obj->getScale().x << "," << obj->getScale().y << "," << obj->getScale().z << "]";
     auto omat = obj->getMaterial();
     o << ",\"color\":[" << (omat ? omat->getAlbedo().x : 1.0f) << "," << (omat ? omat->getAlbedo().y : 1.0f) << "," << (omat ? omat->getAlbedo().z : 1.0f) << "]";
+    auto objParent = obj->getParent();
+    o << ",\"parent\":" << (objParent ? std::to_string(objParent->getID()) : "null");
     o << "}";
     return o.str();
 }
