@@ -26,6 +26,9 @@ struct Command {
         CMD_SAVE_PROJECT,
         CMD_LOAD_PROJECT,
         CMD_REPARENT,
+        CMD_ORBIT_START,
+        CMD_ORBIT_STOP,
+        CMD_ORBIT_SET,
         CMD_HEALTH
     };
 
@@ -42,6 +45,8 @@ struct Command {
     char name[64] = {};
     uint64_t sinceRevision = 0;
     uint64_t parentID = 0;
+    float orbitRadius = 5.0f;
+    float orbitSpeed = 1.0f;
 };
 
 static constexpr int RING_SIZE = 256;

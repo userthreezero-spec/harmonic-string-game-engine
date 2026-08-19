@@ -27,6 +27,14 @@ public:
     const Mat4& getViewMatrix() const { return m_viewMatrix; }
     const Mat4& getProjectionMatrix() const { return m_projectionMatrix; }
 
+    void setOrbitRadius(float radius);
+    void setOrbitSpeed(float speed);
+    void enableOrbit(bool enabled);
+    bool isOrbitEnabled() const { return m_orbitEnabled; }
+    float getOrbitRadius() const { return m_orbitRadius; }
+    float getOrbitSpeed() const { return m_orbitSpeed; }
+    void updateOrbit(float deltaTime);
+
     void update();
 
 private:
@@ -41,6 +49,11 @@ private:
 
     Mat4 m_viewMatrix;
     Mat4 m_projectionMatrix;
+
+    float m_orbitRadius = 5.0f;
+    float m_orbitYaw = 0.0f;
+    float m_orbitSpeed = 1.0f;
+    bool  m_orbitEnabled = false;
 };
 
 } // namespace hse

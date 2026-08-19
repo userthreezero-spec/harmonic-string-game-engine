@@ -42,6 +42,9 @@ target_link_libraries(hse_test_material PRIVATE hse_core)
 add_executable(hse_test_hierarchy tests/test_hierarchy.cpp)
 target_link_libraries(hse_test_hierarchy PRIVATE hse_core)
 
+add_executable(hse_test_orbit tests/test_orbit.cpp)
+target_link_libraries(hse_test_orbit PRIVATE hse_core)
+
 add_library(hse_bridge STATIC
     src/bridge/pipe_transport.cpp
     src/bridge/bridge.cpp
@@ -61,8 +64,12 @@ target_link_libraries(hse_texture_demo PRIVATE hse_core)
 add_executable(hse_material_demo src/material_demo.cpp)
 target_link_libraries(hse_material_demo PRIVATE hse_core)
 
+add_executable(hse_orbit_demo src/orbit_demo.cpp)
+target_link_libraries(hse_orbit_demo PRIVATE hse_core)
+
 enable_testing()
 add_test(NAME MathTests COMMAND hse_test_math)
 add_test(NAME SceneTests COMMAND hse_test_scene)
 add_test(NAME MaterialTests COMMAND hse_test_material)
 add_test(NAME HierarchyTests COMMAND hse_test_hierarchy)
+add_test(NAME OrbitTests COMMAND hse_test_orbit)

@@ -207,6 +207,22 @@ std::string Bridge::parseCommand(const std::string& json, Command& cmd) {
         cmd.parentID = findU64("parent_id", 0);
         return "";
     }
+    if (cmdType == "orbit_start") {
+        cmd.type = Command::CMD_ORBIT_START;
+        cmd.orbitRadius = findFloat("radius", 5.0f);
+        cmd.orbitSpeed = findFloat("speed", 1.0f);
+        return "";
+    }
+    if (cmdType == "orbit_stop") {
+        cmd.type = Command::CMD_ORBIT_STOP;
+        return "";
+    }
+    if (cmdType == "orbit_set") {
+        cmd.type = Command::CMD_ORBIT_SET;
+        cmd.orbitRadius = findFloat("radius", 5.0f);
+        cmd.orbitSpeed = findFloat("speed", 1.0f);
+        return "";
+    }
     return "unknown cmd: " + cmdType;
 }
 
@@ -421,6 +437,30 @@ void Bridge::executeCommand(const Command& cmd, std::shared_ptr<Scene> scene, st
             }
             break;
         }
+        case Command::CMD_ORBIT_START: {
+            camera->setOrbitRadius(cmd.orbitRadius);
+            camera->setOrbitSpeed(cmd.orbitSpeed);
+            camera->enableOrbit(true);
+            m_commandsProcessed++;
+            m_lastCommandStatus = "accepted";
+            m_pipe.writeLine(makeAck(cmd.seq, true, "\"orbit\":true,\"radius\":" + std::to_string(cmd.orbitRadius) + ",\"speed\":" + std::to_string(cmd.orbitSpeed)));
+            break;
+        }
+        case Command::CMD_ORBIT_STOP: {
+            camera->enableOrbit(false);
+            m_commandsProcessed++;
+            m_lastCommandStatus = "accepted";
+            m_pipe.writeLine(makeAck(cmd.seq, true, "\"orbit\":false"));
+            break;
+        }
+        case Command::CMD_ORBIT_SET: {
+            camera->setOrbitRadius(cmd.orbitRadius);
+            camera->setOrbitSpeed(cmd.orbitSpeed);
+            m_commandsProcessed++;
+            m_lastCommandStatus = "accepted";
+            m_pipe.writeLine(makeAck(cmd.seq, true, "\"radius\":" + std::to_string(cmd.orbitRadius) + ",\"speed\":" + std::to_string(cmd.orbitSpeed)));
+            break;
+        }
         default:
             m_lastCommandStatus = "failed";
             m_pipe.writeLine(makeAck(cmd.seq, false, "\"error\":\"unsupported_operation\""));
@@ -527,6 +567,9 @@ std::string Bridge::getObservation(const Scene& scene, const Camera& camera, con
     o << ",\"near\":" << camera.getNearPlane();
     o << ",\"far\":" << camera.getFarPlane();
     o << ",\"aspect\":" << camera.getAspectRatio();
+    o << ",\"orbit_enabled\":" << (camera.isOrbitEnabled() ? "true" : "false");
+    o << ",\"orbit_radius\":" << camera.getOrbitRadius();
+    o << ",\"orbit_speed\":" << camera.getOrbitSpeed();
     o << "}";
     o << ",\"objects\":[";
     bool first = true;
@@ -582,6 +625,9 @@ std::string Bridge::getCameraObservation(const Camera& camera) {
     o << ",\"far\":" << camera.getFarPlane();
     o << ",\"aspect\":" << camera.getAspectRatio();
     o << ",\"projection\":\"" << (camera.getProjectionType() == ProjectionType::Perspective ? "perspective" : "orthographic") << "\"";
+    o << ",\"orbit_enabled\":" << (camera.isOrbitEnabled() ? "true" : "false");
+    o << ",\"orbit_radius\":" << camera.getOrbitRadius();
+    o << ",\"orbit_speed\":" << camera.getOrbitSpeed();
     o << "}";
     return o.str();
 }

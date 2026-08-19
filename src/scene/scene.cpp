@@ -1,4 +1,5 @@
 #include "scene/scene.h"
+#include "scene/camera.h"
 #include "scene/primitive.h"
 #include "renderer/material.h"
 
@@ -122,6 +123,11 @@ void Scene::update(float deltaTime) {
         rot.y += speed.y * deltaTime;
         rot.z += speed.z * deltaTime;
         prim->setRotation(rot);
+    }
+
+    auto cam = getActiveCamera();
+    if (cam) {
+        cam->updateOrbit(deltaTime);
     }
 }
 

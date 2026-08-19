@@ -1,0 +1,54 @@
+{
+  "experiment_id": "hse015",
+  "mission": "Camera orbit system",
+  "classification": "STATE A",
+  "human_intervention_percent": 5,
+  "human_interventions": [
+    {
+      "type": "build_fix",
+      "description": "scene.cpp needed #include camera.h for updateOrbit() — forward declaration insufficient",
+      "severity": "minor",
+      "autonomous_correction": true
+    },
+    {
+      "type": "build_fix",
+      "description": "test_orbit.cpp needed hse:: namespace prefix for Vec3",
+      "severity": "minor",
+      "autonomous_correction": true
+    }
+  ],
+  "metrics": {
+    "files_modified": 5,
+    "files_created": 3,
+    "symbols_introduced": 14,
+    "symbol_accuracy_percent": 100,
+    "tests_total": 49,
+    "tests_passing": 49,
+    "architecture_accuracy_percent": 95,
+    "acceptance_criteria_met": 14,
+    "acceptance_criteria_total": 14
+  },
+  "build": {
+    "cmake_generator": "MinGW Makefiles",
+    "compiler": "GCC 16.1.0",
+    "build_clean": true,
+    "warnings": 0
+  },
+  "runtime": {
+    "demo": "hse_orbit_demo",
+    "frames_rendered": 300,
+    "crash_free": true,
+    "camera_orbit_verified": true
+  },
+  "phases": {
+    "mission_interpretation": "autonomous",
+    "repo_archaeology": "autonomous",
+    "architecture": "autonomous",
+    "symbol_verification": "autonomous",
+    "acceptance_criteria": "autonomous",
+    "implementation": "autonomous",
+    "build_fixes": "autonomous (2 minor)",
+    "testing": "autonomous",
+    "runtime": "autonomous"
+  }
+}

@@ -37,6 +37,30 @@ void Camera::setAspectRatio(float ratio) {
     update();
 }
 
+void Camera::setOrbitRadius(float radius) {
+    m_orbitRadius = radius;
+}
+
+void Camera::setOrbitSpeed(float speed) {
+    m_orbitSpeed = speed;
+}
+
+void Camera::enableOrbit(bool enabled) {
+    m_orbitEnabled = enabled;
+    if (enabled) {
+        updateOrbit(0.0f);
+    }
+}
+
+void Camera::updateOrbit(float deltaTime) {
+    if (!m_orbitEnabled) return;
+    m_orbitYaw += m_orbitSpeed * deltaTime;
+    float x = m_target.x + m_orbitRadius * std::cos(m_orbitYaw);
+    float z = m_target.z + m_orbitRadius * std::sin(m_orbitYaw);
+    m_position = {x, m_target.y, z};
+    update();
+}
+
 void Camera::update() {
     m_viewMatrix = Mat4::lookAt(m_position, m_target, m_up);
 
