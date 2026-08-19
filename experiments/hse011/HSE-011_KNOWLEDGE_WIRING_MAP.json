@@ -1,0 +1,463 @@
+{
+  "experiment_id": "HSE-011",
+  "name": "HSE-011 Knowledge Wiring Map",
+  "version": "1.0",
+  "generated_date": "2026-08-18",
+
+  "sources": [
+    {
+      "id": "SRC-001",
+      "name": "docs.gl OpenGL Reference",
+      "classification": "A",
+      "url": "https://docs.gl",
+      "domain": "rendering",
+      "knowledge_count": 7,
+      "novelty_score": 5,
+      "architecture_impact": 5,
+      "symbol_impact": 3,
+      "implementation_value": 5
+    },
+    {
+      "id": "SRC-002",
+      "name": "GLFW Input Guide",
+      "classification": "B",
+      "url": "https://www.glfw.org/docs/latest/input_guide.html",
+      "domain": "input",
+      "knowledge_count": 4,
+      "novelty_score": 4,
+      "architecture_impact": 4,
+      "symbol_impact": 4,
+      "implementation_value": 4
+    },
+    {
+      "id": "SRC-003",
+      "name": "LearnOpenGL",
+      "classification": "D",
+      "url": "https://learnopengl.com",
+      "domain": "rendering",
+      "knowledge_count": 16,
+      "novelty_score": 5,
+      "architecture_impact": 5,
+      "symbol_impact": 4,
+      "implementation_value": 5
+    },
+    {
+      "id": "SRC-004",
+      "name": "Godot Engine Source",
+      "classification": "A",
+      "url": "https://github.com/godotengine/godot",
+      "domain": "scene_management",
+      "knowledge_count": 6,
+      "novelty_score": 4,
+      "architecture_impact": 5,
+      "symbol_impact": 2,
+      "implementation_value": 4
+    },
+    {
+      "id": "SRC-005",
+      "name": "Hazel Engine",
+      "classification": "D",
+      "url": "https://github.com/TheCherno/Hazel",
+      "domain": "engine_architecture",
+      "knowledge_count": 2,
+      "novelty_score": 3,
+      "architecture_impact": 3,
+      "symbol_impact": 2,
+      "implementation_value": 3
+    },
+    {
+      "id": "SRC-012",
+      "name": "Dear ImGui",
+      "classification": "D",
+      "url": "https://github.com/ocornut/imgui",
+      "domain": "gui",
+      "knowledge_count": 3,
+      "novelty_score": 4,
+      "architecture_impact": 3,
+      "symbol_impact": 2,
+      "implementation_value": 4
+    },
+    {
+      "id": "SRC-006",
+      "name": "GLM Manual",
+      "classification": "B",
+      "url": "https://github.com/g-truc/glm",
+      "domain": "math",
+      "knowledge_count": 4,
+      "novelty_score": 3,
+      "architecture_impact": 3,
+      "symbol_impact": 4,
+      "implementation_value": 3
+    },
+    {
+      "id": "SRC-025",
+      "name": "nlohmann/json",
+      "classification": "D",
+      "url": "https://github.com/nlohmann/json",
+      "domain": "serialization",
+      "knowledge_count": 2,
+      "novelty_score": 3,
+      "architecture_impact": 3,
+      "symbol_impact": 2,
+      "implementation_value": 4
+    },
+    {
+      "id": "SRC-027",
+      "name": "EnTT ECS",
+      "classification": "D",
+      "url": "https://github.com/skypjack/entt",
+      "domain": "ecs",
+      "knowledge_count": 2,
+      "novelty_score": 4,
+      "architecture_impact": 4,
+      "symbol_impact": 2,
+      "implementation_value": 3
+    },
+    {
+      "id": "SRC-028",
+      "name": "Box2D v3",
+      "classification": "D",
+      "url": "https://github.com/erincatto/box2d",
+      "domain": "physics",
+      "knowledge_count": 3,
+      "novelty_score": 4,
+      "architecture_impact": 3,
+      "symbol_impact": 2,
+      "implementation_value": 3
+    },
+    {
+      "id": "SRC-022",
+      "name": "miniaudio",
+      "classification": "D",
+      "url": "https://raw.githubusercontent.com/mackron/miniaudio/master/miniaudio.h",
+      "domain": "audio",
+      "knowledge_count": 3,
+      "novelty_score": 4,
+      "architecture_impact": 3,
+      "symbol_impact": 1,
+      "implementation_value": 4
+    },
+    {
+      "id": "SRC-023",
+      "name": "Tracy Profiler",
+      "classification": "D",
+      "url": "https://github.com/wolfpld/tracy",
+      "domain": "profiling",
+      "knowledge_count": 2,
+      "novelty_score": 4,
+      "architecture_impact": 3,
+      "symbol_impact": 1,
+      "implementation_value": 4
+    },
+    {
+      "id": "SRC-029",
+      "name": "raylib rcore",
+      "classification": "D",
+      "url": "https://github.com/raysan5/raylib",
+      "domain": "engine_architecture",
+      "knowledge_count": 3,
+      "novelty_score": 4,
+      "architecture_impact": 4,
+      "symbol_impact": 2,
+      "implementation_value": 4
+    },
+    {
+      "id": "SRC-030",
+      "name": "bgfx internals",
+      "classification": "D",
+      "url": "https://github.com/bkaradzic/bgfx",
+      "domain": "gpu_resources",
+      "knowledge_count": 3,
+      "novelty_score": 5,
+      "architecture_impact": 4,
+      "symbol_impact": 2,
+      "implementation_value": 4
+    },
+    {
+      "id": "SRC-021",
+      "name": "Godot settings.godot",
+      "classification": "A",
+      "url": "https://github.com/userthreezero-spec/harmonic-string-game-engine/blob/harmonic-string-game-engine/settings.godot",
+      "domain": "resource_management",
+      "knowledge_count": 3,
+      "novelty_score": 3,
+      "architecture_impact": 2,
+      "symbol_impact": 3,
+      "implementation_value": 2
+    }
+  ],
+
+  "domains": [
+    {
+      "name": "rendering",
+      "sources": ["SRC-001", "SRC-003"],
+      "coverage": "FULL",
+      "knowledge_count": 23,
+      "priority": "HIGH"
+    },
+    {
+      "name": "input",
+      "sources": ["SRC-002"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 4,
+      "priority": "HIGH"
+    },
+    {
+      "name": "math",
+      "sources": ["SRC-006"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 4,
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "scene_management",
+      "sources": ["SRC-004"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 6,
+      "priority": "HIGH"
+    },
+    {
+      "name": "engine_architecture",
+      "sources": ["SRC-005", "SRC-029"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 5,
+      "priority": "HIGH"
+    },
+    {
+      "name": "gpu_resources",
+      "sources": ["SRC-030"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 3,
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "gui",
+      "sources": ["SRC-012"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 3,
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "serialization",
+      "sources": ["SRC-025"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 2,
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "ecs",
+      "sources": ["SRC-027"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 2,
+      "priority": "LOW"
+    },
+    {
+      "name": "physics",
+      "sources": ["SRC-028"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 3,
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "audio",
+      "sources": ["SRC-022"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 3,
+      "priority": "LOW"
+    },
+    {
+      "name": "profiling",
+      "sources": ["SRC-023"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 2,
+      "priority": "LOW"
+    },
+    {
+      "name": "resource_management",
+      "sources": ["SRC-021"],
+      "coverage": "PARTIAL",
+      "knowledge_count": 3,
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "depth_testing",
+      "sources": ["SRC-003"],
+      "coverage": "FULL",
+      "knowledge_count": 4,
+      "priority": "HIGH"
+    },
+    {
+      "name": "alpha_blending",
+      "sources": ["SRC-003"],
+      "coverage": "FULL",
+      "knowledge_count": 3,
+      "priority": "HIGH"
+    },
+    {
+      "name": "cubemaps",
+      "sources": ["SRC-003"],
+      "coverage": "FULL",
+      "knowledge_count": 3,
+      "priority": "MEDIUM"
+    }
+  ],
+
+  "knowledge_layers": {
+    "L0_source_only": {
+      "description": "HSE source code analysis only",
+      "sources": [],
+      "estimated_score": 3.8,
+      "concept_count": 0
+    },
+    "L1_cpp": {
+      "description": "Basic C++ and systems knowledge",
+      "sources": [],
+      "estimated_score": 4.5,
+      "concept_count": 0,
+      "note": "No cppreference ingestion yet"
+    },
+    "L2_rendering": {
+      "description": "OpenGL/GPU rendering knowledge",
+      "sources": ["SRC-001", "SRC-003"],
+      "estimated_score": 6.5,
+      "concept_count": 27
+    },
+    "L3_math": {
+      "description": "3D mathematics",
+      "sources": ["SRC-006"],
+      "estimated_score": 7.0,
+      "concept_count": 4
+    },
+    "L4_engine_arch": {
+      "description": "Engine architecture patterns",
+      "sources": ["SRC-004", "SRC-005", "SRC-029", "SRC-030"],
+      "estimated_score": 8.0,
+      "concept_count": 17
+    },
+    "L5_resources": {
+      "description": "Resource/asset management",
+      "sources": ["SRC-021", "SRC-025", "SRC-027"],
+      "estimated_score": 8.2,
+      "concept_count": 7
+    },
+    "L6_scene": {
+      "description": "Scene/world architecture",
+      "sources": ["SRC-004", "SRC-027"],
+      "estimated_score": 8.5,
+      "concept_count": 8
+    },
+    "L7_ui_editor": {
+      "description": "UI/editor architecture",
+      "sources": ["SRC-012"],
+      "estimated_score": 8.7,
+      "concept_count": 3
+    },
+    "L8_physics_audio": {
+      "description": "Physics, audio, animation",
+      "sources": ["SRC-028", "SRC-022"],
+      "estimated_score": 8.9,
+      "concept_count": 6
+    },
+    "L9_build": {
+      "description": "Build systems and testing",
+      "sources": [],
+      "estimated_score": 9.0,
+      "concept_count": 0,
+      "note": "No CMake/CI ingestion yet"
+    },
+    "L10_integrated": {
+      "description": "Integrated HSE-specific engineering knowledge",
+      "sources": [],
+      "estimated_score": 9.2,
+      "concept_count": 0
+    }
+  },
+
+  "provenance": {
+    "total_sources": 15,
+    "classification_distribution": {
+      "A": 3,
+      "B": 2,
+      "C": 0,
+      "D": 10,
+      "E": 0,
+      "F": 0,
+      "G": 0
+    },
+    "all_sources_authoritative": true,
+    "no_self_generated_counted": true
+  },
+
+  "benchmark_missions": {
+    "total": 55,
+    "domains_covered": ["rendering", "input", "math", "scene", "resources", "bridge", "new_subsystems", "cross_domain", "novel_architecture"],
+    "verification_method": "architecture_verifier/verify.py against ground_truth.json"
+  },
+
+  "ablation_conditions": {
+    "A_source_only": {"sources": [], "estimated_score": 3.8},
+    "B_plus_cpp": {"sources": [], "estimated_score": 4.5},
+    "C_plus_rendering": {"sources": ["SRC-001", "SRC-003"], "estimated_score": 6.5},
+    "D_plus_math": {"sources": ["SRC-001", "SRC-003", "SRC-006"], "estimated_score": 7.0},
+    "E_plus_engine_arch": {"sources": ["SRC-001", "SRC-003", "SRC-006", "SRC-004", "SRC-005", "SRC-029", "SRC-030"], "estimated_score": 8.0},
+    "F_all_major": {"sources": "all 15", "estimated_score": 8.9},
+    "G_full_corpus": {"sources": "all 15 + future", "estimated_score": 9.2}
+  },
+
+  "holdout_sources": [
+    {"name": "Filament PBR", "reason": "PBR not yet needed for HSE"},
+    {"name": "Bullet Physics", "reason": "3D physics not yet implemented"},
+    {"name": "SDL3", "reason": "GLFW already covers windowing"},
+    {"name": "Urho3D", "reason": "Another engine reference"},
+    {"name": "Magnum", "reason": "Another engine reference"}
+  ],
+
+  "scores": {
+    "architecture_score_progression": [3.8, 4.5, 6.5, 7.0, 8.0, 8.2, 8.5, 8.7, 8.9, 9.0, 9.2],
+    "symbol_accuracy_baseline": 1.0,
+    "symbol_accuracy_projected": 1.0,
+    "verification_baseline": "16 VERIFIED + 8 CONTRADICTED = 100%"
+  },
+
+  "marginal_returns_curve": [
+    {"source": 1, "name": "docs.gl", "new_concepts": 15, "cumulative": 15, "rating": "HIGH"},
+    {"source": 2, "name": "GLFW Input", "new_concepts": 12, "cumulative": 27, "rating": "HIGH"},
+    {"source": 3, "name": "LearnOpenGL", "new_concepts": 22, "cumulative": 49, "rating": "HIGH"},
+    {"source": 4, "name": "Godot", "new_concepts": 10, "cumulative": 59, "rating": "HIGH"},
+    {"source": 5, "name": "Hazel", "new_concepts": 5, "cumulative": 64, "rating": "MEDIUM"},
+    {"source": 6, "name": "Dear ImGui", "new_concepts": 10, "cumulative": 74, "rating": "MEDIUM"},
+    {"source": 7, "name": "GLM", "new_concepts": 8, "cumulative": 82, "rating": "MEDIUM"},
+    {"source": 8, "name": "nlohmann/json", "new_concepts": 6, "cumulative": 88, "rating": "MEDIUM"},
+    {"source": 9, "name": "EnTT", "new_concepts": 8, "cumulative": 96, "rating": "MEDIUM"},
+    {"source": 10, "name": "Box2D", "new_concepts": 10, "cumulative": 106, "rating": "MEDIUM"},
+    {"source": 11, "name": "miniaudio", "new_concepts": 12, "cumulative": 118, "rating": "MEDIUM"},
+    {"source": 12, "name": "Tracy", "new_concepts": 8, "cumulative": 126, "rating": "LOW"},
+    {"source": 13, "name": "Godot SceneTree", "new_concepts": 15, "cumulative": 141, "rating": "MEDIUM"},
+    {"source": 14, "name": "raylib rcore", "new_concepts": 12, "cumulative": 153, "rating": "MEDIUM"},
+    {"source": 15, "name": "bgfx", "new_concepts": 14, "cumulative": 167, "rating": "MEDIUM"}
+  ],
+
+  "saturation_criteria": [
+    {"id": 1, "requirement": "Several consecutive sources produce very few novel concepts", "met": false, "note": "No source yet produced fewer than 5 novel concepts"},
+    {"id": 2, "requirement": "Architecture score improvement plateaus", "met": false, "note": "Benchmark not executed"},
+    {"id": 3, "requirement": "Symbol accuracy improvement plateaus", "met": false, "note": "Already at 100% — no room to improve"},
+    {"id": 4, "requirement": "Unsupported assumptions stop decreasing", "met": false, "note": "Benchmark not executed"},
+    {"id": 5, "requirement": "Acceptance criteria improvement plateaus", "met": false, "note": "Benchmark not executed"},
+    {"id": 6, "requirement": "Blind holdout performance stops improving", "met": false, "note": "Holdout evaluation designed but not executed"},
+    {"id": 7, "requirement": "Novelty/generalization stops improving", "met": false, "note": "Generalization test designed but not executed"},
+    {"id": 8, "requirement": "Multiple independent domains show same trend", "met": false, "note": "All domains still producing novel concepts"}
+  ],
+
+  "final_decision": {
+    "classification": "KNOWLEDGE_EXPANDING",
+    "alternatives_considered": [
+      "KNOWLEDGE_STARVED — rejected: we have 167 concepts from 15 sources",
+      "DIMINISHING_RETURNS_APPROACHING — rejected: no source yet produced <5 concepts",
+      "GENUINE_SATURATION — rejected: saturation criteria not met",
+      "GENERALIZATION_LIMITED — untested: benchmark not executed",
+      "ARCHITECTURE_READY — plausible but unverified: benchmark not executed"
+    ],
+    "rationale": "The knowledge corpus is actively expanding with each source contributing genuinely novel engineering patterns. No saturation signal exists. The benchmark has not been executed, so we cannot confirm whether the accumulated knowledge actually improves architecture quality in practice. The most honest classification is KNOWLEDGE_EXPANDING — we are still in the growth phase of the knowledge curve.",
+    "next_action": "Execute the 55-mission architecture benchmark against HSE ground truth to measure actual (not estimated) improvement."
+  }
+}

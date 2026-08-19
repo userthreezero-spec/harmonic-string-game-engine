@@ -3,10 +3,10 @@
   "generated_date": "2026-08-18T12:00:00Z",
   "summary": "Knowledge Index for deep authoritative knowledge ingestion",
   "totals": {
-    "total_knowledge_items": 55,
-    "total_knowledge_files": 15,
-    "total_sources_referenced": 12,
-    "total_domains_covered": 14,
+    "total_knowledge_items": 64,
+    "total_knowledge_files": 18,
+    "total_sources_referenced": 15,
+    "total_domains_covered": 16,
     "classification_breakdown": {
       "A_primary_spec": 3,
       "B_official_docs": 4,
@@ -113,6 +113,24 @@
       "item_count": 2,
       "primary_source": "SRC-023",
       "knowledge_ids": ["KNOW-TRACY-001", "KNOW-TRACY-002"]
+    },
+    "scene_management": {
+      "file": "knowledge/scene_management/godot_scene_tree.json",
+      "item_count": 3,
+      "primary_source": "SRC-004",
+      "knowledge_ids": ["KNOW-GODOT-ST-001", "KNOW-GODOT-ST-002", "KNOW-GODOT-ST-003"]
+    },
+    "engine_architecture": {
+      "file": "knowledge/engine_architecture/raylib_core.json",
+      "item_count": 3,
+      "primary_source": "SRC-029",
+      "knowledge_ids": ["KNOW-RLIB-001", "KNOW-RLIB-002", "KNOW-RLIB-003"]
+    },
+    "gpu_resources_extended": {
+      "file": "knowledge/gpu_resources/bgfx_architecture.json",
+      "item_count": 3,
+      "primary_source": "SRC-030",
+      "knowledge_ids": ["KNOW-BGFX-001", "KNOW-BGFX-002", "KNOW-BGFX-003"]
     }
   },
   "domains_not_yet_ingested": [

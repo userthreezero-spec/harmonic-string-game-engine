@@ -110,9 +110,36 @@
       "new_api_patterns": 2,
       "hse_gaps_addressed": ["Zone-based profiling", "Frame marks", "Memory tracking", "Lock profiling", "Zero-overhead when disabled"],
       "cumulative_unique_concepts": 126
+    },
+    {
+      "source_id": "SRC-004",
+      "source_name": "Godot SceneTree (deeper)",
+      "classification": "A",
+      "unique_concepts": 15,
+      "new_api_patterns": 3,
+      "hse_gaps_addressed": ["SceneTree process groups", "Group-based node dispatch", "Deferred message queue", "Timer/tween processing", "Physics interpolation", "Threaded node processing"],
+      "cumulative_unique_concepts": 141
+    },
+    {
+      "source_id": "SRC-029",
+      "source_name": "raylib rcore",
+      "classification": "D",
+      "unique_concepts": 12,
+      "new_api_patterns": 4,
+      "hse_gaps_addressed": ["CoreData global state", "Frame lifecycle", "2D/3D mode rendering", "Shader loading", "Platform abstraction", "Callback system"],
+      "cumulative_unique_concepts": 153
+    },
+    {
+      "source_id": "SRC-030",
+      "source_name": "bgfx internals",
+      "classification": "D",
+      "unique_concepts": 14,
+      "new_api_patterns": 3,
+      "hse_gaps_addressed": ["Typed handle system", "Command buffer pattern", "Sort key encoding", "Predefined uniforms", "Frame arena allocator", "Backend abstraction"],
+      "cumulative_unique_concepts": 167
     }
   ],
-  "total_unique_concepts": 126,
+  "total_unique_concepts": 167,
   "marginal_return_curve": {
     "observation": "First 3 sources contributed 49 concepts (46%). Next 9 sources contributed 57 concepts (54%). Each new source still contributes 5-10 novel concepts. Returns are NOT diminishing — we are still in the linear growth phase of knowledge acquisition.",
     "diminishing_threshold": "NOT YET REACHED — each source still contributes 5+ unique concepts",
