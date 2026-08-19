@@ -59,6 +59,82 @@ std::shared_ptr<Scene> SceneBuilder::buildRoom() {
     scene->addPrimitive(makeQuad("wall_right_lower_left", 3.0f, -0.75f, -1.5f, 0.0f, -90.0f, 0.0f, 3.0f, 1.5f, 1.0f, matWall));
     scene->addPrimitive(makeQuad("wall_right_lower_right", 3.0f, -0.75f, 1.5f, 0.0f, -90.0f, 0.0f, 3.0f, 1.5f, 1.0f, matWall));
 
+    // Reconstruct Furniture as Assemblies
+    auto matWood = std::make_shared<Material>("mat_wood");
+    matWood->setAlbedo({0.3f, 0.2f, 0.1f});
+    scene->addMaterial(matWood);
+
+    auto tableGroup = std::make_shared<Primitive>(PrimitiveType::Group);
+    tableGroup->setName("table");
+    tableGroup->setPosition({1.5f, -0.7f, -1.8f}); // HSE-022 Window-side corner
+    scene->addPrimitive(tableGroup);
+
+    auto tableTop = std::make_shared<Primitive>(PrimitiveType::Cube);
+    tableTop->setName("table_top");
+    tableTop->setPosition({0, 0, 0}); // Local to group
+    tableTop->setScale({2, 0.1, 1.2});
+    tableTop->setMaterial(matWood);
+    tableTop->setParent(tableGroup);
+    scene->addPrimitive(tableTop);
+
+    for (int i = 0; i < 4; i++) {
+        auto leg = std::make_shared<Primitive>(PrimitiveType::Cube);
+        leg->setName("table_leg_" + std::to_string(i+1));
+        float lx = (i < 2) ? -0.9f : 0.9f;
+        float lz = (i % 2 == 0) ? -0.5f : 0.5f;
+        leg->setPosition({lx, -0.4f, lz});
+        leg->setScale({0.1, 0.8, 0.1});
+        leg->setMaterial(matWood);
+        leg->setParent(tableGroup);
+        scene->addPrimitive(leg);
+    }
+
+    auto chair1Group = std::make_shared<Primitive>(PrimitiveType::Group);
+    chair1Group->setName("chair_1_assembly");
+    chair1Group->setPosition({1.5f, -1.0f, -1.1f});
+    chair1Group->setRotation({0, 180, 0});
+    scene->addPrimitive(chair1Group);
+
+    auto chair1Seat = std::make_shared<Primitive>(PrimitiveType::Cube);
+    chair1Seat->setName("chair_1");
+    chair1Seat->setPosition({0, 0, 0});
+    chair1Seat->setScale({0.6, 0.1, 0.6});
+    chair1Seat->setParent(chair1Group);
+    scene->addPrimitive(chair1Seat);
+
+    auto chair1Back = std::make_shared<Primitive>(PrimitiveType::Cube);
+    chair1Back->setName("chair_1_back");
+    chair1Back->setPosition({0, 0.4f, 0.3f});
+    chair1Back->setScale({0.6, 0.8, 0.1});
+    chair1Back->setParent(chair1Group);
+    scene->addPrimitive(chair1Back);
+
+    auto chair2Group = std::make_shared<Primitive>(PrimitiveType::Group);
+    chair2Group->setName("chair_2_assembly");
+    chair2Group->setPosition({1.5f, -1.0f, -2.5f});
+    chair2Group->setRotation({0, 0, 0});
+    scene->addPrimitive(chair2Group);
+
+    auto chair2Seat = std::make_shared<Primitive>(PrimitiveType::Cube);
+    chair2Seat->setName("chair_2");
+    chair2Seat->setPosition({0, 0, 0});
+    chair2Seat->setScale({0.6, 0.1, 0.6});
+    chair2Seat->setParent(chair2Group);
+    scene->addPrimitive(chair2Seat);
+
+    auto chair2Back = std::make_shared<Primitive>(PrimitiveType::Cube);
+    chair2Back->setName("chair_2_back");
+    chair2Back->setPosition({0, 0.4f, 0.3f});
+    chair2Back->setScale({0.6, 0.8, 0.1});
+    chair2Back->setParent(chair2Group);
+    scene->addPrimitive(chair2Back);
+
+    auto mainLight = std::make_shared<Light>("main_light");
+    mainLight->setPosition({0, 1.2f, 0});
+    mainLight->setColor({1.0f, 0.9f, 0.8f});
+    mainLight->setIntensity(1.5f);
+    scene->addLight(mainLight);
+
     auto camera = std::make_shared<Camera>(ProjectionType::Perspective);
     camera->setPosition({4.5f, 2.0f, 4.5f});
     camera->lookAt({0.0f, 0.0f, 0.0f});
@@ -212,6 +288,7 @@ std::shared_ptr<Scene> SceneBuilder::importState(const std::string& path, Projec
         PrimitiveType ptype = PrimitiveType::Quad;
         if (typeStr == "Triangle") ptype = PrimitiveType::Triangle;
         else if (typeStr == "Cube") ptype = PrimitiveType::Cube;
+        else if (typeStr == "Group") ptype = PrimitiveType::Group;
 
         auto prim = std::make_shared<Primitive>(ptype);
         prim->setName(jsonFind(objStr, "id"));
@@ -323,7 +400,7 @@ void SceneBuilder::exportHSC(const Scene& scene, const Camera& camera, const Pro
         auto& p = prims[i];
         f << "    {\n";
         f << "      \"id\": \"" << p->getName() << "\",\n";
-        f << "      \"type\": \"" << (p->getType() == PrimitiveType::Triangle ? "Triangle" : (p->getType() == PrimitiveType::Cube ? "Cube" : "Quad")) << "\",\n";
+        f << "      \"type\": \"" << (p->getType() == PrimitiveType::Triangle ? "Triangle" : (p->getType() == PrimitiveType::Cube ? "Cube" : (p->getType() == PrimitiveType::Group ? "Group" : "Quad"))) << "\",\n";
         f << "      \"position\": [" << p->getPosition().x << "," << p->getPosition().y << "," << p->getPosition().z << "],\n";
         f << "      \"rotation\": [" << p->getRotation().x << "," << p->getRotation().y << "," << p->getRotation().z << "],\n";
         f << "      \"scale\": [" << p->getScale().x << "," << p->getScale().y << "," << p->getScale().z << "],\n";
@@ -376,7 +453,7 @@ void SceneBuilder::exportState(const Scene& scene, const std::string& path) {
         auto& p = prims[i];
         f << "    {\n";
         f << "      \"id\": \"" << p->getName() << "\",\n";
-        f << "      \"type\": \"" << (p->getType() == PrimitiveType::Triangle ? "Triangle" : (p->getType() == PrimitiveType::Cube ? "Cube" : "Quad")) << "\",\n";
+        f << "      \"type\": \"" << (p->getType() == PrimitiveType::Triangle ? "Triangle" : (p->getType() == PrimitiveType::Cube ? "Cube" : (p->getType() == PrimitiveType::Group ? "Group" : "Quad"))) << "\",\n";
         f << "      \"position\": [" << p->getPosition().x << "," << p->getPosition().y << "," << p->getPosition().z << "],\n";
         f << "      \"rotation\": [" << p->getRotation().x << "," << p->getRotation().y << "," << p->getRotation().z << "],\n";
         f << "      \"scale\": [" << p->getScale().x << "," << p->getScale().y << "," << p->getScale().z << "],\n";

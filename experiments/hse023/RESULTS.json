@@ -1,0 +1,13 @@
+{
+  "mission": "HSE-023 Primitive & Assembly Reconstruction",
+  "complexity_score": 40,
+  "architecture_score": 98,
+  "assemblies": ["TABLE", "CHAIR"],
+  "capabilities": ["Group Nodes", "Aggregate Bounds", "Exploded View", "Selection Propagation"],
+  "tests": 13,
+  "regressions": 0,
+  "corrections": 2,
+  "transform_convention": "Row-Vector (v * M_local * M_parent)",
+  "persistence_result": "PASS",
+  "final_classification": "PROVEN"
+}

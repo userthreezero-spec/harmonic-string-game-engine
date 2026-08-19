@@ -25,6 +25,16 @@ struct BoundingBox {
         max.y = std::max(max.y, p.y);
         max.z = std::max(max.z, p.z);
     }
+
+    void merge(const BoundingBox& other) {
+        if (other.min.x > other.max.x) return; // Ignore invalid/empty boxes
+        min.x = std::min(min.x, other.min.x);
+        min.y = std::min(min.y, other.min.y);
+        min.z = std::min(min.z, other.min.z);
+        max.x = std::max(max.x, other.max.x);
+        max.y = std::max(max.y, other.max.y);
+        max.z = std::max(max.z, other.max.z);
+    }
 };
 
 } // namespace hse

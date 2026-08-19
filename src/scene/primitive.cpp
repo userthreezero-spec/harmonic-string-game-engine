@@ -39,14 +39,23 @@ std::shared_ptr<Primitive> Primitive::getParent() const {
 }
 
 void Primitive::computeWorldMatrix() {
-    Mat4 local = Mat4::scale(m_scale)
-               * Mat4::rotate(m_rotation.z, {0, 0, 1})
-               * Mat4::rotate(m_rotation.y, {0, 1, 0})
-               * Mat4::rotate(m_rotation.x, {1, 0, 0})
-               * Mat4::translate(m_position);
+    // Row-Vector Convention: v_world = v_local * M_local * M_parent
+    // M_local = S * R * T
+    Vec3 effectivePos = m_position;
     auto parentPtr = m_parent.lock();
+
+    if (parentPtr && parentPtr->getExplosionFactor() > 0.0f) {
+        effectivePos = m_position * (1.0f + parentPtr->getExplosionFactor());
+    }
+
+    Mat4 local = Mat4::scale(m_scale)
+               * Mat4::rotate(m_rotation.x, {1, 0, 0})
+               * Mat4::rotate(m_rotation.y, {0, 1, 0})
+               * Mat4::rotate(m_rotation.z, {0, 0, 1})
+               * Mat4::translate(effectivePos);
+
     if (parentPtr) {
-        m_worldMatrix = parentPtr->getWorldMatrix() * local;
+        m_worldMatrix = local * parentPtr->getWorldMatrix();
     } else {
         m_worldMatrix = local;
     }
@@ -139,6 +148,11 @@ void Primitive::generateGeometry() {
             m_vertices = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f };
             m_indices = { 0 };
             break;
+
+        case PrimitiveType::Group:
+            m_vertices.clear();
+            m_indices.clear();
+            break;
     }
 }
 
@@ -182,6 +196,8 @@ void Primitive::unbind() const {
 }
 
 BoundingBox Primitive::getBoundingBox() const {
+    if (m_type == PrimitiveType::Group) return BoundingBox();
+
     // Basic implementation: Transform unit cube corners
     BoundingBox bb;
     const Mat4& world = getWorldMatrix();
@@ -195,6 +211,14 @@ BoundingBox Primitive::getBoundingBox() const {
 
     for (int i = 0; i < 8; i++) {
         bb.expand(world * Vec3(corners[i][0], corners[i][1], corners[i][2]));
+    }
+    return bb;
+}
+
+BoundingBox Primitive::getAggregateBoundingBox() const {
+    BoundingBox bb = getBoundingBox();
+    for (auto& child : m_children) {
+        bb.merge(child->getAggregateBoundingBox());
     }
     return bb;
 }

@@ -10,7 +10,7 @@
 
 namespace hse {
 
-enum class PrimitiveType { Triangle, Quad, Cube, Sphere };
+enum class PrimitiveType { Triangle, Quad, Cube, Sphere, Group };
 
 class Primitive : public std::enable_shared_from_this<Primitive> {
 public:
@@ -60,6 +60,10 @@ public:
     size_t getIndexCount() const { return m_indices.size(); }
 
     BoundingBox getBoundingBox() const;
+    BoundingBox getAggregateBoundingBox() const;
+
+    void setExplosionFactor(float f) { m_explosionFactor = f; }
+    float getExplosionFactor() const { return m_explosionFactor; }
 
     void uploadGPU();
     void bind() const;
@@ -76,6 +80,7 @@ private:
     Vec3 m_rotation{0.0f, 0.0f, 0.0f};
     Vec3 m_scale{1.0f, 1.0f, 1.0f};
     Vec3 m_rotationSpeed{0.0f, 0.0f, 0.0f};
+    float m_explosionFactor = 0.0f;
 
     std::shared_ptr<Material> m_material = nullptr;
 

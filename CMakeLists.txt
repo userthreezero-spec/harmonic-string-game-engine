@@ -91,6 +91,14 @@ add_executable(hse_test_collision tests/test_collision.cpp)
 target_link_libraries(hse_test_collision PRIVATE hse_core)
 add_test(NAME CollisionTests COMMAND hse_test_collision)
 
+add_executable(hse_test_assembly tests/test_assembly.cpp)
+target_link_libraries(hse_test_assembly PRIVATE hse_core)
+add_test(NAME AssemblyTests COMMAND hse_test_assembly)
+
+add_executable(hse_test_assembly_persistence tests/test_assembly_persistence.cpp)
+target_link_libraries(hse_test_assembly_persistence PRIVATE hse_core)
+add_test(NAME AssemblyPersistenceTests COMMAND hse_test_assembly_persistence)
+
 add_executable(hse_test_goal tests/test_goal_conformance.cpp)
 target_link_libraries(hse_test_goal PRIVATE hse_core)
 add_test(NAME GoalTests COMMAND hse_test_goal)

@@ -193,6 +193,31 @@ int main(int argc, char* argv[]) {
         if (selectedID != 0) {
             auto obj = scene->findByID(selectedID);
             if (obj) {
+                // Assembly selection (Key 'G' - Go to root)
+                static bool lastGPressed = false;
+                bool gPressed = window.isKeyPressed(GLFW_KEY_G);
+                if (gPressed && !lastGPressed) {
+                    auto root = obj;
+                    while (auto parent = root->getParent()) {
+                        root = parent;
+                    }
+                    selectedID = root->getID();
+                    std::cout << "Selected Assembly Root: " << root->getName() << " (ID: " << selectedID << ")" << std::endl;
+                    obj = root;
+                }
+                lastGPressed = gPressed;
+
+                // Exploded View (Key 'E')
+                static bool lastEPressed = false;
+                bool ePressed = window.isKeyPressed(GLFW_KEY_E);
+                if (ePressed && !lastEPressed) {
+                    float currentFactor = obj->getExplosionFactor();
+                    float newFactor = (currentFactor > 0.0f) ? 0.0f : 1.0f;
+                    obj->setExplosionFactor(newFactor);
+                    std::cout << "Explosion Factor for " << obj->getName() << ": " << newFactor << std::endl;
+                }
+                lastEPressed = ePressed;
+
                 hse::Vec3 pos = obj->getPosition();
                 hse::Vec3 rot = obj->getRotation();
                 hse::Vec3 scl = obj->getScale();

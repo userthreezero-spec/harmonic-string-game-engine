@@ -217,9 +217,24 @@ void Renderer::renderScene(const Scene& scene, const Camera& camera, uint64_t se
     const_cast<Scene&>(scene).computeAllWorldMatrices();
 
     for (const auto& prim : scene.getPrimitives()) {
+        if (prim->getType() == PrimitiveType::Group) continue;
+
         const Mat4& model = prim->getWorldMatrix();
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model.ptr());
-        glUniform1i(selectedLoc, (prim->getID() == selectedID) ? 1 : 0);
+
+        bool selected = (prim->getID() == selectedID);
+        if (!selected && selectedID != 0) {
+            // Propagate selection to children: if selectedID is a parent of prim, highlight it
+            auto p = prim->getParent();
+            while (p) {
+                if (p->getID() == selectedID) {
+                    selected = true;
+                    break;
+                }
+                p = p->getParent();
+            }
+        }
+        glUniform1i(selectedLoc, selected ? 1 : 0);
 
         auto material = prim->getMaterial();
         if (!material) material = defaultMaterial;
