@@ -10,6 +10,7 @@ namespace hse {
 class Primitive;
 class Camera;
 class Material;
+class Light;
 
 class Scene {
 public:
@@ -19,6 +20,7 @@ public:
     const std::string& getName() const { return m_name; }
     size_t getPrimitiveCount() const { return m_primitives.size(); }
     size_t getCameraCount() const { return m_cameras.size(); }
+    size_t getLightCount() const { return m_lights.size(); }
 
     void addPrimitive(std::shared_ptr<Primitive> primitive);
     void removePrimitive(int index);
@@ -37,6 +39,11 @@ public:
     void setActiveCamera(int index);
     std::shared_ptr<Camera> getActiveCamera() const;
 
+    // Light management
+    void addLight(std::shared_ptr<Light> light);
+    void removeLight(int index);
+    const std::vector<std::shared_ptr<Light>>& getLights() const { return m_lights; }
+
     // Material management
     void addMaterial(std::shared_ptr<Material> material);
     std::shared_ptr<Material> getMaterial(const std::string& name) const;
@@ -53,6 +60,7 @@ private:
     std::unordered_map<uint64_t, size_t> m_idIndex;
     std::vector<std::shared_ptr<Camera>> m_cameras;
     int m_activeCameraIndex = 0;
+    std::vector<std::shared_ptr<Light>> m_lights;
     std::unordered_map<std::string, std::shared_ptr<Material>> m_materials;
 
     void rebuildIDIndex();

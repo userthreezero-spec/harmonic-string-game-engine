@@ -73,3 +73,7 @@ add_test(NAME SceneTests COMMAND hse_test_scene)
 add_test(NAME MaterialTests COMMAND hse_test_material)
 add_test(NAME HierarchyTests COMMAND hse_test_hierarchy)
 add_test(NAME OrbitTests COMMAND hse_test_orbit)
+
+add_executable(hse_test_hsc tests/test_hsc_persistence.cpp)
+target_link_libraries(hse_test_hsc PRIVATE hse_core)
+add_test(NAME PersistenceTests COMMAND hse_test_hsc)

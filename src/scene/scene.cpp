@@ -1,6 +1,7 @@
 #include "scene/scene.h"
 #include "scene/camera.h"
 #include "scene/primitive.h"
+#include "scene/light.h"
 #include "renderer/material.h"
 
 namespace hse {
@@ -74,6 +75,16 @@ void Scene::setActiveCamera(int index) {
 std::shared_ptr<Camera> Scene::getActiveCamera() const {
     if (m_cameras.empty()) return nullptr;
     return m_cameras[m_activeCameraIndex];
+}
+
+void Scene::addLight(std::shared_ptr<Light> light) {
+    if (light) m_lights.push_back(light);
+}
+
+void Scene::removeLight(int index) {
+    if (index >= 0 && index < static_cast<int>(m_lights.size())) {
+        m_lights.erase(m_lights.begin() + index);
+    }
 }
 
 void Scene::addMaterial(std::shared_ptr<Material> material) {

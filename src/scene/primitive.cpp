@@ -75,55 +75,55 @@ void Primitive::generateGeometry() {
     switch (m_type) {
         case PrimitiveType::Triangle:
             m_vertices = {
-                -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
-                 0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
-                 0.0f,  0.5f, 0.0f,  0.5f, 1.0f
+                -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+                 0.5f, -0.5f, 0.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+                 0.0f,  0.5f, 0.0f,  0.5f, 1.0f,  0.0f, 0.0f, 1.0f
             };
             m_indices = { 0, 1, 2 };
             break;
 
         case PrimitiveType::Quad:
             m_vertices = {
-                -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
-                 0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
-                 0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
-                -0.5f,  0.5f, 0.0f,  0.0f, 1.0f
+                -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+                 0.5f, -0.5f, 0.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+                 0.5f,  0.5f, 0.0f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
+                -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,  0.0f, 0.0f, 1.0f
             };
             m_indices = { 0, 1, 2, 2, 3, 0 };
             break;
 
         case PrimitiveType::Cube:
             m_vertices = {
-                // Front
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-                // Back
-                -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                // Top
-                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-                // Bottom
-                -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,
-                 0.5f, -0.5f,  0.5f,  1.0f, 1.0f,
-                 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-                // Right
-                 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-                // Left
-                -0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f,  0.5f,  0.5f,  1.0f, 1.0f
+                // Front (Normal: 0, 0, 1)
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+                 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+                 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  0.0f, 0.0f, 1.0f,
+                // Back (Normal: 0, 0, -1)
+                -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  0.0f, 0.0f, -1.0f,
+                 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,
+                 0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 0.0f, -1.0f,
+                -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 0.0f, -1.0f,
+                // Top (Normal: 0, 1, 0)
+                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+                // Bottom (Normal: 0, -1, 0)
+                -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f,
+                 0.5f, -0.5f,  0.5f,  1.0f, 1.0f,  0.0f, -1.0f, 0.0f,
+                 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  0.0f, -1.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, -1.0f, 0.0f,
+                // Right (Normal: 1, 0, 0)
+                 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+                 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  1.0f, 0.0f, 0.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
+                // Left (Normal: -1, 0, 0)
+                -0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
+                -0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  -1.0f, 0.0f, 0.0f
             };
             m_indices = {
                 0, 1, 2, 2, 3, 0,       // Front
@@ -136,7 +136,7 @@ void Primitive::generateGeometry() {
             break;
 
         case PrimitiveType::Sphere:
-            m_vertices = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+            m_vertices = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f };
             m_indices = { 0 };
             break;
     }
@@ -158,12 +158,16 @@ void Primitive::uploadGPU() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(uint32_t), m_indices.data(), GL_STATIC_DRAW);
 
     // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // Texture attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    // Normal attribute
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
     m_uploaded = true;

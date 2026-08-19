@@ -49,8 +49,8 @@ void test_camera_position() {
 
 void test_primitive_triangle() {
     hse::Primitive prim(hse::PrimitiveType::Triangle);
-    // 3 vertices * 5 floats (x,y,z, u,v) = 15
-    assert(prim.getVertices().size() == 15);
+    // 3 vertices * 8 floats (x,y,z, u,v, nx,ny,nz) = 24
+    assert(prim.getVertices().size() == 24);
     assert(prim.getIndices().size() == 3);
     std::cout << "PASS: primitive triangle" << std::endl;
 }

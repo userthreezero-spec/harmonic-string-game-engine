@@ -1,6 +1,7 @@
 #include "scene/scene_builder.h"
 #include "scene/primitive.h"
 #include "scene/camera.h"
+#include "scene/light.h"
 #include "renderer/material.h"
 #include <fstream>
 #include <iostream>
@@ -83,6 +84,14 @@ static std::string jsonFind(const std::string& json, const std::string& key) {
         if (end == std::string::npos) return "";
         return json.substr(pos, end - pos);
     }
+    if (json[pos] == '{') {
+        int depth = 0;
+        for (size_t i = pos; i < json.size(); i++) {
+            if (json[i] == '{') depth++;
+            else if (json[i] == '}') depth--;
+            if (depth == 0) return json.substr(pos, i - pos + 1);
+        }
+    }
     auto end = json.find_first_of(",}\n", pos);
     if (end == std::string::npos) return json.substr(pos);
     return json.substr(pos, end - pos);
@@ -118,11 +127,22 @@ static std::vector<std::string> jsonFindArrayObjects(const std::string& json, co
     if (arrPos == std::string::npos) return results;
     arrPos = json.find('[', arrPos);
     if (arrPos == std::string::npos) return results;
-    arrPos++;
 
-    while (arrPos < json.size()) {
+    size_t arrEnd = json.size();
+    int arrDepth = 1;
+    for (size_t i = arrPos + 1; i < json.size(); i++) {
+        if (json[i] == '[') arrDepth++;
+        else if (json[i] == ']') arrDepth--;
+        if (arrDepth == 0) {
+            arrEnd = i;
+            break;
+        }
+    }
+
+    arrPos++;
+    while (arrPos < arrEnd) {
         auto objStart = json.find('{', arrPos);
-        if (objStart == std::string::npos) break;
+        if (objStart == std::string::npos || objStart >= arrEnd) break;
         int depth = 1;
         size_t pos = objStart + 1;
         while (pos < json.size() && depth > 0) {
@@ -184,6 +204,10 @@ std::shared_ptr<Scene> SceneBuilder::importState(const std::string& path, Projec
         prim->setRotation({rx, ry, rz});
         prim->setScale({sx, sy, sz});
 
+        float rotSpeedX=0, rotSpeedY=0, rotSpeedZ=0;
+        jsonFindVec3(objStr, "rotation_speed", rotSpeedX, rotSpeedY, rotSpeedZ);
+        prim->setRotationSpeed({rotSpeedX, rotSpeedY, rotSpeedZ});
+
         std::string matId = jsonFind(objStr, "material");
         auto mat = scene->getMaterial(matId);
         if (mat) prim->setMaterial(mat);
@@ -194,6 +218,33 @@ std::shared_ptr<Scene> SceneBuilder::importState(const std::string& path, Projec
         }
 
         scene->addPrimitive(prim);
+    }
+
+    // Parse Lights
+    auto lights = jsonFindArrayObjects(content, "lights");
+    for (auto& lightStr : lights) {
+        auto light = std::make_shared<Light>(jsonFind(lightStr, "id"));
+        float px=0,py=0,pz=0, cr=1,cg=1,cb=1;
+        jsonFindVec3(lightStr, "position", px, py, pz);
+        jsonFindVec3(lightStr, "color", cr, cg, cb);
+        light->setPosition({px, py, pz});
+        light->setColor({cr, cg, cb});
+        light->setIntensity(jsonFindFloat(lightStr, "intensity", 1.0f));
+        scene->addLight(light);
+    }
+
+    // Parse Camera
+    auto cameraObj = jsonFind(content, "camera");
+    if (!cameraObj.empty()) {
+        auto camera = std::make_shared<Camera>();
+        float px=0,py=0,pz=0, tx=0,ty=0,tz=0;
+        jsonFindVec3(cameraObj, "position", px, py, pz);
+        jsonFindVec3(cameraObj, "target", tx, ty, tz);
+        camera->setPosition({px, py, pz});
+        camera->lookAt({tx, ty, tz});
+        camera->setFOV(jsonFindFloat(cameraObj, "fov", 60.0f));
+        camera->update();
+        scene->addCamera(camera);
     }
 
     // Establish parent-child relationships
@@ -228,6 +279,18 @@ void SceneBuilder::exportHSC(const Scene& scene, const Camera& camera, const Pro
         f << "\n    }" << (++mCount < mats.size() ? "," : "") << "\n";
     }
     f << "  ],\n";
+    f << "  \"lights\": [\n";
+    auto& lights = scene.getLights();
+    for (size_t i = 0; i < lights.size(); i++) {
+        auto& l = lights[i];
+        f << "    {\n";
+        f << "      \"id\": \"" << l->getName() << "\",\n";
+        f << "      \"position\": [" << l->getPosition().x << "," << l->getPosition().y << "," << l->getPosition().z << "],\n";
+        f << "      \"color\": [" << l->getColor().x << "," << l->getColor().y << "," << l->getColor().z << "],\n";
+        f << "      \"intensity\": " << l->getIntensity() << "\n";
+        f << "    }" << (i < lights.size() - 1 ? "," : "") << "\n";
+    }
+    f << "  ],\n";
     f << "  \"objects\": [\n";
     auto& prims = scene.getPrimitives();
     for (size_t i = 0; i < prims.size(); i++) {
@@ -236,6 +299,9 @@ void SceneBuilder::exportHSC(const Scene& scene, const Camera& camera, const Pro
         f << "      \"id\": \"" << p->getName() << "\",\n";
         f << "      \"type\": \"" << (p->getType() == PrimitiveType::Triangle ? "Triangle" : (p->getType() == PrimitiveType::Cube ? "Cube" : "Quad")) << "\",\n";
         f << "      \"position\": [" << p->getPosition().x << "," << p->getPosition().y << "," << p->getPosition().z << "],\n";
+        f << "      \"rotation\": [" << p->getRotation().x << "," << p->getRotation().y << "," << p->getRotation().z << "],\n";
+        f << "      \"scale\": [" << p->getScale().x << "," << p->getScale().y << "," << p->getScale().z << "],\n";
+        f << "      \"rotation_speed\": [" << p->getRotationSpeed().x << "," << p->getRotationSpeed().y << "," << p->getRotationSpeed().z << "],\n";
         f << "      \"material\": \"" << (p->getMaterial() ? p->getMaterial()->getName() : "Default") << "\"";
         auto parentHsc = p->getParent();
         if (parentHsc) {
@@ -266,6 +332,18 @@ void SceneBuilder::exportState(const Scene& scene, const std::string& path) {
         f << "    }" << (++mCount < mats.size() ? "," : "") << "\n";
     }
     f << "  ],\n";
+    f << "  \"lights\": [\n";
+    auto& lights = scene.getLights();
+    for (size_t i = 0; i < lights.size(); i++) {
+        auto& l = lights[i];
+        f << "    {\n";
+        f << "      \"id\": \"" << l->getName() << "\",\n";
+        f << "      \"position\": [" << l->getPosition().x << "," << l->getPosition().y << "," << l->getPosition().z << "],\n";
+        f << "      \"color\": [" << l->getColor().x << "," << l->getColor().y << "," << l->getColor().z << "],\n";
+        f << "      \"intensity\": " << l->getIntensity() << "\n";
+        f << "    }" << (i < lights.size() - 1 ? "," : "") << "\n";
+    }
+    f << "  ],\n";
     f << "  \"objects\": [\n";
     auto& prims = scene.getPrimitives();
     for (size_t i = 0; i < prims.size(); i++) {
@@ -274,6 +352,8 @@ void SceneBuilder::exportState(const Scene& scene, const std::string& path) {
         f << "      \"id\": \"" << p->getName() << "\",\n";
         f << "      \"type\": \"" << (p->getType() == PrimitiveType::Triangle ? "Triangle" : (p->getType() == PrimitiveType::Cube ? "Cube" : "Quad")) << "\",\n";
         f << "      \"position\": [" << p->getPosition().x << "," << p->getPosition().y << "," << p->getPosition().z << "],\n";
+        f << "      \"rotation\": [" << p->getRotation().x << "," << p->getRotation().y << "," << p->getRotation().z << "],\n";
+        f << "      \"scale\": [" << p->getScale().x << "," << p->getScale().y << "," << p->getScale().z << "],\n";
         f << "      \"material\": \"" << (p->getMaterial() ? p->getMaterial()->getName() : "Default") << "\"";
         auto parentState = p->getParent();
         if (parentState) {
