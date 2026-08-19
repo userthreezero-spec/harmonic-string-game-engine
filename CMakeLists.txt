@@ -17,6 +17,7 @@ add_library(hse_core STATIC
     src/scene/camera.cpp
     src/scene/primitive.cpp
     src/scene/scene_builder.cpp
+    src/scene/picker.cpp
     src/math/vec3.cpp
     src/math/mat4.cpp
 )
@@ -77,3 +78,11 @@ add_test(NAME OrbitTests COMMAND hse_test_orbit)
 add_executable(hse_test_hsc tests/test_hsc_persistence.cpp)
 target_link_libraries(hse_test_hsc PRIVATE hse_core)
 add_test(NAME PersistenceTests COMMAND hse_test_hsc)
+
+add_executable(hse_test_input tests/test_input.cpp)
+target_link_libraries(hse_test_input PRIVATE hse_core)
+add_test(NAME InputTests COMMAND hse_test_input)
+
+add_executable(hse_test_picking tests/test_picking.cpp)
+target_link_libraries(hse_test_picking PRIVATE hse_core)
+add_test(NAME PickingTests COMMAND hse_test_picking)

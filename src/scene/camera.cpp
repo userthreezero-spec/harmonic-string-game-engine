@@ -53,12 +53,48 @@ void Camera::enableOrbit(bool enabled) {
 }
 
 void Camera::updateOrbit(float deltaTime) {
-    if (!m_orbitEnabled) return;
-    m_orbitYaw += m_orbitSpeed * deltaTime;
-    float x = m_target.x + m_orbitRadius * std::cos(m_orbitYaw);
-    float z = m_target.z + m_orbitRadius * std::sin(m_orbitYaw);
-    m_position = {x, m_target.y, z};
+    if (m_orbitEnabled && deltaTime > 0.0f) {
+        m_orbitYaw += m_orbitSpeed * deltaTime;
+    }
+
+    if (m_orbitEnabled || deltaTime <= 0.0f) {
+        float cosPitch = std::cos(m_orbitPitch);
+        m_position.x = m_target.x + m_orbitRadius * cosPitch * std::cos(m_orbitYaw);
+        m_position.y = m_target.y + m_orbitRadius * std::sin(m_orbitPitch);
+        m_position.z = m_target.z + m_orbitRadius * cosPitch * std::sin(m_orbitYaw);
+
+        update();
+    }
+}
+
+void Camera::offsetOrbit(float yawDeg, float pitchDeg) {
+    const float degToRad = 3.14159265f / 180.0f;
+    m_orbitYaw += yawDeg * degToRad;
+    m_orbitPitch += pitchDeg * degToRad;
+
+    float limit = 89.0f * degToRad;
+    if (m_orbitPitch > limit) m_orbitPitch = limit;
+    if (m_orbitPitch < -limit) m_orbitPitch = -limit;
+
+    updateOrbit(0.0f);
+}
+
+void Camera::pan(float x, float y) {
+    Vec3 forward = (m_target - m_position).normalized();
+    Vec3 right = forward.cross(m_up).normalized();
+    Vec3 upLocal = right.cross(forward).normalized();
+
+    Vec3 delta = (right * x) + (upLocal * y);
+    m_target += delta;
+    m_position += delta;
+
     update();
+}
+
+void Camera::zoom(float delta) {
+    m_orbitRadius -= delta;
+    if (m_orbitRadius < 0.1f) m_orbitRadius = 0.1f;
+    updateOrbit(0.0f);
 }
 
 void Camera::update() {

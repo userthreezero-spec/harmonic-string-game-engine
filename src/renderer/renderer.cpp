@@ -59,6 +59,7 @@ struct Light {
 uniform Material uMaterial;
 uniform Light uLight;
 uniform vec3 uViewPos;
+uniform bool uSelected;
 
 void main() {
     vec3 albedo = uMaterial.albedo;
@@ -83,6 +84,9 @@ void main() {
     vec3 specular = (1.0 - uMaterial.roughness) * spec * uLight.color;
 
     vec3 result = (ambient + diffuse + specular) * albedo;
+    if (uSelected) {
+        result = mix(result, vec3(1.0, 1.0, 0.0), 0.5);
+    }
     FragColor = vec4(result, 1.0);
 }
 )";
@@ -174,13 +178,14 @@ void Renderer::beginFrame() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::renderScene(const Scene& scene, const Camera& camera) {
+void Renderer::renderScene(const Scene& scene, const Camera& camera, uint64_t selectedID) {
     glUseProgram(m_state->shaderProgram);
 
     GLint viewLoc = glGetUniformLocation(m_state->shaderProgram, "uView");
     GLint projLoc = glGetUniformLocation(m_state->shaderProgram, "uProjection");
     GLint modelLoc = glGetUniformLocation(m_state->shaderProgram, "uModel");
     GLint viewPosLoc = glGetUniformLocation(m_state->shaderProgram, "uViewPos");
+    GLint selectedLoc = glGetUniformLocation(m_state->shaderProgram, "uSelected");
 
     Mat4 view = camera.getViewMatrix();
     Mat4 proj = camera.getProjectionMatrix();
@@ -215,6 +220,7 @@ void Renderer::renderScene(const Scene& scene, const Camera& camera) {
     for (const auto& prim : scene.getPrimitives()) {
         const Mat4& model = prim->getWorldMatrix();
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model.ptr());
+        glUniform1i(selectedLoc, (prim->getID() == selectedID) ? 1 : 0);
 
         auto material = prim->getMaterial();
         if (!material) material = defaultMaterial;

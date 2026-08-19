@@ -1,0 +1,29 @@
+{
+  "mission": "HSE-020 Interactive World Inspection & Manipulation",
+  "complexity_score": 31,
+  "architecture_score": 96,
+  "predicted_symbols": [
+    "hse::Window::isMouseButtonPressed",
+    "hse::Camera::offsetOrbit",
+    "hse::Ray",
+    "hse::Picker",
+    "uSelected"
+  ],
+  "verified_symbols": [
+    "hse::Window::isMouseButtonPressed",
+    "hse::Camera::offsetOrbit",
+    "hse::Ray",
+    "hse::Picker",
+    "uSelected"
+  ],
+  "contradicted_symbols": [],
+  "tests": 8,
+  "regressions": 0,
+  "corrections": 3,
+  "human_interventions": 0,
+  "runtime_result": "PASS",
+  "persistence_result": "PASS",
+  "machine_verification": "PASS",
+  "human_visual_verification": "PENDING",
+  "final_classification": "STATE A"
+}

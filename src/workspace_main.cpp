@@ -5,6 +5,8 @@
 #include "scene/primitive.h"
 #include "scene/scene_builder.h"
 #include "bridge/bridge.h"
+#include "scene/picker.h"
+#include <GLFW/glfw3.h>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -109,17 +111,121 @@ int main(int argc, char* argv[]) {
     std::cout << "Run: .\\phase006_probe\\controller.ps1" << std::endl;
     std::cout << std::endl;
 
+    uint64_t selectedID = 0;
+    double prevMouseX = 0, prevMouseY = 0;
+    bool isDragging = false;
+    bool isPanning = false;
+
     // Main loop
     while (!window.shouldClose()) {
         float dt = window.getDeltaTime();
         window.pollEvents();
+
+        // Handle Mouse Navigation
+        double mx, my;
+        window.getMousePosition(mx, my);
+        bool leftPressed = window.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT);
+        bool middlePressed = window.isMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE);
+        bool shiftPressed = window.isKeyPressed(GLFW_KEY_LEFT_SHIFT) || window.isKeyPressed(GLFW_KEY_RIGHT_SHIFT);
+
+        if (leftPressed || middlePressed) {
+            if (!isDragging && !isPanning) {
+                prevMouseX = mx;
+                prevMouseY = my;
+                if (leftPressed && !shiftPressed) isDragging = true;
+                else isPanning = true;
+            }
+
+            double dx = mx - prevMouseX;
+            double dy = my - prevMouseY;
+            prevMouseX = mx;
+            prevMouseY = my;
+
+            if (isDragging) {
+                camera->offsetOrbit(static_cast<float>(dx) * 0.2f, static_cast<float>(-dy) * 0.2f);
+            } else if (isPanning) {
+                camera->pan(static_cast<float>(-dx) * 0.01f, static_cast<float>(dy) * 0.01f);
+            }
+        } else {
+            // Check for click (selection)
+            if (isDragging || isPanning) {
+                // Was dragging, now released
+            } else {
+                // Optional: handle single click here if needed, but better to check release
+            }
+            isDragging = false;
+            isPanning = false;
+        }
+
+        // Mouse Picking on Left Click (release)
+        static bool lastLeftPressed = false;
+        if (!leftPressed && lastLeftPressed && !shiftPressed) {
+            // Check if it was a tiny movement (click) or a drag
+            // For simplicity, always try to pick on release if not dragging
+            hse::Ray ray = hse::Picker::screenToRay(mx, my, *camera, window.getWidth(), window.getHeight());
+            auto hit = hse::Picker::pick(ray, *scene);
+            if (hit.hit) {
+                selectedID = hit.objectID;
+                auto obj = scene->findByID(selectedID);
+                std::cout << "Selected: " << (obj ? obj->getName() : "Unknown") << " (ID: " << selectedID << ")" << std::endl;
+            } else {
+                selectedID = 0;
+            }
+        }
+        lastLeftPressed = leftPressed;
+
+        // Zoom
+        float scrollY = window.getScrollY();
+        if (std::abs(scrollY) > 0.01f) {
+            camera->zoom(scrollY * 0.5f);
+            window.resetScroll();
+        }
+
+        // Manipulation
+        if (selectedID != 0) {
+            auto obj = scene->findByID(selectedID);
+            if (obj) {
+                hse::Vec3 pos = obj->getPosition();
+                hse::Vec3 rot = obj->getRotation();
+                hse::Vec3 scl = obj->getScale();
+                float speed = 2.0f * dt;
+
+                if (window.isKeyPressed(GLFW_KEY_UP))    pos.z -= speed;
+                if (window.isKeyPressed(GLFW_KEY_DOWN))  pos.z += speed;
+                if (window.isKeyPressed(GLFW_KEY_LEFT))  pos.x -= speed;
+                if (window.isKeyPressed(GLFW_KEY_RIGHT)) pos.x += speed;
+                if (window.isKeyPressed(GLFW_KEY_PAGE_UP))   pos.y += speed;
+                if (window.isKeyPressed(GLFW_KEY_PAGE_DOWN)) pos.y -= speed;
+
+                if (window.isKeyPressed(GLFW_KEY_HOME)) rot.y += speed * 20.0f;
+                if (window.isKeyPressed(GLFW_KEY_END))  rot.y -= speed * 20.0f;
+
+                if (window.isKeyPressed(GLFW_KEY_EQUAL)) scl += {0.1f * speed, 0.1f * speed, 0.1f * speed};
+                if (window.isKeyPressed(GLFW_KEY_MINUS)) scl -= {0.1f * speed, 0.1f * speed, 0.1f * speed};
+
+                obj->setPosition(pos);
+                obj->setRotation(rot);
+                obj->setScale(scl);
+            }
+        }
+
+        // Save
+        static bool lastSPressed = false;
+        bool sPressed = window.isKeyPressed(GLFW_KEY_S);
+        if (sPressed && !lastSPressed) {
+            if (!manifest.filePath.empty()) {
+                std::cout << "Saving project to: " << manifest.filePath << std::endl;
+                hse::SceneBuilder::exportHSC(*scene, *camera, manifest, manifest.filePath);
+            }
+        }
+        lastSPressed = sPressed;
 
         bridge.pumpCommands(scene, camera, renderer);
 
         scene->update(dt);
 
         renderer.beginFrame();
-        renderer.renderScene(*scene, *camera);
+        renderer.renderScene(*scene, *camera, selectedID);
         renderer.endFrame();
         renderer.incrementFrameCount();
         window.swapBuffers();

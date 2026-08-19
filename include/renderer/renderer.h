@@ -17,7 +17,7 @@ public:
     void shutdown();
 
     void beginFrame();
-    void renderScene(const Scene& scene, const Camera& camera);
+    void renderScene(const Scene& scene, const Camera& camera, uint64_t selectedID = 0);
     void endFrame();
 
     void setClearColor(float r, float g, float b, float a = 1.0f);

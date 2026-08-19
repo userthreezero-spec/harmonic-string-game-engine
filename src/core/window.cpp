@@ -16,6 +16,14 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     }
 }
 
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    auto* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    if (win) {
+        win->m_scrollX += static_cast<float>(xoffset);
+        win->m_scrollY += static_cast<float>(yoffset);
+    }
+}
+
 Window::Window(const WindowProps& props)
     : m_width(props.width), m_height(props.height)
 {
@@ -38,6 +46,7 @@ Window::Window(const WindowProps& props)
     glfwMakeContextCurrent(m_window);
     glfwSetWindowUserPointer(m_window, this);
     glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
+    glfwSetScrollCallback(m_window, scrollCallback);
 
     if (props.vsync) {
         glfwSwapInterval(1);
@@ -68,6 +77,24 @@ void Window::swapBuffers() {
 
 void Window::setResizeCallback(std::function<void(int, int)> callback) {
     m_resizeCallback = callback;
+}
+
+bool Window::isMouseButtonPressed(int button) const {
+    if (!m_window) return false;
+    return glfwGetMouseButton(m_window, button) == GLFW_PRESS;
+}
+
+bool Window::isKeyPressed(int key) const {
+    if (!m_window) return false;
+    return glfwGetKey(m_window, key) == GLFW_PRESS;
+}
+
+void Window::getMousePosition(double& x, double& y) const {
+    if (m_window) {
+        glfwGetCursorPos(m_window, &x, &y);
+    } else {
+        x = 0; y = 0;
+    }
 }
 
 float Window::getDeltaTime() {

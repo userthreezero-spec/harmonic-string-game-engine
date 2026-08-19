@@ -33,7 +33,12 @@ public:
     bool isOrbitEnabled() const { return m_orbitEnabled; }
     float getOrbitRadius() const { return m_orbitRadius; }
     float getOrbitSpeed() const { return m_orbitSpeed; }
-    void updateOrbit(float deltaTime);
+
+    void offsetOrbit(float yawDeg, float pitchDeg);
+    void pan(float x, float y);
+    void zoom(float delta);
+
+    void updateOrbit(float deltaTime = 0.0f);
 
     void update();
 
@@ -52,6 +57,7 @@ private:
 
     float m_orbitRadius = 5.0f;
     float m_orbitYaw = 0.0f;
+    float m_orbitPitch = 0.0f;
     float m_orbitSpeed = 1.0f;
     bool  m_orbitEnabled = false;
 };

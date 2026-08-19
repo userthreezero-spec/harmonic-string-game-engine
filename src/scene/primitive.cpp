@@ -39,11 +39,11 @@ std::shared_ptr<Primitive> Primitive::getParent() const {
 }
 
 void Primitive::computeWorldMatrix() {
-    Mat4 local = Mat4::translate(m_position)
-               * Mat4::rotate(m_rotation.x, {1, 0, 0})
-               * Mat4::rotate(m_rotation.y, {0, 1, 0})
+    Mat4 local = Mat4::scale(m_scale)
                * Mat4::rotate(m_rotation.z, {0, 0, 1})
-               * Mat4::scale(m_scale);
+               * Mat4::rotate(m_rotation.y, {0, 1, 0})
+               * Mat4::rotate(m_rotation.x, {1, 0, 0})
+               * Mat4::translate(m_position);
     auto parentPtr = m_parent.lock();
     if (parentPtr) {
         m_worldMatrix = parentPtr->getWorldMatrix() * local;

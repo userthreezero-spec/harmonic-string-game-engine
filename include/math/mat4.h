@@ -20,6 +20,8 @@ public:
     Mat4 operator*(const Mat4& other) const;
     Vec3 operator*(const Vec3& v) const;
 
+    Mat4 inverse() const;
+
     const float* ptr() const { return data; }
 
 private:
