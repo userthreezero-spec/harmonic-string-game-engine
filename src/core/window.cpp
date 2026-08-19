@@ -48,6 +48,9 @@ Window::Window(const WindowProps& props)
     glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
     glfwSetScrollCallback(m_window, scrollCallback);
 
+    // Get actual framebuffer size (handles DPI scaling)
+    glfwGetFramebufferSize(m_window, &m_width, &m_height);
+
     if (props.vsync) {
         glfwSwapInterval(1);
     }

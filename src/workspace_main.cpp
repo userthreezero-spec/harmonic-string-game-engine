@@ -121,6 +121,14 @@ int main(int argc, char* argv[]) {
         float dt = window.getDeltaTime();
         window.pollEvents();
 
+        // Update renderer viewport and camera aspect ratio
+        int width = window.getWidth();
+        int height = window.getHeight();
+        renderer.setViewport(0, 0, width, height);
+        if (height > 0) {
+            camera->setAspectRatio(static_cast<float>(width) / height);
+        }
+
         // Handle Mouse Navigation
         double mx, my;
         window.getMousePosition(mx, my);

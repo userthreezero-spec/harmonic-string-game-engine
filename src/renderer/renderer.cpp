@@ -112,7 +112,6 @@ bool Renderer::initialize() {
     }
 
     glEnable(GL_DEPTH_TEST);
-    glViewport(0, 0, 1280, 720);
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);

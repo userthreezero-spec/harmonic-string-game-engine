@@ -71,30 +71,51 @@ std::shared_ptr<Scene> SceneBuilder::buildRoom() {
 
 // Minimal JSON field extractor
 static std::string jsonFind(const std::string& json, const std::string& key) {
-    auto pos = json.find("\"" + key + "\"");
-    if (pos == std::string::npos) return "";
-    pos = json.find(':', pos);
-    if (pos == std::string::npos) return "";
-    pos++;
-    while (pos < json.size() && (json[pos] == ' ' || json[pos] == '\n' || json[pos] == '\r')) pos++;
-    if (pos >= json.size()) return "";
-    if (json[pos] == '"') {
-        pos++;
-        auto end = json.find('"', pos);
-        if (end == std::string::npos) return "";
+    std::string search = "\"" + key + "\"";
+    size_t pos = 0;
+    while ((pos = json.find(search, pos)) != std::string::npos) {
+        size_t colonPos = json.find(':', pos + search.length());
+        if (colonPos == std::string::npos) {
+            pos += search.length();
+            continue;
+        }
+
+        bool onlySpace = true;
+        for (size_t i = pos + search.length(); i < colonPos; i++) {
+            if (!std::isspace(static_cast<unsigned char>(json[i]))) {
+                onlySpace = false;
+                break;
+            }
+        }
+
+        if (!onlySpace) {
+            pos += search.length();
+            continue;
+        }
+
+        pos = colonPos + 1;
+        while (pos < json.size() && std::isspace(static_cast<unsigned char>(json[pos]))) pos++;
+        if (pos >= json.size()) return "";
+
+        if (json[pos] == '"') {
+            pos++;
+            auto end = json.find('"', pos);
+            if (end == std::string::npos) return "";
+            return json.substr(pos, end - pos);
+        }
+        if (json[pos] == '{') {
+            int depth = 0;
+            for (size_t i = pos; i < json.size(); i++) {
+                if (json[i] == '{') depth++;
+                else if (json[i] == '}') depth--;
+                if (depth == 0) return json.substr(pos, i - pos + 1);
+            }
+        }
+        auto end = json.find_first_of(",}\n", pos);
+        if (end == std::string::npos) return json.substr(pos);
         return json.substr(pos, end - pos);
     }
-    if (json[pos] == '{') {
-        int depth = 0;
-        for (size_t i = pos; i < json.size(); i++) {
-            if (json[i] == '{') depth++;
-            else if (json[i] == '}') depth--;
-            if (depth == 0) return json.substr(pos, i - pos + 1);
-        }
-    }
-    auto end = json.find_first_of(",}\n", pos);
-    if (end == std::string::npos) return json.substr(pos);
-    return json.substr(pos, end - pos);
+    return "";
 }
 
 static float jsonFindFloat(const std::string& json, const std::string& key, float def) {
@@ -291,6 +312,11 @@ void SceneBuilder::exportHSC(const Scene& scene, const Camera& camera, const Pro
         f << "    }" << (i < lights.size() - 1 ? "," : "") << "\n";
     }
     f << "  ],\n";
+    f << "  \"camera\": {\n";
+    f << "    \"position\": [" << camera.getPosition().x << "," << camera.getPosition().y << "," << camera.getPosition().z << "],\n";
+    f << "    \"target\": [" << camera.getTarget().x << "," << camera.getTarget().y << "," << camera.getTarget().z << "],\n";
+    f << "    \"fov\": " << camera.getFOV() << "\n";
+    f << "  },\n";
     f << "  \"objects\": [\n";
     auto& prims = scene.getPrimitives();
     for (size_t i = 0; i < prims.size(); i++) {
