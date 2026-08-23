@@ -25,15 +25,32 @@ using namespace hse;
 
 static const int CW = 800, CH = 600;
 
-struct Obj { const char* name; int type; float x, y, z; float sx, sy, sz; float r, g, b; };
-// A known world of REAL cube geometry (the Sphere primitive is a stub): a wide red slab
-// (left), a tall green box (center), a blue cube (right). Distinct colors + shapes + places.
+struct Obj { std::string name; int type; float x, y, z; float sx, sy, sz; float r, g, b; };
 static const int CUBE = 2;
-static const std::vector<Obj> WORLD = {
-    {"red_cube",  CUBE, -3.5f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f, 0.90f, 0.12f, 0.12f},
-    {"green_cube",CUBE,  0.0f, 0.0f, 2.0f, 2.0f, 2.0f, 2.0f, 0.12f, 0.85f, 0.20f},
-    {"blue_cube", CUBE,  3.5f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f, 0.15f, 0.30f, 0.92f},
-};
+
+// Default world of REAL cube geometry (the Sphere primitive is a stub): red (left),
+// green (center), blue (right). Used when no scene-spec file is supplied (Phase 1046 mode).
+static std::vector<Obj> defaultWorld() {
+    return {
+        {"red_cube",  CUBE, -3.5f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f, 0.90f, 0.12f, 0.12f},
+        {"green_cube",CUBE,  0.0f, 0.0f, 2.0f, 2.0f, 2.0f, 2.0f, 0.12f, 0.85f, 0.20f},
+        {"blue_cube", CUBE,  3.5f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f, 0.15f, 0.30f, 0.92f},
+    };
+}
+
+// Phase 1047: load the world from a WebOS-owned scene-spec file so the rendered world is a
+// function of external state WebOS can act on. Format: one object per line,
+//   name type px py pz sx sy sz cr cg cb
+// An existing-but-empty file is a valid (cleared) world; a missing/unreadable path -> default.
+static std::vector<Obj> loadWorld(const std::string& path) {
+    if (path.empty()) return defaultWorld();
+    std::ifstream f(path);
+    if (!f) return defaultWorld();
+    std::vector<Obj> w; Obj o;
+    while (f >> o.name >> o.type >> o.x >> o.y >> o.z >> o.sx >> o.sy >> o.sz >> o.r >> o.g >> o.b)
+        w.push_back(o);
+    return w;
+}
 // General-position viewpoints (axis-aligned cameras exhibit an HSE view/culling quirk that
 // can drop on-axis objects); these three orbit the scene and render all objects reliably,
 // placing them at distinct screen positions so multi-view perception is meaningful.
@@ -57,8 +74,10 @@ static void writePPM(const std::string& path, const std::vector<unsigned char>& 
 }
 
 int main(int argc, char** argv) {
-    if (argc < 2) { std::fprintf(stderr, "usage: hse_capture <output_dir>\n"); return 2; }
+    if (argc < 2) { std::fprintf(stderr, "usage: hse_capture <output_dir> [scene_file]\n"); return 2; }
     std::string outDir = argv[1];
+    std::string sceneFile = (argc >= 3) ? argv[2] : "";
+    std::vector<Obj> world = loadWorld(sceneFile);
 
     if (!glfwInit()) { std::fprintf(stderr, "glfwInit failed\n"); return 1; }
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);      // headless: no visible window
@@ -92,7 +111,7 @@ int main(int argc, char** argv) {
 
     // Build the known world.
     auto scene = std::make_shared<Scene>("CaptureScene");
-    for (const auto& o : WORLD) {
+    for (const auto& o : world) {
         auto prim = std::make_shared<Primitive>(static_cast<PrimitiveType>(o.type));
         prim->setPosition({o.x, o.y, o.z});
         prim->setScale({o.sx, o.sy, o.sz});
@@ -108,12 +127,12 @@ int main(int argc, char** argv) {
     std::ofstream man(outDir + "/manifest.json");
     man << "{\"width\":" << CW << ",\"height\":" << CH << ",\"scene\":\"CaptureScene\",";
     man << "\"ground_truth_objects\":[";
-    for (size_t i = 0; i < WORLD.size(); ++i) {
-        const auto& o = WORLD[i];
+    for (size_t i = 0; i < world.size(); ++i) {
+        const auto& o = world[i];
         man << "{\"name\":\"" << o.name << "\",\"type\":" << o.type
             << ",\"pos\":[" << o.x << "," << o.y << "," << o.z << "]"
             << ",\"albedo\":[" << o.r << "," << o.g << "," << o.b << "]}"
-            << (i + 1 < WORLD.size() ? "," : "");
+            << (i + 1 < world.size() ? "," : "");
     }
     man << "],\"views\":[";
 
