@@ -68,6 +68,10 @@ target_link_libraries(hse_material_demo PRIVATE hse_core)
 add_executable(hse_orbit_demo src/orbit_demo.cpp)
 target_link_libraries(hse_orbit_demo PRIVATE hse_core)
 
+# Phase 1046: headless multi-view capture tool (offscreen FBO -> PPM frames).
+add_executable(hse_capture src/capture_main.cpp)
+target_link_libraries(hse_capture PRIVATE hse_core)
+
 enable_testing()
 add_test(NAME MathTests COMMAND hse_test_math)
 add_test(NAME SceneTests COMMAND hse_test_scene)
