@@ -106,3 +106,23 @@ add_test(NAME GoalTests COMMAND hse_test_goal)
 add_executable(hse_test_multi tests/test_multi_constraint.cpp)
 target_link_libraries(hse_test_multi PRIVATE hse_core)
 add_test(NAME MultiConstraintTests COMMAND hse_test_multi)
+
+# [WebOS Native Engineering Actuator] runtime DLL deployment
+# Deploys the toolchain/runtime DLLs next to the executable so the built product
+# launches without the toolchain on PATH (fixes STATUS_DLL_NOT_FOUND / 0xC0000135).
+if(WIN32)
+    get_filename_component(_webos_tc_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
+    set(_webos_runtime_dlls
+        libgcc_s_seh-1.dll
+        libstdc++-6.dll
+        glew32.dll
+        glfw3.dll
+        libwinpthread-1.dll)
+    foreach(_dll ${_webos_runtime_dlls})
+        if(EXISTS "${_webos_tc_bin}/${_dll}")
+            add_custom_command(TARGET hse_main POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                        "${_webos_tc_bin}/${_dll}" "$<TARGET_FILE_DIR:hse_main>")
+        endif()
+    endforeach()
+endif()
