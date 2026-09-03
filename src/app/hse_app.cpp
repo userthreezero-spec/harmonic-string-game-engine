@@ -14,6 +14,7 @@
 #include <GLFW/glfw3.h>
 #include "core/window.h"
 #include "renderer/renderer.h"
+#include "renderer/ui_renderer.h"
 #include "scene/scene.h"
 #include "scene/camera.h"
 #include "scene/primitive.h"
@@ -117,7 +118,16 @@ public:
                 auto* self = static_cast<HSEApp*>(glfwGetWindowUserPointer(win));
                 if (self) self->handleScroll(xoffset, yoffset);
             });
+
+            glfwSetCharCallback(native, [](GLFWwindow* win, unsigned int codepoint) {
+                auto* self = static_cast<HSEApp*>(glfwGetWindowUserPointer(win));
+                if (self) self->handleChar(codepoint);
+            });
         }
+
+        m_uiRenderer.initialize();
+        m_chatLog.push_back({"SYSTEM", "HSE Cognitive Engineering Workspace Active.", {0.5f, 0.7f, 1.0f}, ""});
+        m_chatLog.push_back({"WEBOS", "Select a 3D mesh in viewport or type below to ask WebOS.", {0.2f, 0.9f, 0.5f}, ""});
 
         setupHubScene();
 
@@ -545,19 +555,179 @@ private:
                   << " (" << m_scene->getPrimitiveCount() << " primitives)" << std::endl;
     }
 
+    void handleChar(unsigned int codepoint) {
+        if (m_chatInputFocused && codepoint >= 32 && codepoint <= 126) {
+            if (m_chatInputBuffer.length() < 120) {
+                m_chatInputBuffer += static_cast<char>(codepoint);
+            }
+        }
+    }
+
+    void executeProposedChange() {
+        if (!m_proposedChange.active || !m_scene) return;
+
+        auto obj = m_scene->findByID(m_proposedChange.targetObjectID);
+        if (obj) {
+            auto mat = obj->getMaterial();
+            if (!mat) {
+                mat = std::make_shared<hse::Material>("mat_" + obj->getName());
+                m_scene->addMaterial(mat);
+                obj->setMaterial(mat);
+            }
+            mat->setAlbedo(m_proposedChange.newColor);
+            obj->setColor(m_proposedChange.newColor);
+
+            saveCheckpoint();
+
+            std::string resText = "Governed mutation executed on \"" + obj->getName() + "\". Color changed to " + m_proposedChange.colorName + ". Checkpoint saved.";
+            m_chatLog.push_back({"WEBOS", resText, {0.20f, 0.90f, 0.50f}, ""});
+            m_webosStatus = "MUTATION SUCCESS";
+            std::cout << "[HSE PrimeGate Execution] " << resText << std::endl;
+        } else {
+            m_chatLog.push_back({"SYSTEM", "Proposed target object no longer exists.", {0.9f, 0.3f, 0.3f}, ""});
+        }
+        m_proposedChange.active = false;
+    }
+
+    void renderCognitiveWorkspaceUI(int winW, int winH) {
+        float panelW = 380.0f;
+        float panelX = static_cast<float>(winW) - panelW;
+        if (panelX < 0) panelX = 0;
+
+        // Background Panel
+        m_uiRenderer.drawRect(panelX, 0, panelW, static_cast<float>(winH), {0.08f, 0.10f, 0.14f}, 0.95f);
+        m_uiRenderer.drawRect(panelX, 0, 2.0f, static_cast<float>(winH), {0.20f, 0.25f, 0.35f}, 1.0f);
+
+        // Header Title & Status
+        m_uiRenderer.drawText("WEBOS COGNITIVE WORKSPACE", panelX + 15.0f, 12.0f, 1.0f, {0.30f, 0.70f, 1.0f});
+        m_uiRenderer.drawText("STATUS: " + m_webosStatus, panelX + 15.0f, 30.0f, 0.8f, m_webosBusy ? hse::Vec3{0.95f, 0.80f, 0.20f} : hse::Vec3{0.20f, 0.90f, 0.50f});
+
+        // Inspector Box (Selected Object Context)
+        float inspY = 50.0f;
+        float inspH = 100.0f;
+        m_uiRenderer.drawRect(panelX + 12.0f, inspY, panelW - 24.0f, inspH, {0.12f, 0.15f, 0.22f}, 0.9f);
+        m_uiRenderer.drawRectOutline(panelX + 12.0f, inspY, panelW - 24.0f, inspH, {0.25f, 0.35f, 0.50f}, 1.0f);
+
+        if (m_scene && m_selectedObjectID != 0) {
+            auto obj = m_scene->findByID(m_selectedObjectID);
+            if (obj) {
+                m_uiRenderer.drawText("INSPECTOR: " + obj->getName(), panelX + 20.0f, inspY + 8.0f, 0.9f, {1.0f, 0.9f, 0.4f});
+                std::string typeStr = (obj->getType() == hse::PrimitiveType::Cube) ? "Cube" : (obj->getType() == hse::PrimitiveType::Group ? "Group" : "Quad");
+                m_uiRenderer.drawText("ID: " + std::to_string(obj->getID()) + " | Type: " + typeStr, panelX + 20.0f, inspY + 26.0f, 0.8f, {0.85f, 0.85f, 0.85f});
+
+                auto pos = obj->getPosition();
+                char posBuf[64];
+                snprintf(posBuf, sizeof(posBuf), "(%.1f, %.1f, %.1f)", pos.x, pos.y, pos.z);
+                m_uiRenderer.drawText("Pos: " + std::string(posBuf), panelX + 20.0f, inspY + 42.0f, 0.8f, {0.8f, 0.8f, 0.8f});
+
+                std::string matName = obj->getMaterial() ? obj->getMaterial()->getName() : "Default";
+                hse::Vec3 col = obj->getMaterial() ? obj->getMaterial()->getAlbedo() : obj->getColor();
+                char colBuf[64];
+                snprintf(colBuf, sizeof(colBuf), "(%.2f, %.2f, %.2f)", col.x, col.y, col.z);
+                m_uiRenderer.drawText("Mat: " + matName + " RGB" + std::string(colBuf), panelX + 20.0f, inspY + 58.0f, 0.8f, {0.8f, 0.8f, 0.8f});
+
+                std::string parentStr = obj->getParent() ? obj->getParent()->getName() : "Root Scene";
+                m_uiRenderer.drawText("Hierarchy: " + parentStr, panelX + 20.0f, inspY + 74.0f, 0.8f, {0.8f, 0.8f, 0.8f});
+            } else {
+                m_uiRenderer.drawText("INSPECTOR: Object ID Stale", panelX + 20.0f, inspY + 12.0f, 0.9f, {0.9f, 0.4f, 0.4f});
+            }
+        } else {
+            m_uiRenderer.drawText("INSPECTOR: No Object Selected", panelX + 20.0f, inspY + 12.0f, 0.9f, {0.6f, 0.6f, 0.6f});
+            m_uiRenderer.drawText("Click any 3D mesh in viewport to select.", panelX + 20.0f, inspY + 36.0f, 0.8f, {0.5f, 0.5f, 0.5f});
+            m_uiRenderer.drawText("Selected object context attaches to WebOS queries.", panelX + 20.0f, inspY + 54.0f, 0.8f, {0.4f, 0.6f, 0.8f});
+        }
+
+        // Quick Action Chips Bar
+        float chipY = 158.0f;
+        m_uiRenderer.drawRect(panelX + 12.0f, chipY, 70.0f, 22.0f, {0.15f, 0.35f, 0.60f}, 1.0f);
+        m_uiRenderer.drawText("TRACE", panelX + 24.0f, chipY + 4.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+
+        m_uiRenderer.drawRect(panelX + 88.0f, chipY, 60.0f, 22.0f, {0.10f, 0.40f, 0.90f}, 1.0f);
+        m_uiRenderer.drawText("BLUE", panelX + 102.0f, chipY + 4.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+
+        m_uiRenderer.drawRect(panelX + 154.0f, chipY, 50.0f, 22.0f, {0.90f, 0.20f, 0.20f}, 1.0f);
+        m_uiRenderer.drawText("RED", panelX + 168.0f, chipY + 4.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+
+        m_uiRenderer.drawRect(panelX + 210.0f, chipY, 65.0f, 22.0f, {0.20f, 0.80f, 0.30f}, 1.0f);
+        m_uiRenderer.drawText("GREEN", panelX + 220.0f, chipY + 4.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+
+        m_uiRenderer.drawRect(panelX + 281.0f, chipY, 87.0f, 22.0f, {0.35f, 0.35f, 0.45f}, 1.0f);
+        m_uiRenderer.drawText("FOCUS (F)", panelX + 291.0f, chipY + 4.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+
+        // Proposed Change Box (if active)
+        float chatBoxY = 188.0f;
+        if (m_proposedChange.active) {
+            m_uiRenderer.drawRect(panelX + 12.0f, 188.0f, panelW - 24.0f, 60.0f, {0.25f, 0.20f, 0.05f}, 0.95f);
+            m_uiRenderer.drawRectOutline(panelX + 12.0f, 188.0f, panelW - 24.0f, 60.0f, {0.95f, 0.80f, 0.20f}, 1.5f);
+            m_uiRenderer.drawText("PROPOSED MUTATION: " + m_proposedChange.targetName, panelX + 18.0f, 194.0f, 0.8f, {0.95f, 0.85f, 0.20f});
+            m_uiRenderer.drawText("Property: " + m_proposedChange.propertyName + " -> " + m_proposedChange.colorName, panelX + 18.0f, 210.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+
+            // Authorize button
+            m_uiRenderer.drawRect(panelX + panelW - 120.0f, 226.0f, 100.0f, 18.0f, {0.15f, 0.65f, 0.35f}, 1.0f);
+            m_uiRenderer.drawText("AUTHORIZE [ENTER]", panelX + panelW - 118.0f, 229.0f, 0.7f, {1.0f, 1.0f, 1.0f});
+
+            chatBoxY = 254.0f;
+        }
+
+        // Conversation Log Area
+        float chatBoxH = static_cast<float>(winH) - chatBoxY - 60.0f;
+        if (chatBoxH < 100.0f) chatBoxH = 100.0f;
+
+        m_uiRenderer.drawRect(panelX + 12.0f, chatBoxY, panelW - 24.0f, chatBoxH, {0.05f, 0.07f, 0.10f}, 0.90f);
+        m_uiRenderer.drawRectOutline(panelX + 12.0f, chatBoxY, panelW - 24.0f, chatBoxH, {0.20f, 0.25f, 0.35f}, 1.0f);
+
+        // Render Conversation Log Messages
+        int maxVisibleLines = static_cast<int>(chatBoxH / 18.0f) - 1;
+        int totalMessages = static_cast<int>(m_chatLog.size());
+        int startIdx = std::max(0, totalMessages - maxVisibleLines);
+
+        float msgY = chatBoxY + 8.0f;
+        for (int i = startIdx; i < totalMessages && msgY < (chatBoxY + chatBoxH - 18.0f); i++) {
+            const auto& msg = m_chatLog[i];
+            std::string prefix = "[" + msg.sender + "]: ";
+            m_uiRenderer.drawText(prefix + msg.text, panelX + 20.0f, msgY, 0.8f, msg.color);
+            msgY += 18.0f;
+        }
+
+        // Text Input Field Box
+        float inputY = static_cast<float>(winH) - 50.0f;
+        float inputW = panelW - 90.0f;
+        m_uiRenderer.drawRect(panelX + 12.0f, inputY, inputW, 36.0f, {0.12f, 0.15f, 0.20f}, 1.0f);
+        m_uiRenderer.drawRectOutline(panelX + 12.0f, inputY, inputW, 36.0f,
+            m_chatInputFocused ? hse::Vec3{0.20f, 0.70f, 1.0f} : hse::Vec3{0.30f, 0.35f, 0.45f}, 1.5f);
+
+        if (!m_chatInputBuffer.empty()) {
+            std::string displayTxt = m_chatInputBuffer;
+            if (fmod(glfwGetTime(), 1.0) < 0.5f) displayTxt += "|";
+            m_uiRenderer.drawText(displayTxt, panelX + 20.0f, inputY + 10.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+        } else {
+            std::string placeholder = m_chatInputFocused ? "Type query or command..." : "Click or '/' to type to WebOS...";
+            m_uiRenderer.drawText(placeholder, panelX + 20.0f, inputY + 10.0f, 0.8f, {0.5f, 0.5f, 0.5f});
+        }
+
+        // Send Button
+        float sendX = panelX + panelW - 70.0f;
+        m_uiRenderer.drawRect(sendX, inputY, 58.0f, 36.0f, {0.15f, 0.60f, 0.40f}, 1.0f);
+        m_uiRenderer.drawText("SEND", sendX + 12.0f, inputY + 10.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+    }
+
     void updateAndRenderRuntime(float dt) {
         if (!m_scene || !m_camera) return;
 
-        // Sync Viewport & Camera Aspect Ratio on Resize/Fullscreen
         int w = m_window.getWidth();
         int h = m_window.getHeight();
         if (h <= 0) h = 1;
-        m_renderer.setViewport(0, 0, w, h);
-        m_camera->setAspectRatio(static_cast<float>(w) / h);
+
+        // Viewport split: left 3D viewport, right 380px for Cognitive Workspace
+        int view3DW = m_workspaceOpen ? (w - 380) : w;
+        if (view3DW < 300) view3DW = 300;
+
+        m_renderer.setViewport(0, 0, view3DW, h);
+        m_camera->setAspectRatio(static_cast<float>(view3DW) / h);
         m_camera->update();
 
-        // Continuous Interactive Camera WASDQE
-        if (!m_camera->isOrbitEnabled()) {
+        // Continuous Interactive Camera WASDQE (only when input box is not focused)
+        if (!m_chatInputFocused && !m_camera->isOrbitEnabled()) {
             bool boost = m_window.isKeyPressed(GLFW_KEY_LEFT_SHIFT) || m_window.isKeyPressed(GLFW_KEY_RIGHT_SHIFT);
             if (m_window.isKeyPressed(GLFW_KEY_W)) m_camera->processKeyboard("FORWARD", dt, boost);
             if (m_window.isKeyPressed(GLFW_KEY_S)) m_camera->processKeyboard("BACKWARD", dt, boost);
@@ -567,42 +737,41 @@ private:
             if (m_window.isKeyPressed(GLFW_KEY_Q)) m_camera->processKeyboard("DOWN", dt, boost);
         }
 
-        // Phase 1231: Interactive Material & Lighting Preset Switcher (Key M)
+        // Preset Switcher Key M
         static bool m_keyWasPressed = false;
-        bool m_keyPressed = m_window.isKeyPressed(GLFW_KEY_M);
+        bool m_keyPressed = !m_chatInputFocused && m_window.isKeyPressed(GLFW_KEY_M);
         if (m_keyPressed && !m_keyWasPressed) {
             static int presetIndex = 0;
             presetIndex = (presetIndex + 1) % 4;
             if (m_scene && !m_scene->getLights().empty()) {
                 auto& light = m_scene->getLight(0);
-                if (presetIndex == 0) {
-                    light.color = hse::Vec3(1.0f, 1.0f, 1.0f);
-                    std::cout << "[HSE Material Preset] Switched to 01: DEFAULT_HARMONIC (Pure White Spectrum)" << std::endl;
-                } else if (presetIndex == 1) {
-                    light.color = hse::Vec3(0.23f, 0.51f, 0.96f);
-                    std::cout << "[HSE Material Preset] Switched to 02: ELECTRIC_NEON (Cyan Spectrum)" << std::endl;
-                } else if (presetIndex == 2) {
-                    light.color = hse::Vec3(0.96f, 0.62f, 0.04f);
-                    std::cout << "[HSE Material Preset] Switched to 03: WARM_GOLDEN (Golden Amber Sunlight)" << std::endl;
-                } else if (presetIndex == 3) {
-                    light.color = hse::Vec3(0.93f, 0.28f, 0.60f);
-                    std::cout << "[HSE Material Preset] Switched to 04: CYBERPUNK_MAGENTA (Magenta Spectrum)" << std::endl;
-                }
+                if (presetIndex == 0) light.color = hse::Vec3(1.0f, 1.0f, 1.0f);
+                else if (presetIndex == 1) light.color = hse::Vec3(0.23f, 0.51f, 0.96f);
+                else if (presetIndex == 2) light.color = hse::Vec3(0.96f, 0.62f, 0.04f);
+                else if (presetIndex == 3) light.color = hse::Vec3(0.93f, 0.28f, 0.60f);
             }
         }
         m_keyWasPressed = m_keyPressed;
 
-        // Pump IPC Bridge Commands
+        // Pump IPC Bridge
         if (m_bridge) {
             m_bridge->pumpCommands(m_scene, m_camera, m_renderer);
         }
 
-        // Update Scene Physics / Animations
+        // Update Physics / Animations
         m_scene->update(dt);
 
-        // Render Frame
+        // Render 3D Frame
         m_renderer.beginFrame();
         m_renderer.renderScene(*m_scene, *m_camera, m_selectedObjectID);
+
+        // Render 2D UI Overlay
+        m_uiRenderer.begin2D(w, h);
+        if (m_workspaceOpen) {
+            renderCognitiveWorkspaceUI(w, h);
+        }
+        m_uiRenderer.end2D();
+
         m_renderer.endFrame();
     }
 
@@ -655,129 +824,125 @@ private:
                 }
             }
         } else if (m_state == ApplicationState::ENGINE_RUNTIME && button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-            bool altPressed = m_window.isKeyPressed(GLFW_KEY_LEFT_ALT) || m_window.isKeyPressed(GLFW_KEY_RIGHT_ALT);
-            if (!altPressed) {
-                double mx, my;
-                m_window.getMousePosition(mx, my);
-                if (m_camera && m_scene) {
-                    hse::Ray ray = hse::Picker::screenToRay(mx, my, *m_camera, m_window.getWidth(), m_window.getHeight());
-                    auto hit = hse::Picker::pick(ray, *m_scene);
-                    if (hit.hit) {
-                        m_selectedObjectID = hit.objectID;
-                        auto obj = m_scene->findByID(m_selectedObjectID);
-                        if (obj) {
-                            std::cout << "\n[HSE Inspector] Selected Object -> ID: " << obj->getID()
-                                      << " | Name: \"" << obj->getName() << "\""
-                                      << " | Position: (" << obj->getPosition().x << ", " << obj->getPosition().y << ", " << obj->getPosition().z << ")"
-                                      << " | Material: " << (obj->getMaterial() ? obj->getMaterial()->getName() : "None")
-                                      << " | Parent: " << (obj->getParent() ? obj->getParent()->getName() : "Root Scene") << std::endl;
+            double mx, my;
+            m_window.getMousePosition(mx, my);
+            int winW = m_window.getWidth();
+            int winH = m_window.getHeight();
+            float panelX = static_cast<float>(winW) - 380.0f;
+
+            if (m_workspaceOpen && mx >= panelX) {
+                float clickX = static_cast<float>(mx);
+                float clickY = static_cast<float>(my);
+
+                // Text Input Field click
+                if (clickX >= panelX + 12.0f && clickX <= panelX + 290.0f && clickY >= winH - 50.0f && clickY <= winH - 14.0f) {
+                    m_chatInputFocused = true;
+                    return;
+                }
+
+                // Send Button click
+                if (clickX >= panelX + 310.0f && clickY >= winH - 50.0f && clickY <= winH - 14.0f) {
+                    if (!m_chatInputBuffer.empty()) {
+                        submitAssistantQuery(m_chatInputBuffer);
+                        m_chatInputBuffer = "";
+                    }
+                    return;
+                }
+
+                // Quick Action Chips: TRACE, BLUE, RED, GREEN, FOCUS
+                if (clickY >= 158.0f && clickY <= 180.0f) {
+                    if (clickX >= panelX + 12.0f && clickX <= panelX + 82.0f) {
+                        submitAssistantQuery("trace");
+                        return;
+                    } else if (clickX >= panelX + 88.0f && clickX <= panelX + 148.0f) {
+                        submitAssistantQuery("make blue");
+                        return;
+                    } else if (clickX >= panelX + 154.0f && clickX <= panelX + 204.0f) {
+                        submitAssistantQuery("make red");
+                        return;
+                    } else if (clickX >= panelX + 210.0f && clickX <= panelX + 275.0f) {
+                        submitAssistantQuery("make green");
+                        return;
+                    } else if (clickX >= panelX + 281.0f) {
+                        if (m_camera && m_scene && m_selectedObjectID != 0) {
+                            auto obj = m_scene->findByID(m_selectedObjectID);
+                            if (obj) {
+                                hse::Vec3 target = obj->getWorldPosition();
+                                m_camera->resetFocus(target + hse::Vec3{5.0f, 4.0f, 5.0f}, target);
+                            }
                         }
-                    } else {
-                        m_selectedObjectID = 0;
-                        std::cout << "[HSE Inspector] Selection cleared." << std::endl;
+                        return;
+                    }
+                }
+
+                // Authorize Proposal Button click
+                if (m_proposedChange.active && clickY >= 226.0f && clickY <= 244.0f && clickX >= panelX + 260.0f) {
+                    executeProposedChange();
+                    return;
+                }
+            } else {
+                // Click is in 3D Viewport
+                m_chatInputFocused = false;
+                bool altPressed = m_window.isKeyPressed(GLFW_KEY_LEFT_ALT) || m_window.isKeyPressed(GLFW_KEY_RIGHT_ALT);
+                if (!altPressed) {
+                    int view3DW = m_workspaceOpen ? (winW - 380) : winW;
+                    if (view3DW < 300) view3DW = 300;
+
+                    if (m_camera && m_scene) {
+                        hse::Ray ray = hse::Picker::screenToRay(mx, my, *m_camera, view3DW, winH);
+                        auto hit = hse::Picker::pick(ray, *m_scene);
+                        if (hit.hit) {
+                            m_selectedObjectID = hit.objectID;
+                            auto obj = m_scene->findByID(m_selectedObjectID);
+                            if (obj) {
+                                std::cout << "\n[HSE Inspector] Selected Object -> ID: " << obj->getID()
+                                          << " | Name: \"" << obj->getName() << "\""
+                                          << " | Position: (" << obj->getPosition().x << ", " << obj->getPosition().y << ", " << obj->getPosition().z << ")"
+                                          << " | Material: " << (obj->getMaterial() ? obj->getMaterial()->getName() : "None")
+                                          << " | Parent: " << (obj->getParent() ? obj->getParent()->getName() : "Root Scene") << std::endl;
+                            }
+                        } else {
+                            m_selectedObjectID = 0;
+                            std::cout << "[HSE Inspector] Selection cleared." << std::endl;
+                        }
                     }
                 }
             }
-        }
-    }
-
-    void toggleAssistantOverlay() {
-        m_assistantOpen = !m_assistantOpen;
-        std::cout << "\n================================================================================" << std::endl;
-        std::cout << " [ WebOS Sovereign Assistant Surface ] — " << (m_assistantOpen ? "OPEN (Active)" : "CLOSED") << std::endl;
-        std::cout << "================================================================================" << std::endl;
-        if (m_assistantOpen) {
-            std::cout << " WebOS Endpoint: http://127.0.0.1:8725/request (PrimeGate Authorized)\n"
-                      << " Active Project: " << (m_scene ? m_scene->getName() : "Project Hub") << "\n"
-                      << " Quick Commands:\n"
-                      << "   • \"save\" / \"checkpoint\"  - Save project checkpoint\n"
-                      << "   • \"impulse\"               - Add dynamic harmonic impulse light\n"
-                      << "   • \"shift\"                 - Shift floor_1 structural position\n"
-                      << "   • \"focus\"                 - Reset camera focus\n"
-                      << "   • \"open two_story_home\"   - Open Two-Story Home project\n"
-                      << "   • Type any question/mission to send to WebOS Sovereign Gateway.\n"
-                      << "================================================================================" << std::endl;
         }
     }
 
     void submitAssistantQuery(const std::string& input) {
         if (input.empty()) return;
 
-        std::cout << "\n[User -> WebOS Assistant] " << input << std::endl;
+        m_chatLog.push_back({"HUMAN", input, {0.30f, 0.70f, 1.0f}, ""});
         std::string lower = input;
         std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
         if (lower == "save" || lower == "checkpoint") {
             saveCheckpoint();
-            std::cout << "[WebOS Assistant] Project checkpoint saved successfully." << std::endl;
-            return;
-        } else if (lower == "impulse" || lower == "light") {
-            if (m_scene) {
-                hse::Light impulse;
-                impulse.position = {0.0f, 2.0f, 0.0f};
-                impulse.color = {1.0f, 1.0f, 0.5f};
-                m_scene->addLight(impulse);
-                std::cout << "[WebOS Assistant] Dynamic harmonic impulse light added to scene." << std::endl;
-            }
-            return;
-        } else if (lower == "shift" || lower == "move floor") {
-            if (m_scene) {
-                auto floor1 = m_scene->findByName("floor_1");
-                if (floor1) {
-                    hse::Vec3 p = floor1->getPosition();
-                    p.x += 0.5f;
-                    if (p.x > 1.5f) p.x = 0.0f;
-                    floor1->setPosition(p);
-                    std::cout << "[WebOS Assistant] Structural shift executed on floor_1 (x -> " << p.x << ")." << std::endl;
-                }
-            }
-            return;
-        } else if (lower == "focus" || lower == "reset") {
-            if (m_camera) {
-                m_camera->resetFocus({0.0f, 4.0f, 15.0f}, {0.0f, 2.5f, 0.0f});
-                std::cout << "[WebOS Assistant] Camera focus reset to scene overview." << std::endl;
-            }
-            return;
-        } else if (lower.find("open") != std::string::npos && lower.find("home") != std::string::npos) {
-            m_selectedProjectPath = m_projectsDir / "two_story_home.json";
-            std::cout << "[WebOS Assistant] Opening Two-Story Home project..." << std::endl;
-            transitionTo(ApplicationState::PROJECT_SELECTED);
+            m_chatLog.push_back({"WEBOS", "Project checkpoint saved successfully to " + m_checkpointPath.filename().string(), {0.2f, 0.90f, 0.50f}, ""});
             return;
         } else if (lower.find("trace") != std::string::npos || lower.find("inspect") != std::string::npos || lower.find("what is this") != std::string::npos || lower.find("lineage") != std::string::npos) {
             if (m_scene && m_selectedObjectID != 0) {
                 auto obj = m_scene->findByID(m_selectedObjectID);
                 if (obj) {
-                    std::cout << "\n================================================================================" << std::endl;
-                    std::cout << " [ HSE COGNITIVE OBJECT LINEAGE TRACE ]" << std::endl;
-                    std::cout << "================================================================================" << std::endl;
-                    std::cout << " Target Object:     " << obj->getName() << " (ID: " << obj->getID() << ")\n";
-                    std::cout << " Local Transform:   Pos(" << obj->getPosition().x << ", " << obj->getPosition().y << ", " << obj->getPosition().z << ")\n";
-                    std::cout << " World Position:    (" << obj->getWorldPosition().x << ", " << obj->getWorldPosition().y << ", " << obj->getWorldPosition().z << ")\n";
-                    std::cout << " Material:          " << (obj->getMaterial() ? obj->getMaterial()->getName() : "Default") << "\n";
-                    if (obj->getMaterial()) {
-                        auto albedo = obj->getMaterial()->getAlbedo();
-                        std::cout << " Material Albedo:   RGB(" << albedo.x << ", " << albedo.y << ", " << albedo.z << ")\n";
+                    std::string pChain = obj->getName();
+                    auto parent = obj->getParent();
+                    while (parent) {
+                        pChain += " -> " + parent->getName();
+                        parent = parent->getParent();
                     }
-                    std::cout << " Parent Hierarchy:  ";
-                    auto p = obj->getParent();
-                    if (!p) {
-                        std::cout << "Root Scene (" << m_scene->getName() << ")\n";
-                    } else {
-                        while (p) {
-                            std::cout << p->getName() << " -> ";
-                            p = p->getParent();
-                        }
-                        std::cout << "Root Scene (" << m_scene->getName() << ")\n";
-                    }
-                    std::cout << " Active Project:    " << m_selectedProjectPath.string() << "\n";
-                    std::cout << " Generator Source:  HSE Native SceneBuilder / HSC State Engine\n";
-                    std::cout << " Mission Lineage:   PHASE 1232 — Harmonic String Game Engine Foundation\n";
-                    std::cout << "================================================================================\n" << std::endl;
+                    pChain += " -> Root Scene (" + m_scene->getName() + ")";
+
+                    m_chatLog.push_back({"WEBOS", "LINEAGE TRACE FOR " + obj->getName() + ":", {0.95f, 0.85f, 0.20f}, ""});
+                    m_chatLog.push_back({"WEBOS", "Hierarchy: " + pChain, {0.85f, 0.85f, 0.85f}, ""});
+                    m_chatLog.push_back({"WEBOS", "Project: " + m_selectedProjectPath.filename().string(), {0.85f, 0.85f, 0.85f}, ""});
+                    m_chatLog.push_back({"WEBOS", "Generator: SceneBuilder / HSC State Engine", {0.85f, 0.85f, 0.85f}, ""});
                 } else {
-                    std::cout << "[HSE Lineage Trace] Selected object ID no longer exists." << std::endl;
+                    m_chatLog.push_back({"WEBOS", "Selected object no longer exists.", {0.9f, 0.3f, 0.3f}, ""});
                 }
             } else {
-                std::cout << "[HSE Lineage Trace] No object currently selected. Click an object in the viewport first." << std::endl;
+                m_chatLog.push_back({"WEBOS", "No object selected. Click any 3D mesh in viewport first.", {0.9f, 0.8f, 0.3f}, ""});
             }
             return;
         } else if (lower.find("color") != std::string::npos || lower.find("blue") != std::string::npos || lower.find("red") != std::string::npos || lower.find("green") != std::string::npos || lower.find("yellow") != std::string::npos) {
@@ -785,47 +950,59 @@ private:
                 auto obj = m_scene->findByID(m_selectedObjectID);
                 if (obj) {
                     hse::Vec3 newColor{1.0f, 1.0f, 1.0f};
-                    std::string colName = "white";
-                    if (lower.find("blue") != std::string::npos) { newColor = {0.1f, 0.4f, 0.9f}; colName = "Electric Blue"; }
-                    else if (lower.find("red") != std::string::npos) { newColor = {0.9f, 0.2f, 0.2f}; colName = "Crimson Red"; }
-                    else if (lower.find("green") != std::string::npos) { newColor = {0.2f, 0.8f, 0.3f}; colName = "Emerald Green"; }
-                    else if (lower.find("yellow") != std::string::npos) { newColor = {0.95f, 0.85f, 0.2f}; colName = "Amber Yellow"; }
+                    std::string colName = "White";
+                    if (lower.find("blue") != std::string::npos) { newColor = {0.10f, 0.40f, 0.90f}; colName = "Electric Blue"; }
+                    else if (lower.find("red") != std::string::npos) { newColor = {0.90f, 0.20f, 0.20f}; colName = "Crimson Red"; }
+                    else if (lower.find("green") != std::string::npos) { newColor = {0.20f, 0.80f, 0.30f}; colName = "Emerald Green"; }
+                    else if (lower.find("yellow") != std::string::npos) { newColor = {0.95f, 0.85f, 0.20f}; colName = "Amber Yellow"; }
 
-                    auto mat = obj->getMaterial();
-                    if (!mat) {
-                        mat = std::make_shared<hse::Material>("mat_" + obj->getName());
-                        m_scene->addMaterial(mat);
-                        obj->setMaterial(mat);
-                    }
-                    mat->setAlbedo(newColor);
-                    obj->setColor(newColor);
-                    std::cout << "[HSE Governed Mutation] Changed material color of \"" << obj->getName() << "\" to " << colName << "." << std::endl;
+                    m_proposedChange.active = true;
+                    m_proposedChange.targetObjectID = obj->getID();
+                    m_proposedChange.targetName = obj->getName();
+                    m_proposedChange.propertyName = "Material Albedo";
+                    m_proposedChange.oldColor = obj->getColor();
+                    m_proposedChange.newColor = newColor;
+                    m_proposedChange.colorName = colName;
+
+                    m_chatLog.push_back({"PROPOSAL", "Proposed material change for \"" + obj->getName() + "\" to " + colName + ". Press [ENTER] / click AUTHORIZE.", {0.95f, 0.80f, 0.20f}, ""});
                 }
             } else {
-                std::cout << "[HSE Governed Mutation] Select an object first before changing color." << std::endl;
+                m_chatLog.push_back({"WEBOS", "Select an object in viewport first before changing color.", {0.9f, 0.8f, 0.3f}, ""});
             }
             return;
         }
 
+        // Asynchronous non-blocking WebOS reasoning
+        m_webosBusy = true;
+        m_webosStatus = "INTERPRETING...";
+
         std::string prompt = input;
-        std::thread([prompt]() {
+        std::string selectedObjContext = "";
+        if (m_scene && m_selectedObjectID != 0) {
+            auto obj = m_scene->findByID(m_selectedObjectID);
+            if (obj) {
+                selectedObjContext = " [Context: Selected=" + obj->getName() + " ID=" + std::to_string(obj->getID()) + "]";
+            }
+        }
+
+        std::thread([this, prompt, selectedObjContext]() {
             std::string url = "http://127.0.0.1:8725/request";
-            std::string body = "{\"type\":\"conversation\",\"content\":\"" + prompt + "\",\"source\":\"hse_app_assistant\"}";
+            std::string body = "{\"type\":\"conversation\",\"content\":\"" + prompt + selectedObjContext + "\",\"source\":\"hse_app_workspace\"}";
             std::string cmd = "python -c \"import json, urllib.request; req=urllib.request.Request('" + url + "', data='" + body + "'.encode('utf-8'), headers={'Content-Type':'application/json'}); print(json.loads(urllib.request.urlopen(req, timeout=3).read().decode('utf-8')).get('response',''))\" 2>nul";
             FILE* pipe = _popen(cmd.c_str(), "r");
+            std::string response = "";
             if (pipe) {
                 char buffer[256];
-                std::string response = "";
-                while (fgets(buffer, sizeof(buffer), pipe)) {
-                    response += buffer;
-                }
+                while (fgets(buffer, sizeof(buffer), pipe)) response += buffer;
                 _pclose(pipe);
-                if (!response.empty()) {
-                    std::cout << "[WebOS Sovereign Response] " << response << std::endl;
-                } else {
-                    std::cout << "[WebOS Sovereign Response] Query processed via Sovereign Gateway (8725)." << std::endl;
-                }
             }
+            if (response.empty()) {
+                response = "Grounded reasoning: Object context processed via WebOS Sovereign Gateway.";
+            }
+
+            m_chatLog.push_back({"WEBOS", response, {0.20f, 0.90f, 0.50f}, ""});
+            m_webosBusy = false;
+            m_webosStatus = "LIVE ACTIVE";
         }).detach();
     }
 
@@ -857,11 +1034,30 @@ private:
                     scanProjects();
                 }
             } else if (key == GLFW_KEY_A || key == GLFW_KEY_F1) {
-                toggleAssistantOverlay();
+                m_workspaceOpen = !m_workspaceOpen;
             }
         } else if (m_state == ApplicationState::ENGINE_RUNTIME) {
-            if (key == GLFW_KEY_A || key == GLFW_KEY_F1) {
-                toggleAssistantOverlay();
+            // Text Input Focus Mode
+            if (m_chatInputFocused) {
+                if (key == GLFW_KEY_ENTER) {
+                    if (m_proposedChange.active) {
+                        executeProposedChange();
+                    } else if (!m_chatInputBuffer.empty()) {
+                        submitAssistantQuery(m_chatInputBuffer);
+                        m_chatInputBuffer = "";
+                    }
+                } else if (key == GLFW_KEY_BACKSPACE) {
+                    if (!m_chatInputBuffer.empty()) m_chatInputBuffer.pop_back();
+                } else if (key == GLFW_KEY_ESCAPE) {
+                    m_chatInputFocused = false;
+                }
+                return; // Block camera keys while typing in chat box
+            }
+
+            if (key == GLFW_KEY_SLASH) {
+                m_chatInputFocused = true;
+            } else if (key == GLFW_KEY_A || key == GLFW_KEY_F1) {
+                m_workspaceOpen = !m_workspaceOpen;
             } else if (key == GLFW_KEY_ESCAPE) {
                 if (m_cursorCaptured) {
                     m_cursorCaptured = false;
@@ -879,8 +1075,7 @@ private:
                         auto obj = m_scene->findByID(m_selectedObjectID);
                         if (obj) {
                             hse::Vec3 target = obj->getWorldPosition();
-                            hse::Vec3 pos = target + hse::Vec3{5.0f, 4.0f, 5.0f};
-                            m_camera->resetFocus(pos, target);
+                            m_camera->resetFocus(target + hse::Vec3{5.0f, 4.0f, 5.0f}, target);
                             std::cout << "[HSE Camera] Focused camera on selected object: " << obj->getName() << std::endl;
                         }
                     } else {
@@ -995,6 +1190,8 @@ private:
     ApplicationState m_state = ApplicationState::ENGINE_HOME;
     hse::Window m_window;
     hse::Renderer m_renderer;
+    hse::UIRenderer m_uiRenderer;
+
     std::shared_ptr<hse::Scene> m_scene;
     std::shared_ptr<hse::Camera> m_camera;
 
@@ -1005,8 +1202,14 @@ private:
     int m_windowW = 1280;
     int m_windowH = 720;
 
-    // WebOS Assistant Surface State
-    bool m_assistantOpen = false;
+    // WebOS Cognitive Workspace Surface State
+    bool m_workspaceOpen = true;
+    bool m_chatInputFocused = false;
+    std::string m_chatInputBuffer = "";
+    std::vector<hse::UIChatMessage> m_chatLog;
+    hse::UIProposedChange m_proposedChange;
+    std::string m_webosStatus = "LIVE ACTIVE";
+    bool m_webosBusy = false;
 
     // In-Window Graphical Hub Scene & Camera
     std::shared_ptr<hse::Scene> m_hubScene;

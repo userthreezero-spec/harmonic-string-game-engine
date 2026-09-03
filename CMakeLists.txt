@@ -11,6 +11,7 @@ find_package(GLEW REQUIRED)
 add_library(hse_core STATIC
     src/core/window.cpp
     src/renderer/renderer.cpp
+    src/renderer/ui_renderer.cpp
     src/renderer/texture.cpp
     src/renderer/material.cpp
     src/scene/scene.cpp
@@ -149,6 +150,10 @@ add_test(NAME CanonicalPathGuardTests COMMAND hse_test_canonical_path_guard)
 add_executable(hse_test_phase1232 tests/test_phase1232_engine_foundation.cpp)
 target_link_libraries(hse_test_phase1232 PRIVATE hse_core)
 add_test(NAME Phase1232FoundationTests COMMAND hse_test_phase1232)
+
+add_executable(hse_test_phase1233 tests/test_phase1233_workspace_ui.cpp)
+target_link_libraries(hse_test_phase1233 PRIVATE hse_core)
+add_test(NAME Phase1233WorkspaceUITests COMMAND hse_test_phase1233)
 
 # [WebOS Native Engineering Actuator] runtime DLL deployment
 # Deploys the toolchain/runtime DLLs next to the executable so the built product
