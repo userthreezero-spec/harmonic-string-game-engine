@@ -16,14 +16,6 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     }
 }
 
-void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-    auto* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    if (win) {
-        win->m_scrollX += static_cast<float>(xoffset);
-        win->m_scrollY += static_cast<float>(yoffset);
-    }
-}
-
 Window::Window(const WindowProps& props)
     : m_width(props.width), m_height(props.height)
 {
@@ -46,10 +38,6 @@ Window::Window(const WindowProps& props)
     glfwMakeContextCurrent(m_window);
     glfwSetWindowUserPointer(m_window, this);
     glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
-    glfwSetScrollCallback(m_window, scrollCallback);
-
-    // Get actual framebuffer size (handles DPI scaling)
-    glfwGetFramebufferSize(m_window, &m_width, &m_height);
 
     if (props.vsync) {
         glfwSwapInterval(1);
@@ -61,8 +49,7 @@ Window::~Window() {
         glfwDestroyWindow(m_window);
         m_window = nullptr;
     }
-    // Note: glfwTerminate() should be called once at process exit
-    // For v0.1, we rely on OS cleanup
+    glfwTerminate();
 }
 
 bool Window::shouldClose() const {
@@ -78,8 +65,9 @@ void Window::swapBuffers() {
     if (m_window) glfwSwapBuffers(m_window);
 }
 
-void Window::setResizeCallback(std::function<void(int, int)> callback) {
-    m_resizeCallback = callback;
+bool Window::isKeyPressed(int key) const {
+    if (!m_window) return false;
+    return glfwGetKey(m_window, key) == GLFW_PRESS;
 }
 
 bool Window::isMouseButtonPressed(int button) const {
@@ -87,24 +75,21 @@ bool Window::isMouseButtonPressed(int button) const {
     return glfwGetMouseButton(m_window, button) == GLFW_PRESS;
 }
 
-bool Window::isKeyPressed(int key) const {
-    if (!m_window) return false;
-    return glfwGetKey(m_window, key) == GLFW_PRESS;
+float Window::getDeltaTime() {
+    double current = glfwGetTime();
+    if (m_lastFrameTime == 0.0) m_lastFrameTime = current;
+    float dt = static_cast<float>(current - m_lastFrameTime);
+    m_lastFrameTime = current;
+    return (dt > 0.1f) ? 0.1f : dt;
 }
 
 void Window::getMousePosition(double& x, double& y) const {
-    if (m_window) {
-        glfwGetCursorPos(m_window, &x, &y);
-    } else {
-        x = 0; y = 0;
-    }
+    if (m_window) glfwGetCursorPos(m_window, &x, &y);
+    else { x = 0; y = 0; }
 }
 
-float Window::getDeltaTime() {
-    double currentTime = glfwGetTime();
-    float dt = static_cast<float>(currentTime - m_lastFrameTime);
-    m_lastFrameTime = currentTime;
-    return dt;
+void Window::setResizeCallback(std::function<void(int, int)> callback) {
+    m_resizeCallback = callback;
 }
 
 } // namespace hse

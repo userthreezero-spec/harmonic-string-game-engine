@@ -1,63 +1,65 @@
 #include "scene/scene.h"
-#include "scene/camera.h"
-#include "scene/primitive.h"
 #include "scene/light.h"
-#include "math/bounding_box.h"
-#include "renderer/material.h"
+#include "scene/primitive.h"
+#include "scene/camera.h"
+#include "scene/animated_light.h"
+#include "scene/animated_primitive.h"
+#include "scene/timeline.h"
 
 namespace hse {
 
 Scene::Scene(const std::string& name) : m_name(name) {}
 Scene::~Scene() = default;
 
+void Scene::computeAllWorldMatrices() {
+    for (auto& p : m_primitives) {
+        p->updateWorldTransform();
+    }
+}
+
 void Scene::addPrimitive(std::shared_ptr<Primitive> primitive) {
-    size_t idx = m_primitives.size();
     m_primitives.push_back(primitive);
-    m_idIndex[primitive->getID()] = idx;
 }
 
 void Scene::removePrimitive(int index) {
     if (index >= 0 && index < static_cast<int>(m_primitives.size())) {
         m_primitives.erase(m_primitives.begin() + index);
-        rebuildIDIndex();
     }
 }
 
-bool Scene::removePrimitiveByID(uint64_t id) {
-    auto it = m_idIndex.find(id);
-    if (it == m_idIndex.end()) return false;
-    size_t idx = it->second;
-    if (idx >= m_primitives.size()) return false;
-    m_primitives.erase(m_primitives.begin() + idx);
-    rebuildIDIndex();
-    return true;
-}
-
-std::shared_ptr<Primitive> Scene::findByID(uint64_t id) const {
-    auto it = m_idIndex.find(id);
-    if (it == m_idIndex.end()) return nullptr;
-    if (it->second >= m_primitives.size()) return nullptr;
-    return m_primitives[it->second];
-}
-
-std::shared_ptr<Primitive> Scene::findByName(const std::string& name) const {
-    for (auto& p : m_primitives) {
-        if (p->getName() == name) return p;
+void Scene::removePrimitiveByID(uint64_t id) {
+    for (auto it = m_primitives.begin(); it != m_primitives.end(); ++it) {
+        if ((*it)->getID() == id) {
+            m_primitives.erase(it);
+            break;
+        }
     }
-    return nullptr;
 }
 
-int Scene::findIndexByID(uint64_t id) const {
-    auto it = m_idIndex.find(id);
-    if (it == m_idIndex.end()) return -1;
-    return static_cast<int>(it->second);
-}
-
-void Scene::rebuildIDIndex() {
-    m_idIndex.clear();
-    for (size_t i = 0; i < m_primitives.size(); i++) {
-        m_idIndex[m_primitives[i]->getID()] = i;
+std::vector<uint64_t> Scene::getCollisions(uint64_t id) {
+    std::vector<uint64_t> result;
+    auto target = findByID(id);
+    if (!target) return result;
+    target->updateWorldTransform();
+    BoundingBox targetBB = target->getBoundingBox();
+    for (const auto& p : m_primitives) {
+        if (p->getID() != id) {
+            p->updateWorldTransform();
+            if (p->getBoundingBox().intersects(targetBB)) {
+                result.push_back(p->getID());
+            }
+        }
     }
+    return result;
+}
+
+bool Scene::checkCollision(uint64_t id1, uint64_t id2) {
+    auto p1 = findByID(id1);
+    auto p2 = findByID(id2);
+    if (!p1 || !p2) return false;
+    p1->updateWorldTransform();
+    p2->updateWorldTransform();
+    return p1->getBoundingBox().intersects(p2->getBoundingBox());
 }
 
 void Scene::addCamera(std::shared_ptr<Camera> camera) {
@@ -78,8 +80,8 @@ std::shared_ptr<Camera> Scene::getActiveCamera() const {
     return m_cameras[m_activeCameraIndex];
 }
 
-void Scene::addLight(std::shared_ptr<Light> light) {
-    if (light) m_lights.push_back(light);
+void Scene::addLight(const Light& light) {
+    m_lights.push_back(light);
 }
 
 void Scene::removeLight(int index) {
@@ -88,85 +90,196 @@ void Scene::removeLight(int index) {
     }
 }
 
-void Scene::addMaterial(std::shared_ptr<Material> material) {
-    if (material) {
-        m_materials[material->getName()] = material;
+Light& Scene::getLight(int index) {
+    return m_lights[index];
+}
+
+void Scene::addAnimatedLight(const AnimatedLight& al) {
+    m_animatedLights.push_back(al);
+}
+
+void Scene::removeAnimatedLight(int index) {
+    if (index >= 0 && index < static_cast<int>(m_animatedLights.size())) {
+        m_animatedLights.erase(m_animatedLights.begin() + index);
     }
 }
 
-std::shared_ptr<Material> Scene::getMaterial(const std::string& name) const {
-    auto it = m_materials.find(name);
-    if (it != m_materials.end()) return it->second;
-    return nullptr;
+void Scene::addAnimatedPrimitive(const AnimatedPrimitive& ap) {
+    m_animatedPrimitives.push_back(ap);
 }
 
-bool Scene::reparent(uint64_t childID, uint64_t parentID) {
-    if (childID == parentID) return false;
-    auto child = findByID(childID);
-    auto parent = findByID(parentID);
-    if (!child) return false;
-    if (parentID != 0 && !parent) return false;
-    child->setParent(parent);
-    return true;
+void Scene::removeAnimatedPrimitive(int index) {
+    if (index >= 0 && index < static_cast<int>(m_animatedPrimitives.size())) {
+        m_animatedPrimitives.erase(m_animatedPrimitives.begin() + index);
+    }
 }
 
-std::vector<std::shared_ptr<Primitive>> Scene::getRoots() const {
-    std::vector<std::shared_ptr<Primitive>> roots;
-    for (auto& p : m_primitives) {
-        if (!p->getParent()) {
-            roots.push_back(p);
+void Scene::addTimeline(std::shared_ptr<Timeline> timeline) {
+    m_timelines.push_back(timeline);
+}
+
+void Scene::removeTimeline(int index) {
+    if (index >= 0 && index < static_cast<int>(m_timelines.size())) {
+        m_timelines.erase(m_timelines.begin() + index);
+    }
+}
+
+void Scene::addRelationship(const std::string& from, const std::string& rel, const std::string& to, float stiffness, float damping) {
+    m_relationships.push_back({from, rel, to, stiffness, damping, {0.0f, 0.0f, 0.0f}});
+}
+
+float Scene::getTotalKineticEnergy() const {
+    float total = 0.0f;
+    for (const auto& p : m_primitives) {
+        total += p->getKineticEnergy();
+    }
+    return total;
+}
+
+float Scene::getTotalPotentialEnergy() const {
+    float total = 0.0f;
+    for (const auto& p : m_primitives) {
+        total += p->getPotentialEnergy();
+    }
+    for (const auto& rel : m_relationships) {
+        if (rel.stiffness <= 0.0f) continue;
+        std::shared_ptr<Primitive> fromPrim = nullptr, toPrim = nullptr;
+        for (const auto& p : m_primitives) {
+            if (p->getName() == rel.from) fromPrim = p;
+            if (p->getName() == rel.to) toPrim = p;
+        }
+        if (fromPrim && toPrim) {
+            Vec3 delta = toPrim->getPosition() - fromPrim->getPosition();
+            total += 0.5f * rel.stiffness * delta.dot(delta);
         }
     }
-    return roots;
+    return total;
 }
 
-void Scene::computeAllWorldMatrices() {
-    auto roots = getRoots();
-    for (auto& root : roots) {
-        root->computeWorldMatrix();
-    }
+float Scene::getTotalSystemEnergy() const {
+    return getTotalKineticEnergy() + getTotalPotentialEnergy();
 }
 
 void Scene::update(float deltaTime) {
+    if (deltaTime <= 0.0f) return;
+
+    m_time += deltaTime;
+
+    for (auto& tl : m_timelines) {
+        tl->update(deltaTime);
+    }
+
+    for (auto& al : m_animatedLights) {
+        al.update(deltaTime, m_time);
+    }
+
+    for (auto& ap : m_animatedPrimitives) {
+        ap.update(deltaTime, m_time);
+    }
+
     for (auto& prim : m_primitives) {
-        Vec3 rot = prim->getRotation();
-        Vec3 speed = prim->getRotationSpeed();
-        rot.x += speed.x * deltaTime;
-        rot.y += speed.y * deltaTime;
-        rot.z += speed.z * deltaTime;
-        prim->setRotation(rot);
+        if (prim->getRotationSpeed().length() > 0.00001f) {
+            prim->setRotation(prim->getRotation() + prim->getRotationSpeed() * deltaTime);
+        }
+        prim->updateWorldTransform();
     }
 
     auto cam = getActiveCamera();
-    if (cam) {
+    if (cam && cam->isOrbitEnabled()) {
         cam->updateOrbit(deltaTime);
     }
-}
 
-bool Scene::checkCollision(uint64_t id1, uint64_t id2) {
-    auto p1 = findByID(id1);
-    auto p2 = findByID(id2);
-    if (!p1 || !p2) return false;
+    if (m_physicsEnabled) {
+        // Physical Mass-Spring-Damper Dynamics Simulation
+        for (auto& prim : m_primitives) {
+            if (prim->getSelfStiffness() > 0.0f || prim->getSelfDamping() > 0.0f) {
+                Vec3 disp = prim->getPosition() - prim->getRestPosition();
+                Vec3 fSelfSpring = disp * (-prim->getSelfStiffness());
+                Vec3 fSelfDamping = prim->getVelocity() * (-prim->getSelfDamping());
+                prim->addForce(fSelfSpring + fSelfDamping);
+            }
+        }
 
-    computeAllWorldMatrices(); // Ensure transforms are up to date
-    return p1->getBoundingBox().intersects(p2->getBoundingBox());
-}
+        for (auto& rel : m_relationships) {
+            if (rel.stiffness <= 0.0f && rel.damping <= 0.0f) continue;
+            std::shared_ptr<Primitive> fromPrim = nullptr, toPrim = nullptr;
+            for (auto& p : m_primitives) {
+                if (p->getName() == rel.from) fromPrim = p;
+                if (p->getName() == rel.to) toPrim = p;
+            }
+            if (!fromPrim || !toPrim) continue;
 
-std::vector<uint64_t> Scene::getCollisions(uint64_t id) {
-    std::vector<uint64_t> collisions;
-    auto p = findByID(id);
-    if (!p) return collisions;
+            if (rel.rel == "supports") {
+                float supporterTop = fromPrim->getPosition().y + fromPrim->getScale().y * 0.5f;
+                float targetY = supporterTop + toPrim->getScale().y * 0.5f;
+                float diffY = toPrim->getPosition().y - targetY;
 
-    computeAllWorldMatrices();
-    BoundingBox bb = p->getBoundingBox();
+                float fSpringY = -rel.stiffness * diffY;
+                float relVelY = toPrim->getVelocity().y - fromPrim->getVelocity().y;
+                float fDampingY = -rel.damping * relVelY;
+                float totalFy = fSpringY + fDampingY;
 
-    for (auto& other : m_primitives) {
-        if (other->getID() == id) continue;
-        if (bb.intersects(other->getBoundingBox())) {
-            collisions.push_back(other->getID());
+                toPrim->addForce({0.0f, totalFy, 0.0f});
+                fromPrim->addForce({0.0f, -totalFy, 0.0f});
+            } else if (rel.rel == "mounted_on") {
+                Vec3 currentOffset = fromPrim->getPosition() - toPrim->getPosition();
+                Vec3 targetOffset = fromPrim->getRestPosition() - toPrim->getRestPosition();
+                Vec3 disp = currentOffset - targetOffset;
+
+                Vec3 fSpring = disp * (-rel.stiffness);
+                Vec3 relVel = fromPrim->getVelocity() - toPrim->getVelocity();
+                Vec3 fDamping = relVel * (-rel.damping);
+                Vec3 totalF = fSpring + fDamping;
+
+                fromPrim->addForce(totalF);
+                toPrim->addForce(totalF * (-1.0f));
+            }
+        }
+
+        for (auto& prim : m_primitives) {
+            if (prim->getNetForce().length() > 0.00001f || prim->getVelocity().length() > 0.00001f) {
+                Vec3 acc = prim->getNetForce() * (1.0f / prim->getMass());
+                prim->setAcceleration(acc);
+
+                Vec3 vel = prim->getVelocity() + acc * deltaTime;
+                prim->setVelocity(vel);
+
+                Vec3 pos = prim->getPosition() + vel * deltaTime;
+                prim->setPosition(pos);
+            }
+            prim->clearForces(); // Clear accumulated forces at end of step
+            prim->updateWorldTransform();
         }
     }
-    return collisions;
+
+    // Kinematic multi-pass relationship propagation for zero-stiffness structural relationships
+    for (int pass = 0; pass < 3; ++pass) {
+        for (auto& rel : m_relationships) {
+            if (rel.stiffness > 0.0f) continue; // Skip physical relationships handled by forces
+            std::shared_ptr<Primitive> fromPrim = nullptr, toPrim = nullptr;
+            for (auto& p : m_primitives) {
+                if (p->getName() == rel.from) fromPrim = p;
+                if (p->getName() == rel.to) toPrim = p;
+            }
+            if (!fromPrim || !toPrim) continue;
+            if (rel.rel == "supports") {
+                Vec3 supporterPos = fromPrim->getPosition();
+                Vec3 supporterScale = fromPrim->getScale();
+                Vec3 supportedPos = toPrim->getPosition();
+                Vec3 supportedScale = toPrim->getScale();
+                float supporterTop = supporterPos.y + supporterScale.y * 0.5f;
+                float supportedY = supporterTop + supportedScale.y * 0.5f;
+                toPrim->setPosition({supportedPos.x, supportedY, supportedPos.z});
+                toPrim->updateWorldTransform();
+            } else if (rel.rel == "mounted_on") {
+                Vec3 mountPos = toPrim->getPosition();
+                Vec3 fromPos = fromPrim->getPosition();
+                float yOffset = fromPos.y - mountPos.y;
+                fromPrim->setPosition({mountPos.x, mountPos.y + yOffset, mountPos.z});
+                fromPrim->updateWorldTransform();
+            }
+        }
+    }
 }
 
 } // namespace hse

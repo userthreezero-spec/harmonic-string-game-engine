@@ -1,0 +1,167 @@
+{
+  "SRC-AZURE-01": {
+    "source_id": "SRC-AZURE-01",
+    "organization": "Microsoft Azure",
+    "title": "Azure Architecture Center",
+    "url": "https://learn.microsoft.com/en-us/azure/architecture/",
+    "topic": "cloud & application architecture",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.9161997
+  },
+  "SRC-SEI-01": {
+    "source_id": "SRC-SEI-01",
+    "organization": "Carnegie Mellon SEI",
+    "title": "SEI Software Architecture Practices",
+    "url": "https://www.sei.cmu.edu/",
+    "topic": "architectural technical debt & evolution",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.9161997
+  },
+  "SRC-APPLE-01": {
+    "source_id": "SRC-APPLE-01",
+    "organization": "Apple",
+    "title": "Human Interface Guidelines",
+    "url": "https://developer.apple.com/design/human-interface-guidelines/",
+    "topic": "macOS/desktop HIG, navigation & interaction",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.9161997
+  },
+  "SRC-FLUENT-01": {
+    "source_id": "SRC-FLUENT-01",
+    "organization": "Microsoft",
+    "title": "Fluent 2 Design System",
+    "url": "https://fluent2.microsoft.design/",
+    "topic": "system-level behavior, layout & accessibility",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.9161997
+  },
+  "SRC-M3-01": {
+    "source_id": "SRC-M3-01",
+    "organization": "Google",
+    "title": "Material Design 3",
+    "url": "https://m3.material.io/",
+    "topic": "adaptive layouts, design system principles",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.9161997
+  },
+  "SRC-GCAF-01": {
+    "source_id": "SRC-GCAF-01",
+    "organization": "Google Cloud",
+    "title": "Google Cloud Architecture Framework",
+    "url": "https://cloud.google.com/architecture/framework",
+    "topic": "reliability, operational excellence, security",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.9161997
+  },
+  "SRC-AWS-01": {
+    "source_id": "SRC-AWS-01",
+    "organization": "AWS",
+    "title": "AWS Well-Architected Framework",
+    "url": "https://aws.amazon.com/architecture/well-architected/",
+    "topic": "resilience, performance efficiency, cost optimization",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.9161997
+  },
+  "SRC-W3C-01": {
+    "source_id": "SRC-W3C-01",
+    "organization": "W3C WAI",
+    "title": "Web Content Accessibility Guidelines",
+    "url": "https://www.w3.org/WAI/",
+    "topic": "accessibility standards",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.917203
+  },
+  "SRC-FOWLER-01": {
+    "source_id": "SRC-FOWLER-01",
+    "organization": "Martin Fowler",
+    "title": "Software Architecture & Design Patterns",
+    "url": "https://martinfowler.com/",
+    "topic": "domain-driven design, refactoring, microservices",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.917203
+  },
+  "SRC-LLVM-01": {
+    "source_id": "SRC-LLVM-01",
+    "organization": "LLVM Foundation",
+    "title": "LLVM Compiler Infrastructure Architecture",
+    "url": "https://llvm.org/docs/",
+    "topic": "modular compiler architecture, intermediate representation",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.917203
+  },
+  "SRC-VSCODE-01": {
+    "source_id": "SRC-VSCODE-01",
+    "organization": "Microsoft",
+    "title": "VS Code Architecture",
+    "url": "https://code.visualstudio.com/api",
+    "topic": "extension host architecture, IPC, webview boundaries",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.917203
+  },
+  "SRC-QT-01": {
+    "source_id": "SRC-QT-01",
+    "organization": "The Qt Company",
+    "title": "Qt Application Framework Architecture",
+    "url": "https://doc.qt.io/",
+    "topic": "cross-platform GUI, signal-slot event loop, QObject hierarchy",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.917203
+  },
+  "SRC-BLENDER-01": {
+    "source_id": "SRC-BLENDER-01",
+    "organization": "Blender Foundation",
+    "title": "Blender Architecture & Source Code",
+    "url": "https://wiki.blender.org/",
+    "topic": "node-based scene graph, undo stack, viewport rendering",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.917203
+  },
+  "SRC-UNREAL-01": {
+    "source_id": "SRC-UNREAL-01",
+    "organization": "Epic Games",
+    "title": "Unreal Engine Architecture",
+    "url": "https://docs.unrealengine.com/",
+    "topic": "UObject reflection, component architecture, slate UI",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.917203
+  },
+  "SRC-UNITY-01": {
+    "source_id": "SRC-UNITY-01",
+    "organization": "Unity Technologies",
+    "title": "Unity Engine Architecture",
+    "url": "https://docs.unity3d.com/",
+    "topic": "GameObject-Component model, serialization, Editor scripting",
+    "category": "SOFTWARE_ARCHITECTURE",
+    "confidence": 0.95,
+    "provenance": "UCS_PRIME_P1223",
+    "crawl_timestamp": 1788415689.917203
+  }
+}

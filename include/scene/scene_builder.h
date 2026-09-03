@@ -30,6 +30,7 @@ struct ProjectManifest {
 class SceneBuilder {
 public:
     static std::shared_ptr<Scene> buildRoom();
+    static std::shared_ptr<Scene> buildTwoStoryHome();
     static std::shared_ptr<Scene> importState(const std::string& path, ProjectManifest& manifest);
     static void exportState(const Scene& scene, const std::string& path);
     static void exportHSC(const Scene& scene, const Camera& camera, const ProjectManifest& manifest, const std::string& path);

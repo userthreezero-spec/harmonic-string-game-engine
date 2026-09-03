@@ -1,0 +1,23 @@
+{
+  "phase": "1219",
+  "decisions": [
+    {
+      "id": "UX-DEC-001",
+      "decision": "Replace machine-oriented numeric prompts with human-centered project cards",
+      "rationale": "Applies NN/g Recognition Over Recall and Jakob's Law for desktop application conventions",
+      "status": "APPROVED_AND_IMPLEMENTED"
+    },
+    {
+      "id": "UX-DEC-002",
+      "decision": "Preserve headless auto-selection for CI / test harnesses",
+      "rationale": "Prevents breaking automated test pipelines while providing human-centered UI for real users",
+      "status": "APPROVED_AND_IMPLEMENTED"
+    },
+    {
+      "id": "UX-DEC-003",
+      "decision": "Hardware-aware OpenGL 3.3 rendering for Intel UHD 615 / Pentium 4425Y",
+      "rationale": "Ensures smooth 60 FPS VSync capped performance on ultra-mobile PC hardware",
+      "status": "APPROVED_AND_IMPLEMENTED"
+    }
+  ]
+}

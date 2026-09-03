@@ -1,0 +1,19 @@
+{
+  "mission_id": "REQ-BB482737",
+  "phase": "PHASE 1230 \u2014 TAILCAT MISSION COCKPIT & PHYSICAL END-TO-END VALIDATION",
+  "parent_goal_id": "GOAL-WEBOS-TAILCAT-002",
+  "tailscale_ip": "100.86.243.117",
+  "port": 8725,
+  "http_endpoints_verified": [
+    "/goals/bundle",
+    "/goals/tree",
+    "/goals/ledger",
+    "/progress/{state}",
+    "/report/{id}"
+  ],
+  "second_mission_regression": "PASSED_ZERO_CONTAMINATION",
+  "autonomy_test": "PROVEN_AUTONOMOUS",
+  "git_publication_status": "LOCAL_COMMIT_CREATED_REMOTE_BLOCKED",
+  "provenance": "UCS_PRIME_P1230",
+  "timestamp": 1788461489.7721467
+}

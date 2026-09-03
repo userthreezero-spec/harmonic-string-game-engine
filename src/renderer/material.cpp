@@ -5,24 +5,28 @@ namespace hse {
 
 Material::Material(const std::string& name) : m_name(name) {}
 
-void Material::apply(unsigned int shaderProgram) const {
-    GLint albedoLoc = glGetUniformLocation(shaderProgram, "uMaterial.albedo");
-    GLint roughnessLoc = glGetUniformLocation(shaderProgram, "uMaterial.roughness");
-    GLint metallicLoc = glGetUniformLocation(shaderProgram, "uMaterial.metallic");
-    GLint hasMapLoc = glGetUniformLocation(shaderProgram, "uMaterial.hasAlbedoMap");
-    GLint mapLoc = glGetUniformLocation(shaderProgram, "uMaterial.albedoMap");
-
-    glUniform3f(albedoLoc, m_albedo.x, m_albedo.y, m_albedo.z);
-    glUniform1f(roughnessLoc, m_roughness);
-    glUniform1f(metallicLoc, m_metallic);
+void Material::apply(const Locations& locs) const {
+    if (locs.albedo != -1) glUniform3f(locs.albedo, m_albedo.x, m_albedo.y, m_albedo.z);
+    if (locs.roughness != -1) glUniform1f(locs.roughness, m_roughness);
+    if (locs.metallic != -1) glUniform1f(locs.metallic, m_metallic);
 
     if (hasAlbedoMap()) {
         m_albedoMap->bind(0);
-        glUniform1i(hasMapLoc, 1);
-        glUniform1i(mapLoc, 0);
+        if (locs.hasAlbedoMap != -1) glUniform1i(locs.hasAlbedoMap, 1);
+        if (locs.albedoMap != -1) glUniform1i(locs.albedoMap, 0);
     } else {
-        glUniform1i(hasMapLoc, 0);
+        if (locs.hasAlbedoMap != -1) glUniform1i(locs.hasAlbedoMap, 0);
     }
+}
+
+void Material::apply(unsigned int shaderProgram) const {
+    Locations locs;
+    locs.albedo = glGetUniformLocation(shaderProgram, "uMaterial.albedo");
+    locs.roughness = glGetUniformLocation(shaderProgram, "uMaterial.roughness");
+    locs.metallic = glGetUniformLocation(shaderProgram, "uMaterial.metallic");
+    locs.hasAlbedoMap = glGetUniformLocation(shaderProgram, "uMaterial.hasAlbedoMap");
+    locs.albedoMap = glGetUniformLocation(shaderProgram, "uMaterial.albedoMap");
+    apply(locs);
 }
 
 } // namespace hse

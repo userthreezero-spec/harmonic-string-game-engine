@@ -1,13 +1,11 @@
 #include "scene/primitive.h"
 #include <GL/glew.h>
-#include <algorithm>
 
 namespace hse {
 
-uint64_t Primitive::s_nextID = 1;
-uint64_t Primitive::nextID() { return s_nextID++; }
+static uint64_t s_nextID = 1;
 
-Primitive::Primitive(PrimitiveType type) : m_id(s_nextID++), m_type(type) {
+Primitive::Primitive(PrimitiveType type) : m_type(type), m_id(s_nextID++) {
     generateGeometry();
 }
 
@@ -19,139 +17,131 @@ Primitive::~Primitive() {
     }
 }
 
-void Primitive::setPosition(const Vec3& position) { m_position = position; }
+void Primitive::setPosition(const Vec3& position) {
+    m_position = position;
+}
 void Primitive::setRotation(const Vec3& rotation) { m_rotation = rotation; }
 void Primitive::setScale(const Vec3& scale) { m_scale = scale; }
-void Primitive::setRotationSpeed(const Vec3& speed) { m_rotationSpeed = speed; }
+void Primitive::setColor(const Vec3& color) { m_color = color; }
 
-void Primitive::setParent(std::shared_ptr<Primitive> parent) {
-    if (auto oldParent = m_parent.lock()) {
-        oldParent->removeChild(m_id);
+void Primitive::updateWorldTransform() {
+    float parentExplosion = 0.0f;
+    Primitive* p = m_parent;
+    while (p) {
+        parentExplosion += p->getExplosionFactor();
+        p = p->getParent();
     }
-    m_parent = parent;
-    if (parent) {
-        parent->addChild(shared_from_this());
-    }
-}
+    Vec3 effectivePos = m_position * (1.0f + parentExplosion);
 
-std::shared_ptr<Primitive> Primitive::getParent() const {
-    return m_parent.lock();
-}
-
-void Primitive::computeWorldMatrix() {
-    // Row-Vector Convention: v_world = v_local * M_local * M_parent
-    // M_local = S * R * T
-    Vec3 effectivePos = m_position;
-    auto parentPtr = m_parent.lock();
-
-    if (parentPtr && parentPtr->getExplosionFactor() > 0.0f) {
-        effectivePos = m_position * (1.0f + parentPtr->getExplosionFactor());
-    }
-
-    Mat4 local = Mat4::scale(m_scale)
-               * Mat4::rotate(m_rotation.x, {1, 0, 0})
-               * Mat4::rotate(m_rotation.y, {0, 1, 0})
-               * Mat4::rotate(m_rotation.z, {0, 0, 1})
-               * Mat4::translate(effectivePos);
-
-    if (parentPtr) {
-        m_worldMatrix = local * parentPtr->getWorldMatrix();
+    if (m_parent) {
+        const Mat4& parentWorld = m_parent->getWorldTransform();
+        Mat4 local = Mat4::translate(effectivePos)
+                   * Mat4::rotate(m_rotation.x, {1, 0, 0})
+                   * Mat4::rotate(m_rotation.y, {0, 1, 0})
+                   * Mat4::rotate(m_rotation.z, {0, 0, 1})
+                   * Mat4::scale(m_scale);
+        m_worldTransform = parentWorld * local;
+        m_worldPosition = parentWorld * effectivePos;
+        m_worldRotation = m_parent->getWorldRotation() + m_rotation;
+        m_worldScale = {m_parent->getWorldScale().x * m_scale.x,
+                        m_parent->getWorldScale().y * m_scale.y,
+                        m_parent->getWorldScale().z * m_scale.z};
     } else {
-        m_worldMatrix = local;
+        m_worldTransform = Mat4::translate(m_position)
+                         * Mat4::rotate(m_rotation.x, {1, 0, 0})
+                         * Mat4::rotate(m_rotation.y, {0, 1, 0})
+                         * Mat4::rotate(m_rotation.z, {0, 0, 1})
+                         * Mat4::scale(m_scale);
+        m_worldPosition = m_position;
+        m_worldRotation = m_rotation;
+        m_worldScale = m_scale;
     }
-    for (auto& child : m_children) {
-        child->computeWorldMatrix();
+    for (auto* child : m_children) {
+        if (child) child->updateWorldTransform();
     }
-}
-
-void Primitive::addChild(std::shared_ptr<Primitive> child) {
-    if (!child) return;
-    for (auto& c : m_children) {
-        if (c->getID() == child->getID()) return;
-    }
-    child->m_parent = weak_from_this();
-    m_children.push_back(child);
-}
-
-void Primitive::removeChild(uint64_t childID) {
-    m_children.erase(
-        std::remove_if(m_children.begin(), m_children.end(),
-            [childID](const std::shared_ptr<Primitive>& c) { return c->getID() == childID; }),
-        m_children.end());
 }
 
 void Primitive::generateGeometry() {
+    m_vertices.clear();
+    m_indices.clear();
+
     switch (m_type) {
-        case PrimitiveType::Triangle:
+        case PrimitiveType::Triangle: {
+            Vec3 v0(-0.5f, -0.5f, 0.0f);
+            Vec3 v1( 0.5f, -0.5f, 0.0f);
+            Vec3 v2( 0.0f,  0.5f, 0.0f);
+            Vec3 edge1 = v1 - v0;
+            Vec3 edge2 = v2 - v0;
+            Vec3 n = edge1.cross(edge2).normalized();
             m_vertices = {
-                -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
-                 0.5f, -0.5f, 0.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
-                 0.0f,  0.5f, 0.0f,  0.5f, 1.0f,  0.0f, 0.0f, 1.0f
+                v0.x, v0.y, v0.z, 0.0f, 0.0f, n.x, n.y, n.z,
+                v1.x, v1.y, v1.z, 1.0f, 0.0f, n.x, n.y, n.z,
+                v2.x, v2.y, v2.z, 0.5f, 1.0f, n.x, n.y, n.z
             };
             m_indices = { 0, 1, 2 };
             break;
+        }
 
-        case PrimitiveType::Quad:
+        case PrimitiveType::Quad: {
+            Vec3 v0(-0.5f, -0.5f, 0.0f);
+            Vec3 v1( 0.5f, -0.5f, 0.0f);
+            Vec3 v2( 0.5f,  0.5f, 0.0f);
+            Vec3 v3(-0.5f,  0.5f, 0.0f);
+            Vec3 edge1 = v1 - v0;
+            Vec3 edge2 = v2 - v0;
+            Vec3 n = edge1.cross(edge2).normalized();
             m_vertices = {
-                -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
-                 0.5f, -0.5f, 0.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
-                 0.5f,  0.5f, 0.0f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
-                -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,  0.0f, 0.0f, 1.0f
+                v0.x, v0.y, v0.z, 0.0f, 0.0f, n.x, n.y, n.z,
+                v1.x, v1.y, v1.z, 1.0f, 0.0f, n.x, n.y, n.z,
+                v2.x, v2.y, v2.z, 1.0f, 1.0f, n.x, n.y, n.z,
+                v3.x, v3.y, v3.z, 0.0f, 1.0f, n.x, n.y, n.z
             };
             m_indices = { 0, 1, 2, 2, 3, 0 };
             break;
+        }
 
-        case PrimitiveType::Cube:
-            m_vertices = {
-                // Front (Normal: 0, 0, 1)
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
-                 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  0.0f, 0.0f, 1.0f,
-                // Back (Normal: 0, 0, -1)
-                -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  0.0f, 0.0f, -1.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 0.0f, -1.0f,
-                -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 0.0f, -1.0f,
-                // Top (Normal: 0, 1, 0)
-                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
-                // Bottom (Normal: 0, -1, 0)
-                -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f,
-                 0.5f, -0.5f,  0.5f,  1.0f, 1.0f,  0.0f, -1.0f, 0.0f,
-                 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  0.0f, -1.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, -1.0f, 0.0f,
-                // Right (Normal: 1, 0, 0)
-                 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
-                 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  1.0f, 0.0f, 0.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
-                // Left (Normal: -1, 0, 0)
-                -0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
-                -0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  -1.0f, 0.0f, 0.0f
+        case PrimitiveType::Cube: {
+            struct Face { Vec3 verts[4]; Vec3 normal; };
+            Face faces[6] = {
+                {{ Vec3(-0.5f,-0.5f, 0.5f), Vec3( 0.5f,-0.5f, 0.5f), Vec3( 0.5f, 0.5f, 0.5f), Vec3(-0.5f, 0.5f, 0.5f) }, Vec3( 0, 0, 1)},
+                {{ Vec3( 0.5f,-0.5f,-0.5f), Vec3(-0.5f,-0.5f,-0.5f), Vec3(-0.5f, 0.5f,-0.5f), Vec3( 0.5f, 0.5f,-0.5f) }, Vec3( 0, 0,-1)},
+                {{ Vec3(-0.5f, 0.5f, 0.5f), Vec3( 0.5f, 0.5f, 0.5f), Vec3( 0.5f, 0.5f,-0.5f), Vec3(-0.5f, 0.5f,-0.5f) }, Vec3( 0, 1, 0)},
+                {{ Vec3(-0.5f,-0.5f,-0.5f), Vec3( 0.5f,-0.5f,-0.5f), Vec3( 0.5f,-0.5f, 0.5f), Vec3(-0.5f,-0.5f, 0.5f) }, Vec3( 0,-1, 0)},
+                {{ Vec3( 0.5f,-0.5f, 0.5f), Vec3( 0.5f,-0.5f,-0.5f), Vec3( 0.5f, 0.5f,-0.5f), Vec3( 0.5f, 0.5f, 0.5f) }, Vec3( 1, 0, 0)},
+                {{ Vec3(-0.5f,-0.5f,-0.5f), Vec3(-0.5f,-0.5f, 0.5f), Vec3(-0.5f, 0.5f, 0.5f), Vec3(-0.5f, 0.5f,-0.5f) }, Vec3(-1, 0, 0)}
             };
-            m_indices = {
-                0, 1, 2, 2, 3, 0,       // Front
-                4, 5, 6, 6, 7, 4,       // Back
-                8, 9, 10, 10, 11, 8,    // Top
-                12, 13, 14, 14, 15, 12, // Bottom
-                16, 17, 18, 18, 19, 16, // Right
-                20, 21, 22, 22, 23, 20  // Left
-            };
+            float uvs[4][2] = {{0.0f,0.0f}, {1.0f,0.0f}, {1.0f,1.0f}, {0.0f,1.0f}};
+            for (int f = 0; f < 6; f++) {
+                uint32_t base = f * 4;
+                for (int v = 0; v < 4; v++) {
+                    m_vertices.insert(m_vertices.end(), {
+                        faces[f].verts[v].x, faces[f].verts[v].y, faces[f].verts[v].z,
+                        uvs[v][0], uvs[v][1],
+                        faces[f].normal.x, faces[f].normal.y, faces[f].normal.z
+                    });
+                }
+                m_indices.insert(m_indices.end(), {
+                    base, base+1, base+2, base+2, base+3, base
+                });
+            }
             break;
+        }
 
         case PrimitiveType::Sphere:
-            m_vertices = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f };
+            m_vertices = { 0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f };
             m_indices = { 0 };
             break;
 
+        case PrimitiveType::Cylinder:
         case PrimitiveType::Group:
-            m_vertices.clear();
-            m_indices.clear();
+        default:
+            // Cylinder/Group fallback geometry
+            m_vertices = {
+                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+                 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+                 0.0f,  0.5f, 0.0f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f
+            };
+            m_indices = { 0, 1, 2 };
             break;
     }
 }
@@ -171,15 +161,12 @@ void Primitive::uploadGPU() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(uint32_t), m_indices.data(), GL_STATIC_DRAW);
 
-    // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // Texture attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // Normal attribute
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
@@ -193,34 +180,6 @@ void Primitive::bind() const {
 
 void Primitive::unbind() const {
     glBindVertexArray(0);
-}
-
-BoundingBox Primitive::getBoundingBox() const {
-    if (m_type == PrimitiveType::Group) return BoundingBox();
-
-    // Basic implementation: Transform unit cube corners
-    BoundingBox bb;
-    const Mat4& world = getWorldMatrix();
-
-    float corners[8][3] = {
-        {-0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f},
-        {-0.5f,  0.5f, -0.5f}, {0.5f,  0.5f, -0.5f},
-        {-0.5f, -0.5f,  0.5f}, {0.5f, -0.5f,  0.5f},
-        {-0.5f,  0.5f,  0.5f}, {0.5f,  0.5f,  0.5f}
-    };
-
-    for (int i = 0; i < 8; i++) {
-        bb.expand(world * Vec3(corners[i][0], corners[i][1], corners[i][2]));
-    }
-    return bb;
-}
-
-BoundingBox Primitive::getAggregateBoundingBox() const {
-    BoundingBox bb = getBoundingBox();
-    for (auto& child : m_children) {
-        bb.merge(child->getAggregateBoundingBox());
-    }
-    return bb;
 }
 
 } // namespace hse

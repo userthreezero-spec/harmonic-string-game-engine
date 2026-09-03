@@ -101,10 +101,13 @@ void PipeServer::disconnectClient() {
 
 void PipeServer::stop() {
     m_running = false;
-    disconnectClient();
     if (m_pipe != INVALID_HANDLE_VALUE) {
-        CloseHandle(m_pipe);
+        HANDLE h = m_pipe;
         m_pipe = INVALID_HANDLE_VALUE;
+        m_clientConnected = false;
+        CancelIoEx(h, nullptr);
+        DisconnectNamedPipe(h);
+        CloseHandle(h);
     }
 }
 

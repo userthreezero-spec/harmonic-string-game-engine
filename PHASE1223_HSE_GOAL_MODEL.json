@@ -1,0 +1,38 @@
+{
+  "goal_id": "GOAL-HSE-001",
+  "name": "Harmonic String Game Engine \u2014 Professional Extensible Engine",
+  "human_description": "Transform the Harmonic String Game Engine into a professional, human-centered, extensible 3D engine where new physics, rendering passes, and simulation systems can be created and loaded without modifying core engine source code.",
+  "requirements": [
+    "In-window canvas Project Hub with interactive mouse picking & electric blue hover highlights",
+    "Clean project lifecycle: Hub -> Project Selection -> Scene -> Runtime -> Save -> Reopen -> Exit",
+    "Extensible plugin architecture with explicit C++ interface contracts for custom harmonic solvers",
+    "Ultra-low overhead VSync 60 FPS OpenGL 3.3 Core rendering with physical harmonic model"
+  ],
+  "constraints": [
+    "Canonical root: C:\\Users\\Rico\\HarmonicStringGameEngine",
+    "Intel Pentium 4425Y @ 1.70GHz hardware compatibility",
+    "Zero regressions on 63 primitives, fly controls, TAB lock, S checkpoint, H propagation"
+  ],
+  "quality_attributes": [
+    "extensibility",
+    "maintainability",
+    "performance",
+    "human_usability"
+  ],
+  "desired_capabilities": [
+    "application_lifecycle",
+    "project_hub_in_window",
+    "scene_entity_hierarchy",
+    "harmonic_physics_simulation",
+    "extensibility_plugin_interface",
+    "serialization_and_checkpoint"
+  ],
+  "architectural_intent": "Hexagonal/Modular architecture with core engine decoupled from specific scene/project instances behind explicit interface contracts.",
+  "dependencies": [],
+  "current_state": {},
+  "target_state": {},
+  "status": "ACTIVE",
+  "created_at": 1788415690.201498,
+  "updated_at": 1788415690.201498,
+  "provenance": "UCS_PRIME_P1223"
+}

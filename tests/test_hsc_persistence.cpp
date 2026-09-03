@@ -28,7 +28,7 @@ int main() {
     std::cout << "Light count: " << scene->getLightCount() << std::endl;
     assert(scene->getLightCount() == 1);
     auto light = scene->getLights()[0];
-    assert(light->getIntensity() == 1.5f);
+    assert(light.getIntensity() == 1.5f);
 
     // Check camera
     assert(scene->getCameraCount() == 1);

@@ -1,0 +1,34 @@
+{
+  "phase": "1219",
+  "knowledge_model": "HSE Comparative UX Knowledge Base",
+  "ingested_sources": [
+    "Apple Human Interface Guidelines",
+    "Nielsen Norman Group 10 Usability Heuristics",
+    "Laws of UX",
+    "Microsoft Fluent 2",
+    "IBM Carbon Design System",
+    "shadcn/ui & Radix UI",
+    "Unity Hub & Unreal Engine Launcher",
+    "VS Code & Visual Studio Workspace UI"
+  ],
+  "patterns": [
+    {
+      "pattern": "Project Card",
+      "purpose": "Presents project identity, preview metadata, and primary action",
+      "cognitive_cost": "Low (recognition over recall)",
+      "hse_relevance": "High (displays Two-Story Home, Workbench, custom projects)"
+    },
+    {
+      "pattern": "Command Bar / Assistant Surface",
+      "purpose": "Exposes natural language engineering assistant",
+      "cognitive_cost": "Low (direct intent execution)",
+      "hse_relevance": "High (WebOS Sovereign Gateway integration)"
+    },
+    {
+      "pattern": "Progressive Disclosure",
+      "purpose": "Hides complex IPC/engine internal state behind clean UI tabs",
+      "cognitive_cost": "Low",
+      "hse_relevance": "High (replaces raw internal state strings)"
+    }
+  ]
+}

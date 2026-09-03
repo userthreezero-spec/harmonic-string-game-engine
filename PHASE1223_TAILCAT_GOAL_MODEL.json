@@ -1,0 +1,37 @@
+{
+  "goal_id": "GOAL-TAILCAT-001",
+  "name": "Universal Human Remote Control Interface",
+  "human_description": "Establish an automatic, server-originated notification, briefing, and control system between WebOS and the user's phone over Tailscale private networking.",
+  "requirements": [
+    "Automatic server-push briefing to Digital Butler front page upon mission receipt, progress, completion, or failure",
+    "Briefing delivery system operates independently of whether Tailcat is open",
+    "Persistent delivery ledger tracking PENDING, SENT, DELIVERED, and ACKNOWLEDGED states with offline phone queue recovery",
+    "Phone natural language commands executed safely under PrimeGate governance"
+  ],
+  "constraints": [
+    "Tailscale private overlay IPv4 (100.86.243.117:8725)",
+    "PrimeGate sole mutation authority",
+    "Zero loss of historical mission/gap records upon device reboot or WebOS restart"
+  ],
+  "quality_attributes": [
+    "reliability",
+    "observability",
+    "security",
+    "responsiveness"
+  ],
+  "desired_capabilities": [
+    "tailscale_overlay_transport",
+    "briefing_push_engine",
+    "persistent_delivery_ledger",
+    "front_page_briefing_surface",
+    "tailcat_detail_control_view"
+  ],
+  "architectural_intent": "Event-driven push architecture over Tailscale overlay with durable delivery tracking and decoupled front-page summary vs. Tailcat detail views.",
+  "dependencies": [],
+  "current_state": {},
+  "target_state": {},
+  "status": "ACCEPTED",
+  "created_at": 1788415690.2150633,
+  "updated_at": 1788415690.2150633,
+  "provenance": "UCS_PRIME_P1223"
+}

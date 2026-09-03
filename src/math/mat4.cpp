@@ -82,12 +82,13 @@ Mat4 Mat4::scale(const Vec3& v) {
 
 Mat4 Mat4::operator*(const Mat4& other) const {
     Mat4 result;
-    for (int row = 0; row < 4; row++) {
-        for (int col = 0; col < 4; col++) {
-            result.data[row * 4 + col] = 0;
+    for (int col = 0; col < 4; col++) {
+        for (int row = 0; row < 4; row++) {
+            float sum = 0.0f;
             for (int k = 0; k < 4; k++) {
-                result.data[row * 4 + col] += data[row * 4 + k] * other.data[k * 4 + col];
+                sum += data[k * 4 + row] * other.data[col * 4 + k];
             }
+            result.data[col * 4 + row] = sum;
         }
     }
     return result;

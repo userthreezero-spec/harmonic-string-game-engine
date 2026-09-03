@@ -86,10 +86,51 @@ void test_explosion() {
     std::cout << "PASS: exploded view factor" << std::endl;
 }
 
+void test_recursive_explosion() {
+    auto root = std::make_shared<hse::Primitive>(hse::PrimitiveType::Group);
+    root->setName("Root");
+
+    auto subGroup = std::make_shared<hse::Primitive>(hse::PrimitiveType::Group);
+    subGroup->setName("SubGroup");
+    subGroup->setPosition({1, 0, 0});
+    subGroup->setParent(root);
+
+    auto child = std::make_shared<hse::Primitive>(hse::PrimitiveType::Cube);
+    child->setName("Child");
+    child->setPosition({1, 0, 0}); // Relative to subGroup
+    child->setParent(subGroup);
+
+    // 1. No explosion
+    root->computeWorldMatrix();
+    // child world X should be 0 + 1 + 1 = 2
+    assert(std::abs(child->getWorldMatrix().data[12] - 2.0f) < 0.001f);
+
+    // 2. Explode ROOT
+    root->setExplosionFactor(1.0f);
+    root->computeWorldMatrix();
+
+    // subGroup local pos {1,0,0} should displace to {2,0,0} (relative to root)
+    // child local pos {1,0,0} should displace to {2,0,0} (relative to subGroup)
+    // Child world X = root_world_X + displacedSubGroupLocal + displacedChildLocal
+    // = 0 + (1 * 2) + (1 * 2) = 4
+
+    const auto& wm = child->getWorldMatrix();
+    std::cout << "Displaced Child World X: " << wm.data[12] << std::endl;
+    assert(std::abs(wm.data[12] - 4.0f) < 0.001f);
+
+    // 3. Restoration
+    root->setExplosionFactor(0.0f);
+    root->computeWorldMatrix();
+    assert(std::abs(child->getWorldMatrix().data[12] - 2.0f) < 0.001f);
+
+    std::cout << "PASS: recursive explosion" << std::endl;
+}
+
 int main() {
     test_hierarchical_transformation();
     test_aggregate_bounds();
     test_explosion();
+    test_recursive_explosion();
     std::cout << "All assembly tests passed!" << std::endl;
     return 0;
 }

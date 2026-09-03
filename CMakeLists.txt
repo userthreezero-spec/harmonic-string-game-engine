@@ -18,6 +18,7 @@ add_library(hse_core STATIC
     src/scene/primitive.cpp
     src/scene/scene_builder.cpp
     src/scene/picker.cpp
+    src/scene/timeline.cpp
     src/math/vec3.cpp
     src/math/mat4.cpp
 )
@@ -26,7 +27,7 @@ target_include_directories(hse_core PUBLIC include)
 target_link_libraries(hse_core PUBLIC OpenGL::GL GLEW::GLEW glfw)
 
 add_executable(hse_main src/main.cpp)
-target_link_libraries(hse_main PRIVATE hse_core)
+target_link_libraries(hse_main PRIVATE hse_core hse_bridge)
 
 add_executable(hse_room_demo src/room_demo.cpp)
 target_link_libraries(hse_room_demo PRIVATE hse_core)
@@ -68,9 +69,15 @@ target_link_libraries(hse_material_demo PRIVATE hse_core)
 add_executable(hse_orbit_demo src/orbit_demo.cpp)
 target_link_libraries(hse_orbit_demo PRIVATE hse_core)
 
+add_executable(hse_home_demo src/home_demo.cpp)
+target_link_libraries(hse_home_demo PRIVATE hse_core)
+
 # Phase 1046: headless multi-view capture tool (offscreen FBO -> PPM frames).
 add_executable(hse_capture src/capture_main.cpp)
 target_link_libraries(hse_capture PRIVATE hse_core)
+
+add_executable(hse_benchmark tools/benchmark.cpp)
+target_link_libraries(hse_benchmark PRIVATE hse_core)
 
 enable_testing()
 add_test(NAME MathTests COMMAND hse_test_math)
@@ -111,6 +118,34 @@ add_executable(hse_test_multi tests/test_multi_constraint.cpp)
 target_link_libraries(hse_test_multi PRIVATE hse_core)
 add_test(NAME MultiConstraintTests COMMAND hse_test_multi)
 
+add_executable(hse_test_home tests/test_home.cpp)
+target_link_libraries(hse_test_home PRIVATE hse_core)
+add_test(NAME HomeTests COMMAND hse_test_home)
+
+# Canonical Application & E2E Validation Targets
+add_executable(hse_app src/app/hse_app.cpp)
+target_link_libraries(hse_app PRIVATE hse_core hse_bridge)
+
+add_executable(hse_test_phase1218 tests/test_phase1218_lifecycle.cpp)
+target_link_libraries(hse_test_phase1218 PRIVATE hse_core hse_bridge)
+add_test(NAME Phase1218LifecycleTests COMMAND hse_test_phase1218)
+
+add_executable(hse_test_e2e tests/test_e2e_harmonic.cpp)
+target_link_libraries(hse_test_e2e PRIVATE hse_core)
+add_test(NAME E2ETests COMMAND hse_test_e2e)
+
+add_executable(hse_test_two_story_home tests/test_two_story_home.cpp)
+target_link_libraries(hse_test_two_story_home PRIVATE hse_core)
+add_test(NAME TwoStoryHomeTests COMMAND hse_test_two_story_home)
+
+add_executable(hse_test_physical_harmonic tests/test_physical_harmonic.cpp)
+target_link_libraries(hse_test_physical_harmonic PRIVATE hse_core)
+add_test(NAME PhysicalHarmonicTests COMMAND hse_test_physical_harmonic)
+
+add_executable(hse_test_canonical_path_guard tests/test_canonical_path_guard.cpp)
+target_link_libraries(hse_test_canonical_path_guard PRIVATE hse_core)
+add_test(NAME CanonicalPathGuardTests COMMAND hse_test_canonical_path_guard)
+
 # [WebOS Native Engineering Actuator] runtime DLL deployment
 # Deploys the toolchain/runtime DLLs next to the executable so the built product
 # launches without the toolchain on PATH (fixes STATUS_DLL_NOT_FOUND / 0xC0000135).
@@ -124,9 +159,9 @@ if(WIN32)
         libwinpthread-1.dll)
     foreach(_dll ${_webos_runtime_dlls})
         if(EXISTS "${_webos_tc_bin}/${_dll}")
-            add_custom_command(TARGET hse_main POST_BUILD
+            add_custom_command(TARGET hse_app POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                        "${_webos_tc_bin}/${_dll}" "$<TARGET_FILE_DIR:hse_main>")
+                        "${_webos_tc_bin}/${_dll}" "$<TARGET_FILE_DIR:hse_app>")
         endif()
     endforeach()
 endif()

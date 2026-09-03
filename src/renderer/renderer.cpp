@@ -1,10 +1,8 @@
 #include "renderer/renderer.h"
-#include "renderer/material.h"
 #include "scene/scene.h"
 #include "scene/camera.h"
 #include "scene/primitive.h"
 #include "scene/light.h"
-#include "math/vec3.h"
 #include <GL/glew.h>
 #include <iostream>
 #include <fstream>
@@ -12,80 +10,48 @@
 
 namespace hse {
 
+static const int MAX_LIGHTS = 8;
+
 static const char* vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aUV;
-layout (location = 2) in vec3 aNormal;
-
+layout (location = 1) in vec3 aNormal;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
-
-out vec2 vUV;
+out vec3 vWorldPos;
 out vec3 vNormal;
-out vec3 vFragPos;
-
 void main() {
-    vFragPos = vec3(uModel * vec4(aPos, 1.0));
-    vNormal = mat3(transpose(inverse(uModel))) * aNormal;
-    vUV = aUV;
-    gl_Position = uProjection * uView * vec4(vFragPos, 1.0);
+    vec4 worldPos = uModel * vec4(aPos, 1.0);
+    vWorldPos = worldPos.xyz;
+    vNormal = mat3(uModel) * aNormal;
+    gl_Position = uProjection * uView * worldPos;
 }
 )";
 
 static const char* fragmentShaderSource = R"(
 #version 330 core
-out vec4 FragColor;
-
-in vec2 vUV;
+in vec3 vWorldPos;
 in vec3 vNormal;
-in vec3 vFragPos;
-
-struct Material {
-    vec3 albedo;
-    float roughness;
-    float metallic;
-    bool hasAlbedoMap;
-    sampler2D albedoMap;
-};
-
-struct Light {
-    vec3 position;
-    vec3 color;
-    float intensity;
-};
-
-uniform Material uMaterial;
-uniform Light uLight;
-uniform vec3 uViewPos;
-uniform bool uSelected;
-
+out vec4 FragColor;
+uniform vec3 uColor;
+uniform vec3 uLightPositions[8];
+uniform vec3 uLightColors[8];
+uniform int uLightTypes[8];
+uniform int uNumLights;
+uniform float uAmbientStrength;
 void main() {
-    vec3 albedo = uMaterial.albedo;
-    if (uMaterial.hasAlbedoMap) {
-        albedo *= texture(uMaterial.albedoMap, vUV).rgb;
-    }
-
-    // Ambient
-    float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * uLight.color;
-
-    // Diffuse
     vec3 norm = normalize(vNormal);
-    vec3 lightDir = normalize(uLight.position - vFragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * uLight.color * uLight.intensity;
-
-    // Specular (Blinn-Phong)
-    vec3 viewDir = normalize(uViewPos - vFragPos);
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(norm, halfwayDir), 0.0), 32.0);
-    vec3 specular = (1.0 - uMaterial.roughness) * spec * uLight.color;
-
-    vec3 result = (ambient + diffuse + specular) * albedo;
-    if (uSelected) {
-        result = mix(result, vec3(1.0, 1.0, 0.0), 0.5);
+    vec3 result = uAmbientStrength * uColor;
+    for (int i = 0; i < uNumLights; i++) {
+        vec3 lightDir;
+        if (uLightTypes[i] == 0) {
+            lightDir = normalize(uLightPositions[i] - vWorldPos);
+        } else {
+            lightDir = normalize(-uLightPositions[i]);
+        }
+        float diff = max(dot(norm, lightDir), 0.0);
+        result += diff * uLightColors[i] * uColor;
     }
     FragColor = vec4(result, 1.0);
 }
@@ -96,6 +62,17 @@ struct Renderer::RendererState {
     float clearColorR = 0.1f;
     float clearColorG = 0.1f;
     float clearColorB = 0.15f;
+    size_t frameCount = 0;
+    int locView = -1;
+    int locProj = -1;
+    int locModel = -1;
+    int locColor = -1;
+    int locNumLights = -1;
+    int locAmbient = -1;
+    int locLightPos[8] = {-1,-1,-1,-1,-1,-1,-1,-1};
+    int locLightColor[8] = {-1,-1,-1,-1,-1,-1,-1,-1};
+    int locLightType[8] = {-1,-1,-1,-1,-1,-1,-1,-1};
+    bool uniformsCached = false;
 };
 
 Renderer::Renderer() : m_state(std::make_unique<RendererState>()) {}
@@ -112,6 +89,7 @@ bool Renderer::initialize() {
     }
 
     glEnable(GL_DEPTH_TEST);
+    glViewport(0, 0, 1280, 720);
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
@@ -161,7 +139,20 @@ bool Renderer::initialize() {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    std::cout << "Renderer initialized successfully" << std::endl;
+    m_state->locView = glGetUniformLocation(m_state->shaderProgram, "uView");
+    m_state->locProj = glGetUniformLocation(m_state->shaderProgram, "uProjection");
+    m_state->locModel = glGetUniformLocation(m_state->shaderProgram, "uModel");
+    m_state->locColor = glGetUniformLocation(m_state->shaderProgram, "uColor");
+    m_state->locNumLights = glGetUniformLocation(m_state->shaderProgram, "uNumLights");
+    m_state->locAmbient = glGetUniformLocation(m_state->shaderProgram, "uAmbientStrength");
+    for (int i = 0; i < MAX_LIGHTS; ++i) {
+        m_state->locLightPos[i] = glGetUniformLocation(m_state->shaderProgram, (std::string("uLightPositions[") + std::to_string(i) + "]").c_str());
+        m_state->locLightColor[i] = glGetUniformLocation(m_state->shaderProgram, (std::string("uLightColors[") + std::to_string(i) + "]").c_str());
+        m_state->locLightType[i] = glGetUniformLocation(m_state->shaderProgram, (std::string("uLightTypes[") + std::to_string(i) + "]").c_str());
+    }
+    m_state->uniformsCached = true;
+
+    std::cout << "Renderer initialized successfully (uniforms cached)" << std::endl;
     return true;
 }
 
@@ -173,6 +164,7 @@ void Renderer::shutdown() {
 }
 
 void Renderer::beginFrame() {
+    if (m_state) m_state->frameCount++;
     glClearColor(m_state->clearColorR, m_state->clearColorG, m_state->clearColorB, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -180,66 +172,34 @@ void Renderer::beginFrame() {
 void Renderer::renderScene(const Scene& scene, const Camera& camera, uint64_t selectedID) {
     glUseProgram(m_state->shaderProgram);
 
-    GLint viewLoc = glGetUniformLocation(m_state->shaderProgram, "uView");
-    GLint projLoc = glGetUniformLocation(m_state->shaderProgram, "uProjection");
-    GLint modelLoc = glGetUniformLocation(m_state->shaderProgram, "uModel");
-    GLint viewPosLoc = glGetUniformLocation(m_state->shaderProgram, "uViewPos");
-    GLint selectedLoc = glGetUniformLocation(m_state->shaderProgram, "uSelected");
-
     Mat4 view = camera.getViewMatrix();
     Mat4 proj = camera.getProjectionMatrix();
-    Vec3 viewPos = camera.getPosition();
 
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view.ptr());
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, proj.ptr());
-    glUniform3f(viewPosLoc, viewPos.x, viewPos.y, viewPos.z);
+    glUniformMatrix4fv(m_state->locView, 1, GL_FALSE, view.ptr());
+    glUniformMatrix4fv(m_state->locProj, 1, GL_FALSE, proj.ptr());
 
-    // Lighting
-    auto& lights = scene.getLights();
-    if (!lights.empty()) {
-        auto light = lights[0]; // Support 1 light for now
-        glUniform3f(glGetUniformLocation(m_state->shaderProgram, "uLight.position"),
-                   light->getPosition().x, light->getPosition().y, light->getPosition().z);
-        glUniform3f(glGetUniformLocation(m_state->shaderProgram, "uLight.color"),
-                   light->getColor().x, light->getColor().y, light->getColor().z);
-        glUniform1f(glGetUniformLocation(m_state->shaderProgram, "uLight.intensity"), light->getIntensity());
-    } else {
-        // Fallback light
-        glUniform3f(glGetUniformLocation(m_state->shaderProgram, "uLight.position"), 0, 10, 0);
-        glUniform3f(glGetUniformLocation(m_state->shaderProgram, "uLight.color"), 1, 1, 1);
-        glUniform1f(glGetUniformLocation(m_state->shaderProgram, "uLight.intensity"), 0.5f);
+    const auto& lights = scene.getLights();
+    int numLights = static_cast<int>(lights.size());
+    if (numLights > MAX_LIGHTS) numLights = MAX_LIGHTS;
+    glUniform1i(m_state->locNumLights, numLights);
+
+    float minAmbient = 1.0f;
+    for (int i = 0; i < numLights; i++) {
+        glUniform3f(m_state->locLightPos[i], lights[i].position.x, lights[i].position.y, lights[i].position.z);
+        glUniform3f(m_state->locLightColor[i], lights[i].color.x, lights[i].color.y, lights[i].color.z);
+        glUniform1i(m_state->locLightType[i], static_cast<int>(lights[i].type));
+
+        if (lights[i].ambient < minAmbient) minAmbient = lights[i].ambient;
     }
-
-    // Create a fallback material if primitive has none
-    static auto defaultMaterial = std::make_shared<Material>("Default");
-
-    // Compute all world matrices before rendering
-    const_cast<Scene&>(scene).computeAllWorldMatrices();
+    if (numLights == 0) minAmbient = 0.2f;
+    glUniform1f(m_state->locAmbient, minAmbient);
 
     for (const auto& prim : scene.getPrimitives()) {
-        if (prim->getType() == PrimitiveType::Group) continue;
+        const Mat4& model = prim->getWorldTransform();
+        glUniformMatrix4fv(m_state->locModel, 1, GL_FALSE, model.ptr());
 
-        const Mat4& model = prim->getWorldMatrix();
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model.ptr());
-
-        bool selected = (prim->getID() == selectedID);
-        if (!selected && selectedID != 0) {
-            // Propagate selection to children: if selectedID is a parent of prim, highlight it
-            auto p = prim->getParent();
-            while (p) {
-                if (p->getID() == selectedID) {
-                    selected = true;
-                    break;
-                }
-                p = p->getParent();
-            }
-        }
-        glUniform1i(selectedLoc, selected ? 1 : 0);
-
-        auto material = prim->getMaterial();
-        if (!material) material = defaultMaterial;
-
-        material->apply(m_state->shaderProgram);
+        const Vec3& c = prim->getColor();
+        glUniform3f(m_state->locColor, c.x, c.y, c.z);
 
         prim->bind();
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(prim->getIndexCount()), GL_UNSIGNED_INT, 0);
@@ -256,29 +216,31 @@ void Renderer::setClearColor(float r, float g, float b, float a) {
 }
 
 void Renderer::getClearColor(float& r, float& g, float& b) const {
-    r = m_state->clearColorR;
-    g = m_state->clearColorG;
-    b = m_state->clearColorB;
+    if (m_state) { r = m_state->clearColorR; g = m_state->clearColorG; b = m_state->clearColorB; }
+    else { r = 0; g = 0; b = 0; }
+}
+
+size_t Renderer::getFrameCount() const {
+    return m_state ? m_state->frameCount : 0;
+}
+
+void Renderer::incrementFrameCount() {
+    if (m_state) m_state->frameCount++;
+}
+
+bool Renderer::readPixels(std::vector<unsigned char>& rgba, int& w, int& h) {
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    w = viewport[2];
+    h = viewport[3];
+    if (w <= 0 || h <= 0) return false;
+    rgba.resize(w * h * 4);
+    glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
+    return true;
 }
 
 void Renderer::setViewport(int x, int y, int width, int height) {
     glViewport(x, y, width, height);
-}
-
-bool Renderer::readPixels(std::vector<uint8_t>& rgba, int& width, int& height) {
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    width = viewport[2];
-    height = viewport[3];
-
-    if (width <= 0 || height <= 0) return false;
-
-    size_t pixelCount = static_cast<size_t>(width) * static_cast<size_t>(height);
-    rgba.resize(pixelCount * 4);
-
-    glReadPixels(viewport[0], viewport[1], width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
-
-    return !rgba.empty();
 }
 
 } // namespace hse

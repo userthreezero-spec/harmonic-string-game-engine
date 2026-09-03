@@ -1,0 +1,237 @@
+{
+  "name": "Two Story Home Demonstration",
+  "components": [
+    {
+      "id": "foundation_0",
+      "name": "tabletop",
+      "material_id": "cast_iron_grey",
+      "position": [0, -0.25, 0],
+      "scale": [12.0, 0.5, 10.0],
+      "color": [0.3, 0.3, 0.35],
+      "primitive": "box"
+    },
+    {
+      "id": "floor_1",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [0, 0.1, 0],
+      "scale": [11.8, 0.2, 9.8],
+      "color": [0.5, 0.4, 0.3],
+      "primitive": "box"
+    },
+    {
+      "id": "f1_wall_front_left",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [-3.5, 1.6, 4.8],
+      "scale": [4.8, 2.8, 0.2],
+      "color": [0.8, 0.75, 0.7],
+      "primitive": "box"
+    },
+    {
+      "id": "f1_wall_front_right",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [3.5, 1.6, 4.8],
+      "scale": [4.8, 2.8, 0.2],
+      "color": [0.8, 0.75, 0.7],
+      "primitive": "box"
+    },
+    {
+      "id": "f1_wall_back",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [0, 1.6, -4.8],
+      "scale": [11.8, 2.8, 0.2],
+      "color": [0.8, 0.75, 0.7],
+      "primitive": "box"
+    },
+    {
+      "id": "f1_wall_left",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [-5.8, 1.6, 0],
+      "scale": [0.2, 2.8, 9.8],
+      "color": [0.8, 0.75, 0.7],
+      "primitive": "box"
+    },
+    {
+      "id": "f1_wall_right",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [5.8, 1.6, 0],
+      "scale": [0.2, 2.8, 9.8],
+      "color": [0.8, 0.75, 0.7],
+      "primitive": "box"
+    },
+    {
+      "id": "f1_wall_divider",
+      "name": "tabletop",
+      "material_id": "pine_wood",
+      "position": [0, 1.6, 0],
+      "scale": [0.2, 2.8, 9.8],
+      "color": [0.75, 0.7, 0.65],
+      "primitive": "box"
+    },
+    {
+      "id": "f1_door_front",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [0, 1.2, 4.85],
+      "scale": [1.8, 2.2, 0.1],
+      "color": [0.4, 0.25, 0.15],
+      "primitive": "box"
+    },
+    {
+      "id": "f1_window_front_left",
+      "name": "tabletop",
+      "material_id": "aluminum_alloy_6061",
+      "position": [-3.5, 1.8, 4.88],
+      "scale": [1.5, 1.2, 0.15],
+      "color": [0.3, 0.6, 0.9],
+      "primitive": "box"
+    },
+    {
+      "id": "f1_window_front_right",
+      "name": "tabletop",
+      "material_id": "aluminum_alloy_6061",
+      "position": [3.5, 1.8, 4.88],
+      "scale": [1.5, 1.2, 0.15],
+      "color": [0.3, 0.6, 0.9],
+      "primitive": "box"
+    },
+    {
+      "id": "f1_window_side",
+      "name": "tabletop",
+      "material_id": "aluminum_alloy_6061",
+      "position": [-5.88, 1.8, 0],
+      "scale": [0.15, 1.2, 1.5],
+      "color": [0.3, 0.6, 0.9],
+      "primitive": "box"
+    },
+    {
+      "id": "staircase_0",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [-1.5, 1.6, -2.5],
+      "rotation": [25, 0, 0],
+      "scale": [1.2, 3.2, 3.5],
+      "color": [0.55, 0.35, 0.2],
+      "primitive": "box"
+    },
+    {
+      "id": "floor_2",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [0, 3.1, 0],
+      "scale": [11.8, 0.2, 9.8],
+      "color": [0.5, 0.4, 0.3],
+      "primitive": "box"
+    },
+    {
+      "id": "f2_wall_front",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [0, 4.6, 4.8],
+      "scale": [11.8, 2.8, 0.2],
+      "color": [0.82, 0.77, 0.72],
+      "primitive": "box"
+    },
+    {
+      "id": "f2_wall_back",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [0, 4.6, -4.8],
+      "scale": [11.8, 2.8, 0.2],
+      "color": [0.82, 0.77, 0.72],
+      "primitive": "box"
+    },
+    {
+      "id": "f2_wall_left",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [-5.8, 4.6, 0],
+      "scale": [0.2, 2.8, 9.8],
+      "color": [0.82, 0.77, 0.72],
+      "primitive": "box"
+    },
+    {
+      "id": "f2_wall_right",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [5.8, 4.6, 0],
+      "scale": [0.2, 2.8, 9.8],
+      "color": [0.82, 0.77, 0.72],
+      "primitive": "box"
+    },
+    {
+      "id": "f2_wall_divider",
+      "name": "tabletop",
+      "material_id": "pine_wood",
+      "position": [0, 4.6, 0],
+      "scale": [0.2, 2.8, 9.8],
+      "color": [0.75, 0.7, 0.65],
+      "primitive": "box"
+    },
+    {
+      "id": "f2_window_front_left",
+      "name": "tabletop",
+      "material_id": "aluminum_alloy_6061",
+      "position": [-3.5, 4.8, 4.88],
+      "scale": [1.5, 1.2, 0.15],
+      "color": [0.3, 0.6, 0.9],
+      "primitive": "box"
+    },
+    {
+      "id": "f2_window_front_right",
+      "name": "tabletop",
+      "material_id": "aluminum_alloy_6061",
+      "position": [3.5, 4.8, 4.88],
+      "scale": [1.5, 1.2, 0.15],
+      "color": [0.3, 0.6, 0.9],
+      "primitive": "box"
+    },
+    {
+      "id": "f2_door_balcony",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [0, 4.2, 4.85],
+      "scale": [1.6, 2.0, 0.1],
+      "color": [0.4, 0.25, 0.15],
+      "primitive": "box"
+    },
+    {
+      "id": "roof_main",
+      "name": "tabletop",
+      "material_id": "steel_medium_carbon",
+      "position": [0, 6.3, 0],
+      "scale": [12.6, 0.6, 10.6],
+      "color": [0.4, 0.2, 0.2],
+      "primitive": "box"
+    }
+  ],
+  "relationships": [
+    {"from": "foundation_0", "rel": "supports", "to": "floor_1"},
+    {"from": "floor_1", "rel": "supports", "to": "f1_wall_front_left"},
+    {"from": "floor_1", "rel": "supports", "to": "f1_wall_front_right"},
+    {"from": "floor_1", "rel": "supports", "to": "f1_wall_back"},
+    {"from": "floor_1", "rel": "supports", "to": "f1_wall_left"},
+    {"from": "floor_1", "rel": "supports", "to": "f1_wall_right"},
+    {"from": "floor_1", "rel": "supports", "to": "f1_wall_divider"},
+    {"from": "floor_1", "rel": "supports", "to": "staircase_0"},
+    {"from": "f1_door_front", "rel": "mounted_on", "to": "f1_wall_front_left"},
+    {"from": "f1_window_front_left", "rel": "mounted_on", "to": "f1_wall_front_left"},
+    {"from": "f1_window_front_right", "rel": "mounted_on", "to": "f1_wall_front_right"},
+    {"from": "f1_window_side", "rel": "mounted_on", "to": "f1_wall_left"},
+    {"from": "f1_wall_front_left", "rel": "supports", "to": "floor_2"},
+    {"from": "floor_2", "rel": "supports", "to": "f2_wall_front"},
+    {"from": "floor_2", "rel": "supports", "to": "f2_wall_back"},
+    {"from": "floor_2", "rel": "supports", "to": "f2_wall_left"},
+    {"from": "floor_2", "rel": "supports", "to": "f2_wall_right"},
+    {"from": "floor_2", "rel": "supports", "to": "f2_wall_divider"},
+    {"from": "f2_window_front_left", "rel": "mounted_on", "to": "f2_wall_front"},
+    {"from": "f2_window_front_right", "rel": "mounted_on", "to": "f2_wall_front"},
+    {"from": "f2_door_balcony", "rel": "mounted_on", "to": "f2_wall_front"},
+    {"from": "f2_wall_front", "rel": "supports", "to": "roof_main"}
+  ]
+}

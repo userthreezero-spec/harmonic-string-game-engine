@@ -1,0 +1,721 @@
+{
+  "name": "Two-Story Home",
+  "materials": [
+    {
+      "id": "mat_foundation",
+      "albedo": [0.35,0.3,0.28],
+      "roughness": 0.9,
+      "metallic": 0
+    },
+    {
+      "id": "mat_floor",
+      "albedo": [0.55,0.45,0.35],
+      "roughness": 0.8,
+      "metallic": 0
+    },
+    {
+      "id": "mat_wall_ext",
+      "albedo": [0.78,0.74,0.68],
+      "roughness": 0.6,
+      "metallic": 0
+    },
+    {
+      "id": "mat_wall_int",
+      "albedo": [0.88,0.86,0.8],
+      "roughness": 0.7,
+      "metallic": 0
+    },
+    {
+      "id": "mat_roof",
+      "albedo": [0.45,0.2,0.18],
+      "roughness": 0.85,
+      "metallic": 0
+    },
+    {
+      "id": "mat_living",
+      "albedo": [0.6,0.8,0.75],
+      "roughness": 0.5,
+      "metallic": 0
+    },
+    {
+      "id": "mat_kitchen",
+      "albedo": [0.85,0.75,0.55],
+      "roughness": 0.5,
+      "metallic": 0
+    },
+    {
+      "id": "mat_bed",
+      "albedo": [0.65,0.7,0.85],
+      "roughness": 0.5,
+      "metallic": 0
+    },
+    {
+      "id": "mat_stairs",
+      "albedo": [0.42,0.33,0.25],
+      "roughness": 0.5,
+      "metallic": 0
+    },
+    {
+      "id": "mat_window",
+      "albedo": [0.55,0.7,0.85],
+      "roughness": 0.2,
+      "metallic": 0.1
+    },
+    {
+      "id": "mat_door",
+      "albedo": [0.35,0.22,0.15],
+      "roughness": 0.5,
+      "metallic": 0
+    }
+  ],
+  "lights": [
+    {
+      "id": "main_light",
+      "position": [0,5,2],
+      "color": [1,0.96,0.88],
+      "intensity": 1.2
+    },
+    {
+      "id": "sun_light",
+      "position": [8,10,6],
+      "color": [1,1,0.95],
+      "intensity": 0.8
+    }
+  ],
+  "camera": {
+    "position": [14.0029,8.97216,13.8672],
+    "target": [0.00291755,2.97216,-0.132847],
+    "fov": 45
+  },
+  "objects": [
+    {
+      "id": "house_root",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default"
+    },
+    {
+      "id": "foundation",
+      "type": "Group",
+      "position": [0,-0.3,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "house_root"
+    },
+    {
+      "id": "foundation_slab",
+      "type": "Cube",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [10.4,0.3,8.4],
+      "rotation_speed": [0,0,0],
+      "material": "mat_foundation",
+      "parent": "foundation"
+    },
+    {
+      "id": "floor_1",
+      "type": "Group",
+      "position": [0.5,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "house_root"
+    },
+    {
+      "id": "floor_1_slab",
+      "type": "Cube",
+      "position": [0,-0.05,0],
+      "rotation": [0,0,0],
+      "scale": [10,0.2,8],
+      "rotation_speed": [0,0,0],
+      "material": "mat_floor",
+      "parent": "floor_1"
+    },
+    {
+      "id": "floor_1_exterior",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "floor_1"
+    },
+    {
+      "id": "wall_f1_north",
+      "type": "Cube",
+      "position": [0,1.5,4],
+      "rotation": [0,0,0],
+      "scale": [10,3,0.2],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_ext",
+      "parent": "floor_1_exterior"
+    },
+    {
+      "id": "wall_f1_south",
+      "type": "Cube",
+      "position": [0,1.5,-4],
+      "rotation": [0,0,0],
+      "scale": [10,3,0.2],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_ext",
+      "parent": "floor_1_exterior"
+    },
+    {
+      "id": "wall_f1_east",
+      "type": "Cube",
+      "position": [5,1.5,0],
+      "rotation": [0,0,0],
+      "scale": [0.2,3,8],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_ext",
+      "parent": "floor_1_exterior"
+    },
+    {
+      "id": "wall_f1_west",
+      "type": "Cube",
+      "position": [-5,1.5,0],
+      "rotation": [0,0,0],
+      "scale": [0.2,3,8],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_ext",
+      "parent": "floor_1_exterior"
+    },
+    {
+      "id": "floor_1_interior",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "floor_1"
+    },
+    {
+      "id": "interior_f1_a",
+      "type": "Cube",
+      "position": [-1,1.5,0.5],
+      "rotation": [0,0,0],
+      "scale": [0.15,3,5],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_int",
+      "parent": "floor_1_interior"
+    },
+    {
+      "id": "interior_f1_b",
+      "type": "Cube",
+      "position": [1,1.5,1],
+      "rotation": [0,0,0],
+      "scale": [4,3,0.15],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_int",
+      "parent": "floor_1_interior"
+    },
+    {
+      "id": "floor_1_rooms",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "floor_1"
+    },
+    {
+      "id": "room_f1_living",
+      "type": "Quad",
+      "position": [-2.8,0.02,0.8],
+      "rotation": [-90,0,0],
+      "scale": [3.8,3.8,1],
+      "rotation_speed": [0,0,0],
+      "material": "mat_living",
+      "parent": "floor_1_rooms"
+    },
+    {
+      "id": "room_f1_kitchen",
+      "type": "Quad",
+      "position": [2.6,0.02,-1.8],
+      "rotation": [-90,0,0],
+      "scale": [4,3.5,1],
+      "rotation_speed": [0,0,0],
+      "material": "mat_kitchen",
+      "parent": "floor_1_rooms"
+    },
+    {
+      "id": "room_f1_bed",
+      "type": "Quad",
+      "position": [2.6,0.02,1.8],
+      "rotation": [-90,0,0],
+      "scale": [3.5,3,1],
+      "rotation_speed": [0,0,0],
+      "material": "mat_bed",
+      "parent": "floor_1_rooms"
+    },
+    {
+      "id": "floor_1_doors",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "floor_1"
+    },
+    {
+      "id": "door_f1_front",
+      "type": "Cube",
+      "position": [0,1,4.05],
+      "rotation": [0,0,0],
+      "scale": [1,2,0.08],
+      "rotation_speed": [0,0,0],
+      "material": "mat_door",
+      "parent": "floor_1_doors"
+    },
+    {
+      "id": "door_f1_interior_a",
+      "type": "Cube",
+      "position": [-1,1,2.2],
+      "rotation": [0,0,0],
+      "scale": [0.9,2,0.05],
+      "rotation_speed": [0,0,0],
+      "material": "mat_door",
+      "parent": "floor_1_doors"
+    },
+    {
+      "id": "door_f1_interior_b",
+      "type": "Cube",
+      "position": [2,1,1],
+      "rotation": [0,0,0],
+      "scale": [0.9,2,0.05],
+      "rotation_speed": [0,0,0],
+      "material": "mat_door",
+      "parent": "floor_1_doors"
+    },
+    {
+      "id": "floor_1_windows",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "floor_1"
+    },
+    {
+      "id": "window_f1_north",
+      "type": "Cube",
+      "position": [-3,1.4,4.11],
+      "rotation": [0,0,0],
+      "scale": [1.2,1,0.03],
+      "rotation_speed": [0,0,0],
+      "material": "mat_window",
+      "parent": "floor_1_windows"
+    },
+    {
+      "id": "window_f1_south",
+      "type": "Cube",
+      "position": [3,1.4,-4.11],
+      "rotation": [0,0,0],
+      "scale": [1.2,1,0.03],
+      "rotation_speed": [0,0,0],
+      "material": "mat_window",
+      "parent": "floor_1_windows"
+    },
+    {
+      "id": "window_f1_east",
+      "type": "Cube",
+      "position": [5.11,1.4,0],
+      "rotation": [0,0,0],
+      "scale": [0.03,1,1.2],
+      "rotation_speed": [0,0,0],
+      "material": "mat_window",
+      "parent": "floor_1_windows"
+    },
+    {
+      "id": "window_f1_west",
+      "type": "Cube",
+      "position": [-5.11,1.4,2],
+      "rotation": [0,0,0],
+      "scale": [0.03,1,1.2],
+      "rotation_speed": [0,0,0],
+      "material": "mat_window",
+      "parent": "floor_1_windows"
+    },
+    {
+      "id": "floor_2",
+      "type": "Group",
+      "position": [0,3,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "house_root"
+    },
+    {
+      "id": "floor_2_slab",
+      "type": "Cube",
+      "position": [0,-0.05,0],
+      "rotation": [0,0,0],
+      "scale": [10,0.2,8],
+      "rotation_speed": [0,0,0],
+      "material": "mat_floor",
+      "parent": "floor_2"
+    },
+    {
+      "id": "floor_2_exterior",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "floor_2"
+    },
+    {
+      "id": "wall_f2_north",
+      "type": "Cube",
+      "position": [0,1.5,4],
+      "rotation": [0,0,0],
+      "scale": [10,3,0.2],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_ext",
+      "parent": "floor_2_exterior"
+    },
+    {
+      "id": "wall_f2_south",
+      "type": "Cube",
+      "position": [0,1.5,-4],
+      "rotation": [0,0,0],
+      "scale": [10,3,0.2],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_ext",
+      "parent": "floor_2_exterior"
+    },
+    {
+      "id": "wall_f2_east",
+      "type": "Cube",
+      "position": [5,1.5,0],
+      "rotation": [0,0,0],
+      "scale": [0.2,3,8],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_ext",
+      "parent": "floor_2_exterior"
+    },
+    {
+      "id": "wall_f2_west",
+      "type": "Cube",
+      "position": [-5,1.5,0],
+      "rotation": [0,0,0],
+      "scale": [0.2,3,8],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_ext",
+      "parent": "floor_2_exterior"
+    },
+    {
+      "id": "floor_2_interior",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "floor_2"
+    },
+    {
+      "id": "interior_f2_a",
+      "type": "Cube",
+      "position": [1,1.5,0],
+      "rotation": [0,0,0],
+      "scale": [0.15,3,6],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_int",
+      "parent": "floor_2_interior"
+    },
+    {
+      "id": "interior_f2_b",
+      "type": "Cube",
+      "position": [0,1.5,-1.5],
+      "rotation": [0,0,0],
+      "scale": [4,3,0.15],
+      "rotation_speed": [0,0,0],
+      "material": "mat_wall_int",
+      "parent": "floor_2_interior"
+    },
+    {
+      "id": "floor_2_rooms",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "floor_2"
+    },
+    {
+      "id": "room_f2_master",
+      "type": "Quad",
+      "position": [-1.5,0.02,0.5],
+      "rotation": [-90,0,0],
+      "scale": [5,4,1],
+      "rotation_speed": [0,0,0],
+      "material": "mat_living",
+      "parent": "floor_2_rooms"
+    },
+    {
+      "id": "room_f2_bed2",
+      "type": "Quad",
+      "position": [2.8,0.02,1.2],
+      "rotation": [-90,0,0],
+      "scale": [3.5,3,1],
+      "rotation_speed": [0,0,0],
+      "material": "mat_bed",
+      "parent": "floor_2_rooms"
+    },
+    {
+      "id": "room_f2_bath",
+      "type": "Quad",
+      "position": [2,0.02,-2.2],
+      "rotation": [-90,0,0],
+      "scale": [3,2.5,1],
+      "rotation_speed": [0,0,0],
+      "material": "mat_kitchen",
+      "parent": "floor_2_rooms"
+    },
+    {
+      "id": "floor_2_doors",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "floor_2"
+    },
+    {
+      "id": "door_f2_hall",
+      "type": "Cube",
+      "position": [1,1,0.8],
+      "rotation": [0,0,0],
+      "scale": [0.9,2,0.05],
+      "rotation_speed": [0,0,0],
+      "material": "mat_door",
+      "parent": "floor_2_doors"
+    },
+    {
+      "id": "door_f2_master",
+      "type": "Cube",
+      "position": [-1,1,1.8],
+      "rotation": [0,0,0],
+      "scale": [0.9,2,0.05],
+      "rotation_speed": [0,0,0],
+      "material": "mat_door",
+      "parent": "floor_2_doors"
+    },
+    {
+      "id": "floor_2_windows",
+      "type": "Group",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "floor_2"
+    },
+    {
+      "id": "window_f2_north",
+      "type": "Cube",
+      "position": [0,1.4,4.11],
+      "rotation": [0,0,0],
+      "scale": [1.2,1,0.03],
+      "rotation_speed": [0,0,0],
+      "material": "mat_window",
+      "parent": "floor_2_windows"
+    },
+    {
+      "id": "window_f2_east",
+      "type": "Cube",
+      "position": [5.11,1.4,1],
+      "rotation": [0,0,0],
+      "scale": [0.03,1,1.2],
+      "rotation_speed": [0,0,0],
+      "material": "mat_window",
+      "parent": "floor_2_windows"
+    },
+    {
+      "id": "window_f2_south",
+      "type": "Cube",
+      "position": [-2,1.4,-4.11],
+      "rotation": [0,0,0],
+      "scale": [1.2,1,0.03],
+      "rotation_speed": [0,0,0],
+      "material": "mat_window",
+      "parent": "floor_2_windows"
+    },
+    {
+      "id": "stairs",
+      "type": "Group",
+      "position": [-3.5,0,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "house_root"
+    },
+    {
+      "id": "stair_1",
+      "type": "Cube",
+      "position": [0,0.15,-1.6],
+      "rotation": [0,0,0],
+      "scale": [1.8,0.08,0.34],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "stair_2",
+      "type": "Cube",
+      "position": [0,0.45,-1.26],
+      "rotation": [0,0,0],
+      "scale": [1.8,0.08,0.34],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "stair_3",
+      "type": "Cube",
+      "position": [0,0.75,-0.92],
+      "rotation": [0,0,0],
+      "scale": [1.8,0.08,0.34],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "stair_4",
+      "type": "Cube",
+      "position": [0,1.05,-0.58],
+      "rotation": [0,0,0],
+      "scale": [1.8,0.08,0.34],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "stair_5",
+      "type": "Cube",
+      "position": [0,1.35,-0.24],
+      "rotation": [0,0,0],
+      "scale": [1.8,0.08,0.34],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "stair_6",
+      "type": "Cube",
+      "position": [0,1.65,0.1],
+      "rotation": [0,0,0],
+      "scale": [1.8,0.08,0.34],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "stair_7",
+      "type": "Cube",
+      "position": [0,1.95,0.44],
+      "rotation": [0,0,0],
+      "scale": [1.8,0.08,0.34],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "stair_8",
+      "type": "Cube",
+      "position": [0,2.25,0.78],
+      "rotation": [0,0,0],
+      "scale": [1.8,0.08,0.34],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "stair_9",
+      "type": "Cube",
+      "position": [0,2.55,1.12],
+      "rotation": [0,0,0],
+      "scale": [1.8,0.08,0.34],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "stair_10",
+      "type": "Cube",
+      "position": [0,2.85,1.46],
+      "rotation": [0,0,0],
+      "scale": [1.8,0.08,0.34],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "stair_rail",
+      "type": "Cube",
+      "position": [0.9,1.5,0],
+      "rotation": [0,0,0],
+      "scale": [0.06,2.2,3.8],
+      "rotation_speed": [0,0,0],
+      "material": "mat_stairs",
+      "parent": "stairs"
+    },
+    {
+      "id": "roof",
+      "type": "Group",
+      "position": [0,6.15,0],
+      "rotation": [0,0,0],
+      "scale": [1,1,1],
+      "rotation_speed": [0,0,0],
+      "material": "Default",
+      "parent": "house_root"
+    },
+    {
+      "id": "roof_slab",
+      "type": "Cube",
+      "position": [0,0,0],
+      "rotation": [0,0,0],
+      "scale": [10.6,0.3,8.6],
+      "rotation_speed": [0,0,0],
+      "material": "mat_roof",
+      "parent": "roof"
+    },
+    {
+      "id": "roof_peak_a",
+      "type": "Cube",
+      "position": [0,0.35,2.15],
+      "rotation": [-18,0,0],
+      "scale": [10.6,0.18,4.35],
+      "rotation_speed": [0,0,0],
+      "material": "mat_roof",
+      "parent": "roof"
+    },
+    {
+      "id": "roof_peak_b",
+      "type": "Cube",
+      "position": [0,0.35,-2.15],
+      "rotation": [18,0,0],
+      "scale": [10.6,0.18,4.35],
+      "rotation_speed": [0,0,0],
+      "material": "mat_roof",
+      "parent": "roof"
+    }
+  ]
+}

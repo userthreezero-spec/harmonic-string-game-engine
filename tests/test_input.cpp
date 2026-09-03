@@ -11,6 +11,7 @@ void test_camera_manual_orbit() {
 
     // Initial pos: (10, 0, 0) assuming yaw=0, pitch=0
     cam.updateOrbit(0.0f);
+    std::cout << "Cam pos: (" << cam.getPosition().x << ", " << cam.getPosition().y << ", " << cam.getPosition().z << ")" << std::endl;
     assert(std::abs(cam.getPosition().x - 10.0f) < 0.001f);
     assert(std::abs(cam.getPosition().y - 0.0f) < 0.001f);
     assert(std::abs(cam.getPosition().z - 0.0f) < 0.001f);
@@ -25,6 +26,7 @@ void test_camera_manual_orbit() {
     cam.offsetOrbit(0.0f, 45.0f);
     // yaw=90, pitch=45 -> x=0, y=10*sin(45), z=10*cos(45)
     float expected = 10.0f * std::sin(45.0f * 3.14159265f / 180.0f);
+    std::cout << "y: " << cam.getPosition().y << " z: " << cam.getPosition().z << " expected: " << expected << std::endl;
     assert(std::abs(cam.getPosition().y - expected) < 0.001f);
     assert(std::abs(cam.getPosition().z - expected) < 0.001f);
 

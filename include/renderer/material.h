@@ -25,8 +25,17 @@ public:
     void setMetallic(float m) { m_metallic = m; }
     float getMetallic() const { return m_metallic; }
 
+    struct Locations {
+        int albedo = -1;
+        int roughness = -1;
+        int metallic = -1;
+        int hasAlbedoMap = -1;
+        int albedoMap = -1;
+    };
+
     // Upload material properties as uniforms to the current shader
-    void apply(unsigned int shaderProgram) const;
+    void apply(const Locations& locs) const;
+    void apply(unsigned int shaderProgram) const; // Legacy version
 
 private:
     std::string m_name;

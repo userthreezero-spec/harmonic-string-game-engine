@@ -193,17 +193,20 @@ int main(int argc, char* argv[]) {
         if (selectedID != 0) {
             auto obj = scene->findByID(selectedID);
             if (obj) {
-                // Assembly selection (Key 'G' - Go to root)
+                // Assembly selection (Key 'G' - Go to root of functional assembly)
                 static bool lastGPressed = false;
                 bool gPressed = window.isKeyPressed(GLFW_KEY_G);
                 if (gPressed && !lastGPressed) {
-                    auto root = obj;
-                    while (auto parent = root->getParent()) {
-                        root = parent;
+                    auto current = obj;
+                    auto parent = current->getParent();
+                    // Traverse up while the parent is a Group and not the scene root
+                    // (For this room, we'll stop if parent is "table" or "chair_x_assembly" etc.)
+                    // Better: just move up one level if parent exists, or to the highest Group
+                    if (parent && parent->getType() == hse::PrimitiveType::Group) {
+                        selectedID = parent->getID();
+                        std::cout << "Selected Assembly: " << parent->getName() << " (ID: " << selectedID << ")" << std::endl;
+                        obj = scene->findByID(parent->getID());
                     }
-                    selectedID = root->getID();
-                    std::cout << "Selected Assembly Root: " << root->getName() << " (ID: " << selectedID << ")" << std::endl;
-                    obj = root;
                 }
                 lastGPressed = gPressed;
 
@@ -242,6 +245,22 @@ int main(int argc, char* argv[]) {
             }
         }
 
+        // ESC Exit handling
+        if (window.isKeyPressed(GLFW_KEY_ESCAPE)) {
+            std::cout << "ESC pressed: closing workspace cleanly..." << std::endl;
+            glfwSetWindowShouldClose(window.getNative(), GLFW_TRUE);
+        }
+
+        // WASDQE Fly Navigation
+        if (camera && !camera->isOrbitEnabled()) {
+            if (window.isKeyPressed(GLFW_KEY_W)) camera->processKeyboard("FORWARD", dt, shiftPressed);
+            if (window.isKeyPressed(GLFW_KEY_S)) camera->processKeyboard("BACKWARD", dt, shiftPressed);
+            if (window.isKeyPressed(GLFW_KEY_A)) camera->processKeyboard("LEFT", dt, shiftPressed);
+            if (window.isKeyPressed(GLFW_KEY_D)) camera->processKeyboard("RIGHT", dt, shiftPressed);
+            if (window.isKeyPressed(GLFW_KEY_E)) camera->processKeyboard("UP", dt, shiftPressed);
+            if (window.isKeyPressed(GLFW_KEY_Q)) camera->processKeyboard("DOWN", dt, shiftPressed);
+        }
+
         // Save
         static bool lastSPressed = false;
         bool sPressed = window.isKeyPressed(GLFW_KEY_S);
@@ -264,8 +283,10 @@ int main(int argc, char* argv[]) {
         window.swapBuffers();
     }
 
-    // Shutdown
+    // Deterministic Clean Shutdown
+    std::cout << "Stopping IPC bridge thread..." << std::endl;
     bridge.stop();
     renderer.shutdown();
+    std::cout << "HSE Workspace shut down cleanly." << std::endl;
     return 0;
 }

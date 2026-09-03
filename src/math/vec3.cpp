@@ -7,8 +7,6 @@ Vec3 Vec3::operator+(const Vec3& other) const { return {x + other.x, y + other.y
 Vec3 Vec3::operator-(const Vec3& other) const { return {x - other.x, y - other.y, z - other.z}; }
 Vec3 Vec3::operator*(float scalar) const { return {x * scalar, y * scalar, z * scalar}; }
 Vec3& Vec3::operator+=(const Vec3& other) { x += other.x; y += other.y; z += other.z; return *this; }
-Vec3& Vec3::operator-=(const Vec3& other) { x -= other.x; y -= other.y; z -= other.z; return *this; }
-Vec3& Vec3::operator*=(float scalar) { x *= scalar; y *= scalar; z *= scalar; return *this; }
 
 float Vec3::length() const { return std::sqrt(x*x + y*y + z*z); }
 

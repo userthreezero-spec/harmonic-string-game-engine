@@ -1,0 +1,63 @@
+{
+  "name": "Mechanical Workbench",
+  "components": [
+    {
+      "id": "tabletop_0",
+      "name": "tabletop",
+      "material_id": "oak_wood",
+      "position": [0, 0.9, 0],
+      "color": [0.6, 0.4, 0.2]
+    },
+    {
+      "id": "leg_1",
+      "name": "chair_leg",
+      "material_id": "oak_wood",
+      "position": [-0.7, 0.45, -0.35],
+      "color": [0.6, 0.4, 0.2]
+    },
+    {
+      "id": "leg_2",
+      "name": "chair_leg",
+      "material_id": "oak_wood",
+      "position": [0.7, 0.45, -0.35],
+      "color": [0.6, 0.4, 0.2]
+    },
+    {
+      "id": "leg_3",
+      "name": "chair_leg",
+      "material_id": "oak_wood",
+      "position": [-0.7, 0.45, 0.35],
+      "color": [0.6, 0.4, 0.2]
+    },
+    {
+      "id": "leg_4",
+      "name": "chair_leg",
+      "material_id": "oak_wood",
+      "position": [0.7, 0.45, 0.35],
+      "color": [0.6, 0.4, 0.2]
+    },
+    {
+      "id": "shaft_0",
+      "name": "shaft",
+      "material_id": "steel_medium_carbon",
+      "position": [0, 1.1, 0],
+      "color": [0.5, 0.5, 0.5]
+    },
+    {
+      "id": "cog_0",
+      "name": "cog",
+      "material_id": "steel_medium_carbon",
+      "processes": ["extraction", "forging", "machining"],
+      "requirements": {"teeth": 24},
+      "position": [0, 1.1, 0],
+      "color": [0.7, 0.7, 0.7]
+    }
+  ],
+  "relationships": [
+    {"from": "leg_1", "rel": "supports", "to": "tabletop_0"},
+    {"from": "leg_2", "rel": "supports", "to": "tabletop_0"},
+    {"from": "leg_3", "rel": "supports", "to": "tabletop_0"},
+    {"from": "leg_4", "rel": "supports", "to": "tabletop_0"},
+    {"from": "cog_0", "rel": "mounted_on", "to": "shaft_0"}
+  ]
+}

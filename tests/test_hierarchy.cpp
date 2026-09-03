@@ -15,9 +15,9 @@ void test_parent_child_creation() {
     auto parent = std::make_shared<hse::Primitive>(hse::PrimitiveType::Cube);
     auto child = std::make_shared<hse::Primitive>(hse::PrimitiveType::Quad);
     child->setParent(parent);
-    assert(child->getParent() == parent);
+    assert(child->getParent() == parent.get());
     assert(parent->getChildren().size() == 1);
-    assert(parent->getChildren()[0] == child);
+    assert(parent->getChildren()[0] == child.get());
     std::cout << "PASS: parent child creation" << std::endl;
 }
 
@@ -56,7 +56,7 @@ void test_reparent() {
     child->setParent(parentB);
     assert(parentA->getChildren().empty());
     assert(parentB->getChildren().size() == 1);
-    assert(child->getParent() == parentB);
+    assert(child->getParent() == parentB.get());
     std::cout << "PASS: reparent" << std::endl;
 }
 
@@ -98,7 +98,8 @@ void test_scene_reparent() {
     scene->addPrimitive(child);
     bool ok = scene->reparent(child->getID(), parentB->getID());
     assert(ok);
-    assert(child->getParent() == parentB);
+    std::cout << "child getParent: " << child->getParent() << " parentB get: " << parentB.get() << " child ID: " << child->getID() << " parentB ID: " << parentB->getID() << std::endl;
+    assert(child->getParent() == parentB.get());
     assert(parentA->getChildren().empty());
     assert(parentB->getChildren().size() == 1);
     std::cout << "PASS: scene reparent" << std::endl;

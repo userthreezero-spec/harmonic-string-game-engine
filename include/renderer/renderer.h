@@ -24,14 +24,13 @@ public:
     void getClearColor(float& r, float& g, float& b) const;
     void setViewport(int x, int y, int width, int height);
 
-    bool readPixels(std::vector<uint8_t>& rgba, int& width, int& height);
-    uint64_t getFrameCount() const { return m_frameCount; }
-    void incrementFrameCount() { m_frameCount++; }
+    size_t getFrameCount() const;
+    void incrementFrameCount();
+    bool readPixels(std::vector<unsigned char>& rgba, int& w, int& h);
 
 private:
     struct RendererState;
     std::unique_ptr<RendererState> m_state;
-    uint64_t m_frameCount = 0;
 };
 
 } // namespace hse

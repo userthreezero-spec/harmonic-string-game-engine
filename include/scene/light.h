@@ -4,34 +4,30 @@
 
 namespace hse {
 
-enum class LightType { Point, Directional, Spot };
+enum class LightType { Point, Directional };
 
-class Light {
-public:
-    Light(const std::string& name = "Light")
-        : m_name(name), m_type(LightType::Point), m_position(0, 0, 0), m_color(1, 1, 1), m_intensity(1.0f) {}
+struct Light {
+    LightType type = LightType::Point;
+    std::string name = "Light";
+    Vec3 position{0.0f, 0.0f, 0.0f};
+    Vec3 direction{0.0f, -1.0f, 0.0f};
+    Vec3 color{1.0f, 1.0f, 1.0f};
+    float ambient = 0.1f;
+    float diffuse = 0.8f;
+    float specular = 1.0f;
+    float intensity = 1.0f;
 
-    const std::string& getName() const { return m_name; }
-    void setName(const std::string& name) { m_name = name; }
+    Light() = default;
+    Light(LightType type) : type(type) {}
+    Light(const std::string& name, LightType type = LightType::Point) : type(type), name(name) {}
 
-    LightType getType() const { return m_type; }
-    void setType(LightType type) { m_type = type; }
-
-    const Vec3& getPosition() const { return m_position; }
-    void setPosition(const Vec3& pos) { m_position = pos; }
-
-    const Vec3& getColor() const { return m_color; }
-    void setColor(const Vec3& color) { m_color = color; }
-
-    float getIntensity() const { return m_intensity; }
-    void setIntensity(float intensity) { m_intensity = intensity; }
-
-private:
-    std::string m_name;
-    LightType m_type;
-    Vec3 m_position;
-    Vec3 m_color;
-    float m_intensity;
+    void setPosition(const Vec3& p) { position = p; }
+    void setColor(const Vec3& c) { color = c; }
+    void setIntensity(float i) { intensity = i; }
+    const Vec3& getPosition() const { return position; }
+    const Vec3& getColor() const { return color; }
+    float getIntensity() const { return intensity; }
+    const std::string& getName() const { return name; }
 };
 
 } // namespace hse

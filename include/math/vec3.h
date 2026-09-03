@@ -11,8 +11,8 @@ struct Vec3 {
     Vec3 operator-(const Vec3& other) const;
     Vec3 operator*(float scalar) const;
     Vec3& operator+=(const Vec3& other);
-    Vec3& operator-=(const Vec3& other);
-    Vec3& operator*=(float scalar);
+    Vec3& operator-=(const Vec3& other) { x -= other.x; y -= other.y; z -= other.z; return *this; }
+    Vec3& operator*=(float scalar) { x *= scalar; y *= scalar; z *= scalar; return *this; }
 
     float length() const;
     Vec3 normalized() const;

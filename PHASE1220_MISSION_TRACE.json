@@ -1,0 +1,18 @@
+{
+  "mission_id": "REQ-A6BB21F5",
+  "provenance": "UCS_PRIME_P1220",
+  "gateway_url": "http://127.0.0.1:8725/request",
+  "capabilities_executed": [
+    "INVESTIGATION_AUTHORITY",
+    "VERIFICATION_AUTHORITY"
+  ],
+  "verification_results": {
+    "world_transform_update": "PROVEN",
+    "ray_picking_projection_view_order": "PROVEN",
+    "in_window_mouse_hover_highlight": "PROVEN",
+    "in_window_mouse_click_project_open": "PROVEN",
+    "lifecycle_test_suite": "11/11 PASS",
+    "process_exit_status": "EXIT_0_CLEAN"
+  },
+  "final_verdict": "PROVEN"
+}

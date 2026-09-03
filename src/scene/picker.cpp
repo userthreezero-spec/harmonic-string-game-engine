@@ -6,17 +6,17 @@
 namespace hse {
 
 Ray Picker::screenToRay(double x, double y, const Camera& camera, int width, int height) {
+    if (width <= 0) width = 1280;
+    if (height <= 0) height = 720;
     float nx = (2.0f * (float)x) / width - 1.0f;
     float ny = 1.0f - (2.0f * (float)y) / height;
 
     Mat4 invPV = (camera.getProjectionMatrix() * camera.getViewMatrix()).inverse();
 
-    // Near point on the frustum
     Vec3 nearPos = invPV * Vec3(nx, ny, -1.0f);
-    // Far point on the frustum
     Vec3 farPos = invPV * Vec3(nx, ny, 1.0f);
 
-    return Ray(nearPos, farPos - nearPos);
+    return Ray(nearPos, (farPos - nearPos).normalized());
 }
 
 Intersection Picker::pick(const Ray& ray, const Scene& scene) {

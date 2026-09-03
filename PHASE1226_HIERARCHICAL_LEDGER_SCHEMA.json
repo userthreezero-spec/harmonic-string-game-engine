@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HierarchicalGoalLedgerSchema",
+  "type": "object",
+  "properties": {
+    "nodes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "goal_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "MICRO",
+              "SUBSYSTEM",
+              "PROJECT",
+              "SYSTEM",
+              "END-STATE"
+            ]
+          },
+          "parent_goal_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "desired_state": {
+            "type": "object"
+          },
+          "current_state": {
+            "type": "object"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sub_goal_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "priority": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "acceptance_criteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "created_at": {
+            "type": "number"
+          },
+          "updated_at": {
+            "type": "number"
+          },
+          "provenance": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "goal_id",
+          "title",
+          "scope",
+          "status",
+          "acceptance_criteria"
+        ]
+      }
+    }
+  }
+}

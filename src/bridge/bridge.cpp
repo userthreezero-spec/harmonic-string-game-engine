@@ -24,9 +24,12 @@ bool Bridge::start() {
 }
 
 void Bridge::stop() {
+    if (!m_running) return;
     m_running = false;
-    if (m_readerThread.joinable()) m_readerThread.join();
     m_pipe.stop();
+    if (m_readerThread.joinable()) {
+        m_readerThread.join();
+    }
 }
 
 void Bridge::readerThread() {
