@@ -102,17 +102,50 @@ void testGovernedMutationWorkflow() {
     std::cout << "  PASS: Governed change proposal and real mutation verified." << std::endl;
 }
 
+void testResponsiveLayoutScaling() {
+    std::cout << "[Test Phase 1233A] 4. Responsive UI Layout Scaling Across Resolutions..." << std::endl;
+
+    hse::UILayout layout;
+
+    // Test 1: 1280x720 (Standard Windowed)
+    layout.update(1280, 720, 1280, 720);
+    assert(layout.panelWidth >= 380.0f);
+    assert(layout.panelX == 1280.0f - layout.panelWidth);
+    assert(std::abs(layout.fontScale - 1.0f) < 0.01f);
+
+    // Test 2: 1920x1080 (1080p Fullscreen)
+    layout.update(1920, 1080, 1920, 1080);
+    assert(layout.panelWidth >= 500.0f);
+    assert(layout.panelX == 1920.0f - layout.panelWidth);
+    assert(layout.fontScale >= 1.4f);
+    assert(layout.charH >= 20.0f); // High definition font height
+
+    // Test 3: 2560x1440 (1440p / 2K Fullscreen)
+    layout.update(2560, 1440, 2560, 1440);
+    assert(layout.panelWidth >= 700.0f);
+    assert(layout.fontScale >= 1.8f);
+    assert(layout.charH >= 28.0f);
+
+    // Test 4: 3840x2160 (4K Fullscreen)
+    layout.update(3840, 2160, 3840, 2160);
+    assert(layout.panelWidth == 800.0f); // Capped maximum panel width
+    assert(layout.fontScale >= 2.4f);
+
+    std::cout << "  PASS: Responsive UI layout scaling verified across 720p, 1080p, 1440p, and 4K resolutions." << std::endl;
+}
+
 int main() {
     std::cout << "================================================================================" << std::endl;
-    std::cout << " PHASE 1233 — COGNITIVE WORKSPACE & WEBOS UI VALIDATION TEST" << std::endl;
+    std::cout << " PHASE 1233A — COGNITIVE WORKSPACE UI SCALING VALIDATION TEST" << std::endl;
     std::cout << "================================================================================" << std::endl;
 
     testUIRendererDataStructures();
     testGroundedContextResolution();
     testGovernedMutationWorkflow();
+    testResponsiveLayoutScaling();
 
     std::cout << "================================================================================" << std::endl;
-    std::cout << " ALL PHASE 1233 WORKSPACE UI TESTS PASSED (PROVEN)" << std::endl;
+    std::cout << " ALL PHASE 1233A WORKSPACE UI SCALING TESTS PASSED (PROVEN)" << std::endl;
     std::cout << "================================================================================" << std::endl;
     return 0;
 }

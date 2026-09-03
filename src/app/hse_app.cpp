@@ -576,143 +576,196 @@ private:
     }
 
     void renderCognitiveWorkspaceUI(int winW, int winH) {
-        float panelW = 380.0f;
-        float panelX = static_cast<float>(winW) - panelW;
-        if (panelX < 0) panelX = 0;
+        const auto& layout = m_uiRenderer.getLayout();
+        float panelW = layout.panelWidth;
+        float panelX = layout.panelX;
+        float fontS = layout.fontScale;
+        float charW = layout.charW;
+        float charH = layout.charH;
+        float lineH = layout.lineHeight;
+        float pad = layout.padding;
 
         // Background Panel
         m_uiRenderer.drawRect(panelX, 0, panelW, static_cast<float>(winH), {0.08f, 0.10f, 0.14f}, 0.95f);
-        m_uiRenderer.drawRect(panelX, 0, 2.0f, static_cast<float>(winH), {0.20f, 0.25f, 0.35f}, 1.0f);
+        m_uiRenderer.drawRect(panelX, 0, 2.0f * fontS, static_cast<float>(winH), {0.20f, 0.25f, 0.35f}, 1.0f);
 
         // Header Title & Status
-        m_uiRenderer.drawText("WEBOS COGNITIVE WORKSPACE", panelX + 15.0f, 12.0f, 1.0f, {0.30f, 0.70f, 1.0f});
-        m_uiRenderer.drawText("STATUS: " + m_webosStatus, panelX + 15.0f, 30.0f, 0.8f, m_webosBusy ? hse::Vec3{0.95f, 0.80f, 0.20f} : hse::Vec3{0.20f, 0.90f, 0.50f});
+        m_uiRenderer.drawText("WEBOS COGNITIVE WORKSPACE", panelX + pad, pad, fontS, {0.30f, 0.70f, 1.0f});
+        m_uiRenderer.drawText("STATUS: " + m_webosStatus, panelX + pad, pad + lineH + 2.0f, fontS * 0.85f,
+            m_webosBusy ? hse::Vec3{0.95f, 0.80f, 0.20f} : hse::Vec3{0.20f, 0.90f, 0.50f});
 
         // Inspector Box (Selected Object Context)
-        float inspY = 50.0f;
-        float inspH = 100.0f;
-        m_uiRenderer.drawRect(panelX + 12.0f, inspY, panelW - 24.0f, inspH, {0.12f, 0.15f, 0.22f}, 0.9f);
-        m_uiRenderer.drawRectOutline(panelX + 12.0f, inspY, panelW - 24.0f, inspH, {0.25f, 0.35f, 0.50f}, 1.0f);
+        float inspY = pad + lineH * 2.2f + 4.0f;
+        float inspH = layout.inspHeight;
+        float boxW = panelW - (pad * 2.0f);
+
+        m_uiRenderer.drawRect(panelX + pad, inspY, boxW, inspH, {0.12f, 0.15f, 0.22f}, 0.9f);
+        m_uiRenderer.drawRectOutline(panelX + pad, inspY, boxW, inspH, {0.25f, 0.35f, 0.50f}, 1.5f);
 
         if (m_scene && m_selectedObjectID != 0) {
             auto obj = m_scene->findByID(m_selectedObjectID);
             if (obj) {
-                m_uiRenderer.drawText("INSPECTOR: " + obj->getName(), panelX + 20.0f, inspY + 8.0f, 0.9f, {1.0f, 0.9f, 0.4f});
+                m_uiRenderer.drawText("INSPECTOR: " + obj->getName(), panelX + pad + 8.0f, inspY + 8.0f, fontS * 0.9f, {1.0f, 0.9f, 0.4f});
                 std::string typeStr = (obj->getType() == hse::PrimitiveType::Cube) ? "Cube" : (obj->getType() == hse::PrimitiveType::Group ? "Group" : "Quad");
-                m_uiRenderer.drawText("ID: " + std::to_string(obj->getID()) + " | Type: " + typeStr, panelX + 20.0f, inspY + 26.0f, 0.8f, {0.85f, 0.85f, 0.85f});
+                m_uiRenderer.drawText("ID: " + std::to_string(obj->getID()) + " | Type: " + typeStr, panelX + pad + 8.0f, inspY + 8.0f + lineH * 0.9f, fontS * 0.8f, {0.85f, 0.85f, 0.85f});
 
                 auto pos = obj->getPosition();
                 char posBuf[64];
                 snprintf(posBuf, sizeof(posBuf), "(%.1f, %.1f, %.1f)", pos.x, pos.y, pos.z);
-                m_uiRenderer.drawText("Pos: " + std::string(posBuf), panelX + 20.0f, inspY + 42.0f, 0.8f, {0.8f, 0.8f, 0.8f});
+                m_uiRenderer.drawText("Pos: " + std::string(posBuf), panelX + pad + 8.0f, inspY + 8.0f + lineH * 1.7f, fontS * 0.8f, {0.8f, 0.8f, 0.8f});
 
                 std::string matName = obj->getMaterial() ? obj->getMaterial()->getName() : "Default";
                 hse::Vec3 col = obj->getMaterial() ? obj->getMaterial()->getAlbedo() : obj->getColor();
                 char colBuf[64];
                 snprintf(colBuf, sizeof(colBuf), "(%.2f, %.2f, %.2f)", col.x, col.y, col.z);
-                m_uiRenderer.drawText("Mat: " + matName + " RGB" + std::string(colBuf), panelX + 20.0f, inspY + 58.0f, 0.8f, {0.8f, 0.8f, 0.8f});
+                m_uiRenderer.drawText("Mat: " + matName + " RGB" + std::string(colBuf), panelX + pad + 8.0f, inspY + 8.0f + lineH * 2.5f, fontS * 0.8f, {0.8f, 0.8f, 0.8f});
 
                 std::string parentStr = obj->getParent() ? obj->getParent()->getName() : "Root Scene";
-                m_uiRenderer.drawText("Hierarchy: " + parentStr, panelX + 20.0f, inspY + 74.0f, 0.8f, {0.8f, 0.8f, 0.8f});
+                m_uiRenderer.drawText("Hierarchy: " + parentStr, panelX + pad + 8.0f, inspY + 8.0f + lineH * 3.3f, fontS * 0.8f, {0.8f, 0.8f, 0.8f});
             } else {
-                m_uiRenderer.drawText("INSPECTOR: Object ID Stale", panelX + 20.0f, inspY + 12.0f, 0.9f, {0.9f, 0.4f, 0.4f});
+                m_uiRenderer.drawText("INSPECTOR: Object Stale", panelX + pad + 8.0f, inspY + 8.0f, fontS * 0.9f, {0.9f, 0.4f, 0.4f});
             }
         } else {
-            m_uiRenderer.drawText("INSPECTOR: No Object Selected", panelX + 20.0f, inspY + 12.0f, 0.9f, {0.6f, 0.6f, 0.6f});
-            m_uiRenderer.drawText("Click any 3D mesh in viewport to select.", panelX + 20.0f, inspY + 36.0f, 0.8f, {0.5f, 0.5f, 0.5f});
-            m_uiRenderer.drawText("Selected object context attaches to WebOS queries.", panelX + 20.0f, inspY + 54.0f, 0.8f, {0.4f, 0.6f, 0.8f});
+            m_uiRenderer.drawText("INSPECTOR: No Object Selected", panelX + pad + 8.0f, inspY + 8.0f, fontS * 0.9f, {0.6f, 0.6f, 0.6f});
+            m_uiRenderer.drawText("Click any 3D mesh in viewport to select.", panelX + pad + 8.0f, inspY + 8.0f + lineH * 1.2f, fontS * 0.8f, {0.5f, 0.5f, 0.5f});
+            m_uiRenderer.drawText("Selected object context attaches to WebOS queries.", panelX + pad + 8.0f, inspY + 8.0f + lineH * 2.2f, fontS * 0.8f, {0.4f, 0.6f, 0.8f});
         }
 
         // Quick Action Chips Bar
-        float chipY = 158.0f;
-        m_uiRenderer.drawRect(panelX + 12.0f, chipY, 70.0f, 22.0f, {0.15f, 0.35f, 0.60f}, 1.0f);
-        m_uiRenderer.drawText("TRACE", panelX + 24.0f, chipY + 4.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+        float chipY = inspY + inspH + pad * 0.6f;
+        float chipH = layout.chipHeight;
+        float chipW1 = 70.0f * fontS;
+        float chipW2 = 60.0f * fontS;
+        float chipW3 = 50.0f * fontS;
+        float chipW4 = 65.0f * fontS;
+        float chipW5 = 85.0f * fontS;
 
-        m_uiRenderer.drawRect(panelX + 88.0f, chipY, 60.0f, 22.0f, {0.10f, 0.40f, 0.90f}, 1.0f);
-        m_uiRenderer.drawText("BLUE", panelX + 102.0f, chipY + 4.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+        m_uiRenderer.drawRect(panelX + pad, chipY, chipW1, chipH, {0.15f, 0.35f, 0.60f}, 1.0f);
+        m_uiRenderer.drawText("TRACE", panelX + pad + 10.0f * fontS, chipY + 4.0f * fontS, fontS * 0.8f, {1.0f, 1.0f, 1.0f});
 
-        m_uiRenderer.drawRect(panelX + 154.0f, chipY, 50.0f, 22.0f, {0.90f, 0.20f, 0.20f}, 1.0f);
-        m_uiRenderer.drawText("RED", panelX + 168.0f, chipY + 4.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+        m_uiRenderer.drawRect(panelX + pad + chipW1 + 8.0f, chipY, chipW2, chipH, {0.10f, 0.40f, 0.90f}, 1.0f);
+        m_uiRenderer.drawText("BLUE", panelX + pad + chipW1 + 18.0f, chipY + 4.0f * fontS, fontS * 0.8f, {1.0f, 1.0f, 1.0f});
 
-        m_uiRenderer.drawRect(panelX + 210.0f, chipY, 65.0f, 22.0f, {0.20f, 0.80f, 0.30f}, 1.0f);
-        m_uiRenderer.drawText("GREEN", panelX + 220.0f, chipY + 4.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+        m_uiRenderer.drawRect(panelX + pad + chipW1 + chipW2 + 16.0f, chipY, chipW3, chipH, {0.90f, 0.20f, 0.20f}, 1.0f);
+        m_uiRenderer.drawText("RED", panelX + pad + chipW1 + chipW2 + 24.0f, chipY + 4.0f * fontS, fontS * 0.8f, {1.0f, 1.0f, 1.0f});
 
-        m_uiRenderer.drawRect(panelX + 281.0f, chipY, 87.0f, 22.0f, {0.35f, 0.35f, 0.45f}, 1.0f);
-        m_uiRenderer.drawText("FOCUS (F)", panelX + 291.0f, chipY + 4.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+        m_uiRenderer.drawRect(panelX + pad + chipW1 + chipW2 + chipW3 + 24.0f, chipY, chipW4, chipH, {0.20f, 0.80f, 0.30f}, 1.0f);
+        m_uiRenderer.drawText("GREEN", panelX + pad + chipW1 + chipW2 + chipW3 + 30.0f, chipY + 4.0f * fontS, fontS * 0.8f, {1.0f, 1.0f, 1.0f});
+
+        m_uiRenderer.drawRect(panelX + pad + chipW1 + chipW2 + chipW3 + chipW4 + 32.0f, chipY, chipW5, chipH, {0.35f, 0.35f, 0.45f}, 1.0f);
+        m_uiRenderer.drawText("FOCUS (F)", panelX + pad + chipW1 + chipW2 + chipW3 + chipW4 + 38.0f, chipY + 4.0f * fontS, fontS * 0.8f, {1.0f, 1.0f, 1.0f});
 
         // Proposed Change Box (if active)
-        float chatBoxY = 188.0f;
+        float chatBoxY = chipY + chipH + pad * 0.6f;
         if (m_proposedChange.active) {
-            m_uiRenderer.drawRect(panelX + 12.0f, 188.0f, panelW - 24.0f, 60.0f, {0.25f, 0.20f, 0.05f}, 0.95f);
-            m_uiRenderer.drawRectOutline(panelX + 12.0f, 188.0f, panelW - 24.0f, 60.0f, {0.95f, 0.80f, 0.20f}, 1.5f);
-            m_uiRenderer.drawText("PROPOSED MUTATION: " + m_proposedChange.targetName, panelX + 18.0f, 194.0f, 0.8f, {0.95f, 0.85f, 0.20f});
-            m_uiRenderer.drawText("Property: " + m_proposedChange.propertyName + " -> " + m_proposedChange.colorName, panelX + 18.0f, 210.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+            float propH = 65.0f * fontS;
+            m_uiRenderer.drawRect(panelX + pad, chatBoxY, boxW, propH, {0.25f, 0.20f, 0.05f}, 0.95f);
+            m_uiRenderer.drawRectOutline(panelX + pad, chatBoxY, boxW, propH, {0.95f, 0.80f, 0.20f}, 1.5f);
+            m_uiRenderer.drawText("PROPOSED MUTATION: " + m_proposedChange.targetName, panelX + pad + 8.0f, chatBoxY + 6.0f, fontS * 0.8f, {0.95f, 0.85f, 0.20f});
+            m_uiRenderer.drawText("Property: " + m_proposedChange.propertyName + " -> " + m_proposedChange.colorName, panelX + pad + 8.0f, chatBoxY + 6.0f + lineH, fontS * 0.8f, {1.0f, 1.0f, 1.0f});
 
             // Authorize button
-            m_uiRenderer.drawRect(panelX + panelW - 120.0f, 226.0f, 100.0f, 18.0f, {0.15f, 0.65f, 0.35f}, 1.0f);
-            m_uiRenderer.drawText("AUTHORIZE [ENTER]", panelX + panelW - 118.0f, 229.0f, 0.7f, {1.0f, 1.0f, 1.0f});
+            float btnW = 120.0f * fontS;
+            float btnH = 22.0f * fontS;
+            m_uiRenderer.drawRect(panelX + panelW - pad - btnW, chatBoxY + propH - btnH - 6.0f, btnW, btnH, {0.15f, 0.65f, 0.35f}, 1.0f);
+            m_uiRenderer.drawText("AUTHORIZE [ENTER]", panelX + panelW - pad - btnW + 6.0f, chatBoxY + propH - btnH - 2.0f, fontS * 0.7f, {1.0f, 1.0f, 1.0f});
 
-            chatBoxY = 254.0f;
+            chatBoxY += propH + pad * 0.4f;
         }
 
-        // Conversation Log Area
-        float chatBoxH = static_cast<float>(winH) - chatBoxY - 60.0f;
-        if (chatBoxH < 100.0f) chatBoxH = 100.0f;
+        // Conversation Log Box
+        float inputAreaH = layout.inputHeight + pad * 1.5f;
+        float chatBoxH = static_cast<float>(winH) - chatBoxY - inputAreaH;
+        if (chatBoxH < 80.0f) chatBoxH = 80.0f;
 
-        m_uiRenderer.drawRect(panelX + 12.0f, chatBoxY, panelW - 24.0f, chatBoxH, {0.05f, 0.07f, 0.10f}, 0.90f);
-        m_uiRenderer.drawRectOutline(panelX + 12.0f, chatBoxY, panelW - 24.0f, chatBoxH, {0.20f, 0.25f, 0.35f}, 1.0f);
+        m_uiRenderer.drawRect(panelX + pad, chatBoxY, boxW, chatBoxH, {0.05f, 0.07f, 0.10f}, 0.90f);
+        m_uiRenderer.drawRectOutline(panelX + pad, chatBoxY, boxW, chatBoxH, {0.20f, 0.25f, 0.35f}, 1.0f);
 
-        // Render Conversation Log Messages
-        int maxVisibleLines = static_cast<int>(chatBoxH / 18.0f) - 1;
-        int totalMessages = static_cast<int>(m_chatLog.size());
-        int startIdx = std::max(0, totalMessages - maxVisibleLines);
+        // Calculate max lines & wrap chat messages based on panel width
+        int charsPerLine = static_cast<int>((boxW - 16.0f) / charW);
+        if (charsPerLine < 15) charsPerLine = 15;
+
+        // Flatten chat log into wrapped display lines
+        struct DisplayLine {
+            std::string text;
+            hse::Vec3 color;
+        };
+        std::vector<DisplayLine> lines;
+
+        for (const auto& msg : m_chatLog) {
+            std::string fullMsg = "[" + msg.sender + "]: " + msg.text;
+            size_t pos = 0;
+            while (pos < fullMsg.length()) {
+                std::string lineStr = fullMsg.substr(pos, charsPerLine);
+                lines.push_back(DisplayLine{lineStr, msg.color});
+                pos += charsPerLine;
+            }
+        }
+
+        int maxVisibleLines = static_cast<int>((chatBoxH - 12.0f) / lineH);
+        if (maxVisibleLines < 1) maxVisibleLines = 1;
+
+        int totalLines = static_cast<int>(lines.size());
+        int startLine = std::max(0, totalLines - maxVisibleLines);
 
         float msgY = chatBoxY + 8.0f;
-        for (int i = startIdx; i < totalMessages && msgY < (chatBoxY + chatBoxH - 18.0f); i++) {
-            const auto& msg = m_chatLog[i];
-            std::string prefix = "[" + msg.sender + "]: ";
-            m_uiRenderer.drawText(prefix + msg.text, panelX + 20.0f, msgY, 0.8f, msg.color);
-            msgY += 18.0f;
+        for (int i = startLine; i < totalLines && msgY <= (chatBoxY + chatBoxH - lineH); i++) {
+            m_uiRenderer.drawText(lines[i].text, panelX + pad + 8.0f, msgY, fontS * 0.8f, lines[i].color);
+            msgY += lineH;
         }
 
-        // Text Input Field Box
-        float inputY = static_cast<float>(winH) - 50.0f;
-        float inputW = panelW - 90.0f;
-        m_uiRenderer.drawRect(panelX + 12.0f, inputY, inputW, 36.0f, {0.12f, 0.15f, 0.20f}, 1.0f);
-        m_uiRenderer.drawRectOutline(panelX + 12.0f, inputY, inputW, 36.0f,
+        // Text Input Field & Send Button
+        float inputY = static_cast<float>(winH) - pad - layout.inputHeight;
+        float sendW = 65.0f * fontS;
+        float inputW = boxW - sendW - 8.0f;
+
+        m_uiRenderer.drawRect(panelX + pad, inputY, inputW, layout.inputHeight, {0.12f, 0.15f, 0.20f}, 1.0f);
+        m_uiRenderer.drawRectOutline(panelX + pad, inputY, inputW, layout.inputHeight,
             m_chatInputFocused ? hse::Vec3{0.20f, 0.70f, 1.0f} : hse::Vec3{0.30f, 0.35f, 0.45f}, 1.5f);
 
         if (!m_chatInputBuffer.empty()) {
             std::string displayTxt = m_chatInputBuffer;
             if (fmod(glfwGetTime(), 1.0) < 0.5f) displayTxt += "|";
-            m_uiRenderer.drawText(displayTxt, panelX + 20.0f, inputY + 10.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+            m_uiRenderer.drawText(displayTxt, panelX + pad + 8.0f, inputY + (layout.inputHeight - charH) * 0.5f, fontS * 0.85f, {1.0f, 1.0f, 1.0f});
         } else {
             std::string placeholder = m_chatInputFocused ? "Type query or command..." : "Click or '/' to type to WebOS...";
-            m_uiRenderer.drawText(placeholder, panelX + 20.0f, inputY + 10.0f, 0.8f, {0.5f, 0.5f, 0.5f});
+            m_uiRenderer.drawText(placeholder, panelX + pad + 8.0f, inputY + (layout.inputHeight - charH) * 0.5f, fontS * 0.8f, {0.5f, 0.5f, 0.5f});
         }
 
         // Send Button
-        float sendX = panelX + panelW - 70.0f;
-        m_uiRenderer.drawRect(sendX, inputY, 58.0f, 36.0f, {0.15f, 0.60f, 0.40f}, 1.0f);
-        m_uiRenderer.drawText("SEND", sendX + 12.0f, inputY + 10.0f, 0.8f, {1.0f, 1.0f, 1.0f});
+        float sendX = panelX + pad + inputW + 8.0f;
+        m_uiRenderer.drawRect(sendX, inputY, sendW, layout.inputHeight, {0.15f, 0.60f, 0.40f}, 1.0f);
+        m_uiRenderer.drawText("SEND", sendX + (sendW - 4.0f * charW) * 0.5f, inputY + (layout.inputHeight - charH) * 0.5f, fontS * 0.8f, {1.0f, 1.0f, 1.0f});
     }
 
     void updateAndRenderRuntime(float dt) {
         if (!m_scene || !m_camera) return;
 
-        int w = m_window.getWidth();
-        int h = m_window.getHeight();
-        if (h <= 0) h = 1;
+        int winW = m_window.getWidth();
+        int winH = m_window.getHeight();
+        if (winH <= 0) winH = 1;
 
-        // Viewport split: left 3D viewport, right 380px for Cognitive Workspace
-        int view3DW = m_workspaceOpen ? (w - 380) : w;
+        int fbW = winW, fbH = winH;
+        GLFWwindow* native = m_window.getNative();
+        if (native) {
+            glfwGetFramebufferSize(native, &fbW, &fbH);
+        }
+
+        m_uiRenderer.updateLayout(winW, winH, fbW, fbH);
+        const auto& layout = m_uiRenderer.getLayout();
+
+        // 3D Viewport Split
+        int view3DW = m_workspaceOpen ? static_cast<int>(layout.panelX) : winW;
         if (view3DW < 300) view3DW = 300;
 
-        m_renderer.setViewport(0, 0, view3DW, h);
-        m_camera->setAspectRatio(static_cast<float>(view3DW) / h);
+        float dpiRatio = (winW > 0) ? (static_cast<float>(fbW) / winW) : 1.0f;
+        int fbView3DW = static_cast<int>(view3DW * dpiRatio);
+
+        m_renderer.setViewport(0, 0, fbView3DW, fbH);
+        m_camera->setAspectRatio(static_cast<float>(view3DW) / winH);
         m_camera->update();
 
-        // Continuous Interactive Camera WASDQE (only when input box is not focused)
+        // Continuous Interactive Camera WASDQE
         if (!m_chatInputFocused && !m_camera->isOrbitEnabled()) {
             bool boost = m_window.isKeyPressed(GLFW_KEY_LEFT_SHIFT) || m_window.isKeyPressed(GLFW_KEY_RIGHT_SHIFT);
             if (m_window.isKeyPressed(GLFW_KEY_W)) m_camera->processKeyboard("FORWARD", dt, boost);
@@ -751,10 +804,11 @@ private:
         m_renderer.beginFrame();
         m_renderer.renderScene(*m_scene, *m_camera, m_selectedObjectID);
 
-        // Render 2D UI Overlay
-        m_uiRenderer.begin2D(w, h);
+        // Render 2D UI Overlay in Full Framebuffer Window Coordinates
+        m_renderer.setViewport(0, 0, fbW, fbH);
+        m_uiRenderer.begin2D(winW, winH);
         if (m_workspaceOpen) {
-            renderCognitiveWorkspaceUI(w, h);
+            renderCognitiveWorkspaceUI(winW, winH);
         }
         m_uiRenderer.end2D();
 
