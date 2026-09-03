@@ -37,7 +37,43 @@ Window::Window(const WindowProps& props)
 
     glfwMakeContextCurrent(m_window);
     glfwSetWindowUserPointer(m_window, this);
-    glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
+
+    glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* win, int w, int h) {
+        auto* self = static_cast<Window*>(glfwGetWindowUserPointer(win));
+        if (self) {
+            self->m_width = w;
+            self->m_height = h;
+            if (self->m_resizeCallback) self->m_resizeCallback(w, h);
+        }
+    });
+
+    glfwSetKeyCallback(m_window, [](GLFWwindow* win, int key, int sc, int action, int mods) {
+        auto* self = static_cast<Window*>(glfwGetWindowUserPointer(win));
+        if (self && self->m_keyCallback) self->m_keyCallback(key, sc, action, mods);
+    });
+
+    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* win, int btn, int action, int mods) {
+        auto* self = static_cast<Window*>(glfwGetWindowUserPointer(win));
+        if (self && self->m_mouseButtonCallback) self->m_mouseButtonCallback(btn, action, mods);
+    });
+
+    glfwSetCursorPosCallback(m_window, [](GLFWwindow* win, double x, double y) {
+        auto* self = static_cast<Window*>(glfwGetWindowUserPointer(win));
+        if (self && self->m_cursorPosCallback) self->m_cursorPosCallback(x, y);
+    });
+
+    glfwSetScrollCallback(m_window, [](GLFWwindow* win, double xoff, double yoff) {
+        auto* self = static_cast<Window*>(glfwGetWindowUserPointer(win));
+        if (self) {
+            self->m_scrollY = static_cast<float>(yoff);
+            if (self->m_scrollCallback) self->m_scrollCallback(xoff, yoff);
+        }
+    });
+
+    glfwSetCharCallback(m_window, [](GLFWwindow* win, unsigned int codepoint) {
+        auto* self = static_cast<Window*>(glfwGetWindowUserPointer(win));
+        if (self && self->m_charCallback) self->m_charCallback(codepoint);
+    });
 
     if (props.vsync) {
         glfwSwapInterval(1);
@@ -86,10 +122,6 @@ float Window::getDeltaTime() {
 void Window::getMousePosition(double& x, double& y) const {
     if (m_window) glfwGetCursorPos(m_window, &x, &y);
     else { x = 0; y = 0; }
-}
-
-void Window::setResizeCallback(std::function<void(int, int)> callback) {
-    m_resizeCallback = callback;
 }
 
 } // namespace hse

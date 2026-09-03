@@ -91,39 +91,25 @@ public:
         if (!m_window.isValid()) return false;
         if (!m_renderer.initialize()) return false;
 
-        GLFWwindow* native = m_window.getNative();
-        if (native) {
-            glfwSetWindowUserPointer(native, this);
+        m_window.setKeyCallback([this](int key, int scancode, int action, int mods) {
+            handleKey(key, scancode, action, mods);
+        });
 
-            glfwSetKeyCallback(native, [](GLFWwindow* win, int key, int scancode, int action, int mods) {
-                auto* self = static_cast<HSEApp*>(glfwGetWindowUserPointer(win));
-                if (self && action == GLFW_PRESS) {
-                    self->handleKey(key, scancode, action, mods);
-                }
-            });
+        m_window.setMouseButtonCallback([this](int button, int action, int mods) {
+            handleMouseButton(button, action, mods);
+        });
 
-            glfwSetMouseButtonCallback(native, [](GLFWwindow* win, int button, int action, int mods) {
-                auto* self = static_cast<HSEApp*>(glfwGetWindowUserPointer(win));
-                if (self && action == GLFW_PRESS) {
-                    self->handleMouseButton(button, action, mods);
-                }
-            });
+        m_window.setCursorPosCallback([this](double xpos, double ypos) {
+            handleCursor(xpos, ypos);
+        });
 
-            glfwSetCursorPosCallback(native, [](GLFWwindow* win, double xpos, double ypos) {
-                auto* self = static_cast<HSEApp*>(glfwGetWindowUserPointer(win));
-                if (self) self->handleCursor(xpos, ypos);
-            });
+        m_window.setScrollCallback([this](double xoffset, double yoffset) {
+            handleScroll(xoffset, yoffset);
+        });
 
-            glfwSetScrollCallback(native, [](GLFWwindow* win, double xoffset, double yoffset) {
-                auto* self = static_cast<HSEApp*>(glfwGetWindowUserPointer(win));
-                if (self) self->handleScroll(xoffset, yoffset);
-            });
-
-            glfwSetCharCallback(native, [](GLFWwindow* win, unsigned int codepoint) {
-                auto* self = static_cast<HSEApp*>(glfwGetWindowUserPointer(win));
-                if (self) self->handleChar(codepoint);
-            });
-        }
+        m_window.setCharCallback([this](unsigned int codepoint) {
+            handleChar(codepoint);
+        });
 
         m_uiRenderer.initialize();
         m_chatLog.push_back({"SYSTEM", "HSE Cognitive Engineering Workspace Active.", {0.5f, 0.7f, 1.0f}, ""});
@@ -1159,25 +1145,29 @@ private:
         GLFWwindow* native = m_window.getNative();
         if (!native) return;
 
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        if (!monitor) return;
+
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        if (!mode) return;
+
         if (m_isFullscreen) {
             glfwGetWindowPos(native, &m_windowX, &m_windowY);
             glfwGetWindowSize(native, &m_windowW, &m_windowH);
 
-            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-            if (monitor) {
-                const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-                if (mode && mode->width > 0 && mode->height > 0) {
-                    glfwSetWindowMonitor(native, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-                    m_renderer.setViewport(0, 0, mode->width, mode->height);
-                    std::cout << "[HSE Window] Fullscreen enabled (" << mode->width << "x" << mode->height << ")." << std::endl;
-                }
-            }
+            glfwSetWindowMonitor(native, monitor, 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+            std::cout << "[HSE Window] Fullscreen enabled (" << mode->width << "x" << mode->height << ")." << std::endl;
         } else {
             if (m_windowW <= 0) m_windowW = 1280;
             if (m_windowH <= 0) m_windowH = 720;
-            glfwSetWindowMonitor(native, nullptr, m_windowX, m_windowY, m_windowW, m_windowH, 0);
-            m_renderer.setViewport(0, 0, m_windowW, m_windowH);
+            glfwSetWindowMonitor(native, nullptr, m_windowX, m_windowY, m_windowW, m_windowH, GLFW_DONT_CARE);
             std::cout << "[HSE Window] Windowed mode restored (" << m_windowW << "x" << m_windowH << ")." << std::endl;
+        }
+
+        int fbW = 0, fbH = 0;
+        glfwGetFramebufferSize(native, &fbW, &fbH);
+        if (fbW > 0 && fbH > 0) {
+            m_renderer.setViewport(0, 0, fbW, fbH);
         }
     }
 

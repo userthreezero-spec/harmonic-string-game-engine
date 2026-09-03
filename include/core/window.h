@@ -40,7 +40,18 @@ public:
     float getScrollY() const { return m_scrollY; }
     void resetScroll() { m_scrollY = 0.0f; }
 
-    void setResizeCallback(std::function<void(int, int)> callback);
+    using KeyCallback = std::function<void(int key, int scancode, int action, int mods)>;
+    using MouseButtonCallback = std::function<void(int button, int action, int mods)>;
+    using CursorPosCallback = std::function<void(double xpos, double ypos)>;
+    using ScrollCallback = std::function<void(double xoffset, double yoffset)>;
+    using CharCallback = std::function<void(unsigned int codepoint)>;
+
+    void setKeyCallback(KeyCallback callback) { m_keyCallback = callback; }
+    void setMouseButtonCallback(MouseButtonCallback callback) { m_mouseButtonCallback = callback; }
+    void setCursorPosCallback(CursorPosCallback callback) { m_cursorPosCallback = callback; }
+    void setScrollCallback(ScrollCallback callback) { m_scrollCallback = callback; }
+    void setCharCallback(CharCallback callback) { m_charCallback = callback; }
+    void setResizeCallback(std::function<void(int, int)> callback) { m_resizeCallback = callback; }
 
 private:
     friend void framebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -50,6 +61,12 @@ private:
     int m_height = 0;
     double m_lastFrameTime = 0.0;
     float m_scrollY = 0.0f;
+
+    KeyCallback m_keyCallback;
+    MouseButtonCallback m_mouseButtonCallback;
+    CursorPosCallback m_cursorPosCallback;
+    ScrollCallback m_scrollCallback;
+    CharCallback m_charCallback;
     std::function<void(int, int)> m_resizeCallback;
 };
 
