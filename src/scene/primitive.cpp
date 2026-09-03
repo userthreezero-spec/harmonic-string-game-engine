@@ -1,4 +1,5 @@
 #include "scene/primitive.h"
+#include "renderer/material.h"
 #include <GL/glew.h>
 
 namespace hse {
@@ -23,6 +24,13 @@ void Primitive::setPosition(const Vec3& position) {
 void Primitive::setRotation(const Vec3& rotation) { m_rotation = rotation; }
 void Primitive::setScale(const Vec3& scale) { m_scale = scale; }
 void Primitive::setColor(const Vec3& color) { m_color = color; }
+
+void Primitive::setMaterial(std::shared_ptr<Material> mat) {
+    m_material = mat;
+    if (m_material) {
+        m_color = m_material->getAlbedo();
+    }
+}
 
 void Primitive::updateWorldTransform() {
     float parentExplosion = 0.0f;

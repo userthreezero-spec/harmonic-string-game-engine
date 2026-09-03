@@ -51,7 +51,19 @@ public:
     const Mat4& getViewMatrix() const { return m_viewMatrix; }
     const Mat4& getProjectionMatrix() const { return m_projectionMatrix; }
 
+    enum class CameraMode { FreeFly, Orbit, Editor };
+
+    void setMode(CameraMode mode) { m_mode = mode; }
+    CameraMode getMode() const { return m_mode; }
+
+    void orbitRotate(float dx, float dy);
+    void panView(float dx, float dy);
+
+    float getMouseSensitivity() const { return m_mouseSensitivity; }
+    void setMouseSensitivity(float sensitivity) { m_mouseSensitivity = sensitivity; }
+
     float getMoveSpeed() const { return m_moveSpeed; }
+    void setMoveSpeed(float speed) { m_moveSpeed = speed; }
     float getYaw() const { return m_yawDeg; }
     float getPitch() const { return m_pitchDeg; }
 
@@ -64,6 +76,7 @@ public:
 
 private:
     ProjectionType m_type;
+    CameraMode m_mode = CameraMode::FreeFly;
     Vec3 m_position{0.0f, 0.0f, 5.0f};
     Vec3 m_target{0.0f, 0.0f, 0.0f};
     Vec3 m_up{0.0f, 1.0f, 0.0f};

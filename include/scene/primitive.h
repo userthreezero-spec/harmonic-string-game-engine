@@ -52,7 +52,7 @@ public:
     uint64_t getID() const { return m_id; }
     void setID(uint64_t id) { m_id = id; }
 
-    void setMaterial(std::shared_ptr<Material> mat) { m_material = mat; }
+    void setMaterial(std::shared_ptr<Material> mat);
     std::shared_ptr<Material> getMaterial() const { return m_material; }
 
     float getExplosionFactor() const { return m_explosionFactor; }

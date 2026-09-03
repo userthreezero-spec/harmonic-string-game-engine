@@ -645,10 +645,36 @@ private:
                             std::string newProjName = "project_new_" + std::to_string(std::chrono::system_clock::now().time_since_epoch().count() % 1000);
                             std::string newPath = (m_projectsDir / (newProjName + ".json")).string();
                             if (hse::SceneBuilder::createProject(m_projectsDir.string(), newProjName)) {
+                                std::cout << "[Project Hub] Created new project: " << newPath << std::endl;
+                                scanProjects();
                                 m_selectedProjectPath = newPath;
                                 transitionTo(ApplicationState::PROJECT_SELECTED);
                             }
                         }
+                    }
+                }
+            }
+        } else if (m_state == ApplicationState::ENGINE_RUNTIME && button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+            bool altPressed = m_window.isKeyPressed(GLFW_KEY_LEFT_ALT) || m_window.isKeyPressed(GLFW_KEY_RIGHT_ALT);
+            if (!altPressed) {
+                double mx, my;
+                m_window.getMousePosition(mx, my);
+                if (m_camera && m_scene) {
+                    hse::Ray ray = hse::Picker::screenToRay(mx, my, *m_camera, m_window.getWidth(), m_window.getHeight());
+                    auto hit = hse::Picker::pick(ray, *m_scene);
+                    if (hit.hit) {
+                        m_selectedObjectID = hit.objectID;
+                        auto obj = m_scene->findByID(m_selectedObjectID);
+                        if (obj) {
+                            std::cout << "\n[HSE Inspector] Selected Object -> ID: " << obj->getID()
+                                      << " | Name: \"" << obj->getName() << "\""
+                                      << " | Position: (" << obj->getPosition().x << ", " << obj->getPosition().y << ", " << obj->getPosition().z << ")"
+                                      << " | Material: " << (obj->getMaterial() ? obj->getMaterial()->getName() : "None")
+                                      << " | Parent: " << (obj->getParent() ? obj->getParent()->getName() : "Root Scene") << std::endl;
+                        }
+                    } else {
+                        m_selectedObjectID = 0;
+                        std::cout << "[HSE Inspector] Selection cleared." << std::endl;
                     }
                 }
             }
@@ -716,6 +742,68 @@ private:
             m_selectedProjectPath = m_projectsDir / "two_story_home.json";
             std::cout << "[WebOS Assistant] Opening Two-Story Home project..." << std::endl;
             transitionTo(ApplicationState::PROJECT_SELECTED);
+            return;
+        } else if (lower.find("trace") != std::string::npos || lower.find("inspect") != std::string::npos || lower.find("what is this") != std::string::npos || lower.find("lineage") != std::string::npos) {
+            if (m_scene && m_selectedObjectID != 0) {
+                auto obj = m_scene->findByID(m_selectedObjectID);
+                if (obj) {
+                    std::cout << "\n================================================================================" << std::endl;
+                    std::cout << " [ HSE COGNITIVE OBJECT LINEAGE TRACE ]" << std::endl;
+                    std::cout << "================================================================================" << std::endl;
+                    std::cout << " Target Object:     " << obj->getName() << " (ID: " << obj->getID() << ")\n";
+                    std::cout << " Local Transform:   Pos(" << obj->getPosition().x << ", " << obj->getPosition().y << ", " << obj->getPosition().z << ")\n";
+                    std::cout << " World Position:    (" << obj->getWorldPosition().x << ", " << obj->getWorldPosition().y << ", " << obj->getWorldPosition().z << ")\n";
+                    std::cout << " Material:          " << (obj->getMaterial() ? obj->getMaterial()->getName() : "Default") << "\n";
+                    if (obj->getMaterial()) {
+                        auto albedo = obj->getMaterial()->getAlbedo();
+                        std::cout << " Material Albedo:   RGB(" << albedo.x << ", " << albedo.y << ", " << albedo.z << ")\n";
+                    }
+                    std::cout << " Parent Hierarchy:  ";
+                    auto p = obj->getParent();
+                    if (!p) {
+                        std::cout << "Root Scene (" << m_scene->getName() << ")\n";
+                    } else {
+                        while (p) {
+                            std::cout << p->getName() << " -> ";
+                            p = p->getParent();
+                        }
+                        std::cout << "Root Scene (" << m_scene->getName() << ")\n";
+                    }
+                    std::cout << " Active Project:    " << m_selectedProjectPath.string() << "\n";
+                    std::cout << " Generator Source:  HSE Native SceneBuilder / HSC State Engine\n";
+                    std::cout << " Mission Lineage:   PHASE 1232 — Harmonic String Game Engine Foundation\n";
+                    std::cout << "================================================================================\n" << std::endl;
+                } else {
+                    std::cout << "[HSE Lineage Trace] Selected object ID no longer exists." << std::endl;
+                }
+            } else {
+                std::cout << "[HSE Lineage Trace] No object currently selected. Click an object in the viewport first." << std::endl;
+            }
+            return;
+        } else if (lower.find("color") != std::string::npos || lower.find("blue") != std::string::npos || lower.find("red") != std::string::npos || lower.find("green") != std::string::npos || lower.find("yellow") != std::string::npos) {
+            if (m_scene && m_selectedObjectID != 0) {
+                auto obj = m_scene->findByID(m_selectedObjectID);
+                if (obj) {
+                    hse::Vec3 newColor{1.0f, 1.0f, 1.0f};
+                    std::string colName = "white";
+                    if (lower.find("blue") != std::string::npos) { newColor = {0.1f, 0.4f, 0.9f}; colName = "Electric Blue"; }
+                    else if (lower.find("red") != std::string::npos) { newColor = {0.9f, 0.2f, 0.2f}; colName = "Crimson Red"; }
+                    else if (lower.find("green") != std::string::npos) { newColor = {0.2f, 0.8f, 0.3f}; colName = "Emerald Green"; }
+                    else if (lower.find("yellow") != std::string::npos) { newColor = {0.95f, 0.85f, 0.2f}; colName = "Amber Yellow"; }
+
+                    auto mat = obj->getMaterial();
+                    if (!mat) {
+                        mat = std::make_shared<hse::Material>("mat_" + obj->getName());
+                        m_scene->addMaterial(mat);
+                        obj->setMaterial(mat);
+                    }
+                    mat->setAlbedo(newColor);
+                    obj->setColor(newColor);
+                    std::cout << "[HSE Governed Mutation] Changed material color of \"" << obj->getName() << "\" to " << colName << "." << std::endl;
+                }
+            } else {
+                std::cout << "[HSE Governed Mutation] Select an object first before changing color." << std::endl;
+            }
             return;
         }
 
@@ -786,7 +874,20 @@ private:
                 m_cursorCaptured = !m_cursorCaptured;
                 glfwSetInputMode(m_window.getNative(), GLFW_CURSOR, m_cursorCaptured ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
             } else if (key == GLFW_KEY_F) {
-                if (m_camera) m_camera->resetFocus({0.0f, 4.0f, 15.0f}, {0.0f, 2.5f, 0.0f});
+                if (m_camera) {
+                    if (m_scene && m_selectedObjectID != 0) {
+                        auto obj = m_scene->findByID(m_selectedObjectID);
+                        if (obj) {
+                            hse::Vec3 target = obj->getWorldPosition();
+                            hse::Vec3 pos = target + hse::Vec3{5.0f, 4.0f, 5.0f};
+                            m_camera->resetFocus(pos, target);
+                            std::cout << "[HSE Camera] Focused camera on selected object: " << obj->getName() << std::endl;
+                        }
+                    } else {
+                        m_camera->resetFocus({0.0f, 4.0f, 15.0f}, {0.0f, 2.5f, 0.0f});
+                        std::cout << "[HSE Camera] Camera focus reset to scene overview." << std::endl;
+                    }
+                }
             } else if (key == GLFW_KEY_S) {
                 saveCheckpoint();
             } else if (key == GLFW_KEY_SPACE) {
@@ -843,7 +944,17 @@ private:
         m_lastX = xpos;
         m_lastY = ypos;
 
-        if (m_cursorCaptured || glfwGetMouseButton(m_window.getNative(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+        bool rightBtn = glfwGetMouseButton(m_window.getNative(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
+        bool middleBtn = glfwGetMouseButton(m_window.getNative(), GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS;
+        bool leftBtn = glfwGetMouseButton(m_window.getNative(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+        bool shiftPressed = m_window.isKeyPressed(GLFW_KEY_LEFT_SHIFT) || m_window.isKeyPressed(GLFW_KEY_RIGHT_SHIFT);
+        bool altPressed = m_window.isKeyPressed(GLFW_KEY_LEFT_ALT) || m_window.isKeyPressed(GLFW_KEY_RIGHT_ALT);
+
+        if (middleBtn && shiftPressed) {
+            m_camera->panView(static_cast<float>(xoffset), static_cast<float>(yoffset));
+        } else if (middleBtn || (leftBtn && altPressed)) {
+            m_camera->orbitRotate(static_cast<float>(xoffset), static_cast<float>(yoffset));
+        } else if (m_cursorCaptured || rightBtn) {
             m_camera->processMouseMovement(static_cast<float>(xoffset), static_cast<float>(yoffset));
         }
     }

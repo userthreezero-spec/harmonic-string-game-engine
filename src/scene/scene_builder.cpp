@@ -7,6 +7,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <filesystem>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -754,7 +755,62 @@ void SceneBuilder::exportState(const Scene& scene, const std::string& path) {
 }
 
 bool SceneBuilder::createProject(const std::string& dir, const std::string& name) {
-    return false; // Stub for now
+    std::filesystem::path p(dir);
+    p /= (name + ".json");
+    std::ofstream f(p);
+    if (!f.is_open()) return false;
+
+    f << "{\n";
+    f << "  \"name\": \"" << name << "\",\n";
+    f << "  \"scene_name\": \"" << name << "_MainScene\",\n";
+    f << "  \"materials\": [\n";
+    f << "    {\n";
+    f << "      \"id\": \"mat_floor\",\n";
+    f << "      \"albedo\": [0.2, 0.4, 0.6],\n";
+    f << "      \"roughness\": 0.7,\n";
+    f << "      \"metallic\": 0.1\n";
+    f << "    },\n";
+    f << "    {\n";
+    f << "      \"id\": \"mat_cube\",\n";
+    f << "      \"albedo\": [0.9, 0.3, 0.2],\n";
+    f << "      \"roughness\": 0.4,\n";
+    f << "      \"metallic\": 0.2\n";
+    f << "    }\n";
+    f << "  ],\n";
+    f << "  \"lights\": [\n";
+    f << "    {\n";
+    f << "      \"id\": \"main_sun\",\n";
+    f << "      \"position\": [5.0, 10.0, 5.0],\n";
+    f << "      \"color\": [1.0, 1.0, 1.0],\n";
+    f << "      \"intensity\": 1.2\n";
+    f << "    }\n";
+    f << "  ],\n";
+    f << "  \"camera\": {\n";
+    f << "    \"position\": [8.0, 6.0, 8.0],\n";
+    f << "    \"target\": [0.0, 0.0, 0.0],\n";
+    f << "    \"fov\": 60.0\n";
+    f << "  },\n";
+    f << "  \"objects\": [\n";
+    f << "    {\n";
+    f << "      \"id\": \"floor_slab\",\n";
+    f << "      \"type\": \"Quad\",\n";
+    f << "      \"position\": [0.0, 0.0, 0.0],\n";
+    f << "      \"rotation\": [-90.0, 0.0, 0.0],\n";
+    f << "      \"scale\": [10.0, 10.0, 1.0],\n";
+    f << "      \"material\": \"mat_floor\"\n";
+    f << "    },\n";
+    f << "    {\n";
+    f << "      \"id\": \"hero_cube\",\n";
+    f << "      \"type\": \"Cube\",\n";
+    f << "      \"position\": [0.0, 0.75, 0.0],\n";
+    f << "      \"rotation\": [0.0, 45.0, 0.0],\n";
+    f << "      \"scale\": [1.5, 1.5, 1.5],\n";
+    f << "      \"material\": \"mat_cube\"\n";
+    f << "    }\n";
+    f << "  ]\n";
+    f << "}\n";
+    f.close();
+    return true;
 }
 
 } // namespace hse

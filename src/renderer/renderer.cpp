@@ -1,4 +1,5 @@
 #include "renderer/renderer.h"
+#include "renderer/material.h"
 #include "scene/scene.h"
 #include "scene/camera.h"
 #include "scene/primitive.h"
@@ -198,7 +199,16 @@ void Renderer::renderScene(const Scene& scene, const Camera& camera, uint64_t se
         const Mat4& model = prim->getWorldTransform();
         glUniformMatrix4fv(m_state->locModel, 1, GL_FALSE, model.ptr());
 
-        const Vec3& c = prim->getColor();
+        Vec3 c = prim->getColor();
+        if (prim->getMaterial()) {
+            c = prim->getMaterial()->getAlbedo();
+        }
+
+        // Selection highlight: blend bright cyan tint when object is selected
+        if (selectedID != 0 && prim->getID() == selectedID) {
+            c = c * 0.4f + Vec3{0.0f, 0.6f, 0.8f};
+        }
+
         glUniform3f(m_state->locColor, c.x, c.y, c.z);
 
         prim->bind();

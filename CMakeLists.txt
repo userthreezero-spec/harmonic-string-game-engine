@@ -146,6 +146,10 @@ add_executable(hse_test_canonical_path_guard tests/test_canonical_path_guard.cpp
 target_link_libraries(hse_test_canonical_path_guard PRIVATE hse_core)
 add_test(NAME CanonicalPathGuardTests COMMAND hse_test_canonical_path_guard)
 
+add_executable(hse_test_phase1232 tests/test_phase1232_engine_foundation.cpp)
+target_link_libraries(hse_test_phase1232 PRIVATE hse_core)
+add_test(NAME Phase1232FoundationTests COMMAND hse_test_phase1232)
+
 # [WebOS Native Engineering Actuator] runtime DLL deployment
 # Deploys the toolchain/runtime DLLs next to the executable so the built product
 # launches without the toolchain on PATH (fixes STATUS_DLL_NOT_FOUND / 0xC0000135).

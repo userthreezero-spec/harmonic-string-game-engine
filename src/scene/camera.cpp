@@ -15,11 +15,21 @@ void Camera::setPosition(const Vec3& position) {
 
 void Camera::lookAt(const Vec3& target) {
     m_target = target;
+    Vec3 dir = (m_target - m_position).normalized();
+    if (dir.length() > 0.0001f) {
+        float clampY = dir.y > 1.0f ? 1.0f : (dir.y < -1.0f ? -1.0f : dir.y);
+        m_pitchDeg = std::asin(clampY) * 180.0f / 3.1415926535f;
+        m_yawDeg = std::atan2(dir.z, dir.x) * 180.0f / 3.1415926535f;
+    }
     if (m_orbitEnabled) {
-        Vec3 dir = m_position - m_target;
-        m_orbitRadius = dir.length();
-        m_orbitYaw = std::atan2(dir.z, dir.x);
-        m_orbitPitch = std::asin(dir.y / (m_orbitRadius > 0.0001f ? m_orbitRadius : 1.0f));
+        Vec3 orbitDir = m_position - m_target;
+        m_orbitRadius = orbitDir.length();
+        m_orbitYaw = std::atan2(orbitDir.z, orbitDir.x);
+        float r = (m_orbitRadius > 0.0001f ? m_orbitRadius : 1.0f);
+        float clampRatio = orbitDir.y / r;
+        if (clampRatio > 1.0f) clampRatio = 1.0f;
+        if (clampRatio < -1.0f) clampRatio = -1.0f;
+        m_orbitPitch = std::asin(clampRatio);
     }
     update();
 }
@@ -113,6 +123,52 @@ void Camera::processMouseMovement(float xoffset, float yoffset, bool constrainPi
     front.y = std::sin(pitchRad);
     front.z = std::cos(pitchRad) * std::sin(yawRad);
     m_target = m_position + front.normalized();
+
+    update();
+}
+
+void Camera::orbitRotate(float dx, float dy) {
+    Vec3 dir = m_position - m_target;
+    float radius = dir.length();
+    if (radius < 0.01f) radius = 0.01f;
+
+    float clampR = dir.y / radius;
+    if (clampR > 1.0f) clampR = 1.0f;
+    if (clampR < -1.0f) clampR = -1.0f;
+
+    float currentYaw = std::atan2(dir.z, dir.x);
+    float currentPitch = std::asin(clampR);
+
+    float newYaw = currentYaw - dx * m_mouseSensitivity * 3.1415926535f / 180.0f;
+    float newPitch = currentPitch + dy * m_mouseSensitivity * 3.1415926535f / 180.0f;
+
+    float maxPitch = 88.0f * 3.1415926535f / 180.0f;
+    if (newPitch > maxPitch) newPitch = maxPitch;
+    if (newPitch < -maxPitch) newPitch = -maxPitch;
+
+    m_position.x = m_target.x + radius * std::cos(newPitch) * std::cos(newYaw);
+    m_position.y = m_target.y + radius * std::sin(newPitch);
+    m_position.z = m_target.z + radius * std::cos(newPitch) * std::sin(newYaw);
+
+    Vec3 lookDir = (m_target - m_position).normalized();
+    float clampY = lookDir.y > 1.0f ? 1.0f : (lookDir.y < -1.0f ? -1.0f : lookDir.y);
+    m_pitchDeg = std::asin(clampY) * 180.0f / 3.1415926535f;
+    m_yawDeg = std::atan2(lookDir.z, lookDir.x) * 180.0f / 3.1415926535f;
+
+    update();
+}
+
+void Camera::panView(float dx, float dy) {
+    Vec3 forward = (m_target - m_position).normalized();
+    Vec3 right = forward.cross(m_up).normalized();
+    Vec3 up = right.cross(forward).normalized();
+
+    float dist = (m_position - m_target).length();
+    float factor = 0.002f * (dist < 1.0f ? 1.0f : dist);
+
+    Vec3 delta = (right * (-dx) + up * dy) * factor * (m_mouseSensitivity * 10.0f);
+    m_position += delta;
+    m_target += delta;
 
     update();
 }
