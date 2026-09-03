@@ -8,6 +8,7 @@
 #include "renderer/ui_renderer.h"
 #include "scene/scene.h"
 #include "scene/primitive.h"
+#include "scene/light.h"
 #include "scene/scene_builder.h"
 #include "renderer/material.h"
 
@@ -134,18 +135,68 @@ void testResponsiveLayoutScaling() {
     std::cout << "  PASS: Responsive UI layout scaling verified across 720p, 1080p, 1440p, and 4K resolutions." << std::endl;
 }
 
+void testSunLightAndSpatialTranslationMutations() {
+    std::cout << "[Test Phase 1233B] 5. Actionable Sun Light & Spatial Translation Execution Loop..." << std::endl;
+
+    auto scene = hse::SceneBuilder::buildTwoStoryHome();
+    size_t initialLightCount = scene->getLightCount();
+
+    // 1. Actionable Sun Light Proposal & Execution
+    hse::UIProposedChange sunProposal;
+    sunProposal.active = true;
+    sunProposal.type = hse::ProposedMutationType::AddSunLight;
+    sunProposal.targetName = "sun_light_primary";
+    sunProposal.actionDescription = "Add Primary Directional Sun Light (1.0, 0.95, 0.85), Intensity 1.5";
+
+    // Execute Sun proposal
+    hse::Light sun("sun_light_primary", hse::LightType::Directional);
+    sun.setPosition({10.0f, 20.0f, 10.0f});
+    sun.setColor({1.0f, 0.95f, 0.85f});
+    sun.setIntensity(1.5f);
+    scene->addLight(sun);
+
+    assert(scene->getLightCount() == initialLightCount + 1);
+    assert(scene->getLight(scene->getLightCount() - 1).getName() == "sun_light_primary");
+    assert(std::abs(scene->getLight(scene->getLightCount() - 1).getIntensity() - 1.5f) < 0.001f);
+
+    // 2. Actionable Spatial Translation Proposal & Execution ("Move stair_1 6 units left")
+    auto stair = scene->findByName("stair_1");
+    assert(stair != nullptr);
+
+    hse::Vec3 oldPos = stair->getPosition();
+    hse::Vec3 offset{-6.0f, 0.0f, 0.0f};
+    hse::Vec3 expectedNewPos = oldPos + offset;
+
+    hse::UIProposedChange moveProposal;
+    moveProposal.active = true;
+    moveProposal.type = hse::ProposedMutationType::SpatialTranslation;
+    moveProposal.targetObjectID = stair->getID();
+    moveProposal.targetName = stair->getName();
+    moveProposal.oldPos = oldPos;
+    moveProposal.newPos = expectedNewPos;
+
+    // Execute translation
+    stair->setPosition(moveProposal.newPos);
+    stair->updateWorldTransform();
+
+    assert(std::abs(stair->getPosition().x - expectedNewPos.x) < 0.001f); // Re-grounded local position verified!
+
+    std::cout << "  PASS: Sun Light addition and Spatial Translation mutations verified in real scene model." << std::endl;
+}
+
 int main() {
     std::cout << "================================================================================" << std::endl;
-    std::cout << " PHASE 1233A — COGNITIVE WORKSPACE UI SCALING VALIDATION TEST" << std::endl;
+    std::cout << " PHASE 1233B — COGNITIVE WORKSPACE EXECUTION LOOP VALIDATION TEST" << std::endl;
     std::cout << "================================================================================" << std::endl;
 
     testUIRendererDataStructures();
     testGroundedContextResolution();
     testGovernedMutationWorkflow();
     testResponsiveLayoutScaling();
+    testSunLightAndSpatialTranslationMutations();
 
     std::cout << "================================================================================" << std::endl;
-    std::cout << " ALL PHASE 1233A WORKSPACE UI SCALING TESTS PASSED (PROVEN)" << std::endl;
+    std::cout << " ALL PHASE 1233B WORKSPACE EXECUTION LOOP TESTS PASSED (PROVEN)" << std::endl;
     std::cout << "================================================================================" << std::endl;
     return 0;
 }

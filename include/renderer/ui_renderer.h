@@ -15,15 +15,27 @@ struct UIChatMessage {
     std::string timestamp;
 };
 
+enum class ProposedMutationType {
+    MaterialColor,
+    SpatialTranslation,
+    AddSunLight,
+    CreatePrimitive
+};
+
 struct UIProposedChange {
     bool active = false;
+    ProposedMutationType type = ProposedMutationType::MaterialColor;
     uint64_t targetObjectID = 0;
     std::string targetName;
     std::string propertyName;
+    std::string actionDescription;
     Vec3 oldColor;
     Vec3 newColor;
+    Vec3 oldPos;
+    Vec3 newPos;
     std::string colorName;
     std::string reason;
+    float confidence = 0.95f;
 };
 
 struct UILayout {

@@ -552,26 +552,62 @@ private:
     void executeProposedChange() {
         if (!m_proposedChange.active || !m_scene) return;
 
-        auto obj = m_scene->findByID(m_proposedChange.targetObjectID);
-        if (obj) {
-            auto mat = obj->getMaterial();
-            if (!mat) {
-                mat = std::make_shared<hse::Material>("mat_" + obj->getName());
-                m_scene->addMaterial(mat);
-                obj->setMaterial(mat);
-            }
-            mat->setAlbedo(m_proposedChange.newColor);
-            obj->setColor(m_proposedChange.newColor);
+        if (m_proposedChange.type == hse::ProposedMutationType::AddSunLight) {
+            hse::Light sun("sun_light_primary", hse::LightType::Directional);
+            sun.setPosition({10.0f, 20.0f, 10.0f});
+            sun.setColor({1.0f, 0.95f, 0.85f});
+            sun.setIntensity(1.5f);
+            m_scene->addLight(sun);
 
             saveCheckpoint();
 
-            std::string resText = "Governed mutation executed on \"" + obj->getName() + "\". Color changed to " + m_proposedChange.colorName + ". Checkpoint saved.";
+            std::string resText = "Governed mutation executed: Added Primary Sun Light (\"sun_light_primary\", Directional, Intensity 1.5) to " + m_scene->getName() + ". Checkpoint saved.";
             m_chatLog.push_back({"WEBOS", resText, {0.20f, 0.90f, 0.50f}, ""});
             m_webosStatus = "MUTATION SUCCESS";
             std::cout << "[HSE PrimeGate Execution] " << resText << std::endl;
-        } else {
-            m_chatLog.push_back({"SYSTEM", "Proposed target object no longer exists.", {0.9f, 0.3f, 0.3f}, ""});
+        } else if (m_proposedChange.type == hse::ProposedMutationType::MaterialColor) {
+            auto obj = m_scene->findByID(m_proposedChange.targetObjectID);
+            if (obj) {
+                auto mat = obj->getMaterial();
+                if (!mat) {
+                    mat = std::make_shared<hse::Material>("mat_" + obj->getName());
+                    m_scene->addMaterial(mat);
+                    obj->setMaterial(mat);
+                }
+                mat->setAlbedo(m_proposedChange.newColor);
+                obj->setColor(m_proposedChange.newColor);
+
+                saveCheckpoint();
+
+                std::string resText = "Governed mutation executed on \"" + obj->getName() + "\". Color changed to " + m_proposedChange.colorName + ". Checkpoint saved.";
+                m_chatLog.push_back({"WEBOS", resText, {0.20f, 0.90f, 0.50f}, ""});
+                m_webosStatus = "MUTATION SUCCESS";
+                std::cout << "[HSE PrimeGate Execution] " << resText << std::endl;
+            } else {
+                m_chatLog.push_back({"SYSTEM", "Proposed target object no longer exists.", {0.9f, 0.3f, 0.3f}, ""});
+            }
+        } else if (m_proposedChange.type == hse::ProposedMutationType::SpatialTranslation) {
+            auto obj = m_scene->findByID(m_proposedChange.targetObjectID);
+            if (obj) {
+                obj->setPosition(m_proposedChange.newPos);
+                obj->updateWorldTransform();
+
+                saveCheckpoint();
+
+                char posBuf[128];
+                snprintf(posBuf, sizeof(posBuf), "(%.1f, %.1f, %.1f) -> (%.1f, %.1f, %.1f)",
+                    m_proposedChange.oldPos.x, m_proposedChange.oldPos.y, m_proposedChange.oldPos.z,
+                    m_proposedChange.newPos.x, m_proposedChange.newPos.y, m_proposedChange.newPos.z);
+
+                std::string resText = "Governed spatial translation executed on \"" + obj->getName() + "\": " + std::string(posBuf) + ". Checkpoint saved.";
+                m_chatLog.push_back({"WEBOS", resText, {0.20f, 0.90f, 0.50f}, ""});
+                m_webosStatus = "MUTATION SUCCESS";
+                std::cout << "[HSE PrimeGate Execution] " << resText << std::endl;
+            } else {
+                m_chatLog.push_back({"SYSTEM", "Proposed target object no longer exists.", {0.9f, 0.3f, 0.3f}, ""});
+            }
         }
+
         m_proposedChange.active = false;
     }
 
@@ -958,6 +994,7 @@ private:
         std::string lower = input;
         std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
+        // 1. Informational Queries
         if (lower == "save" || lower == "checkpoint") {
             saveCheckpoint();
             m_chatLog.push_back({"WEBOS", "Project checkpoint saved successfully to " + m_checkpointPath.filename().string(), {0.2f, 0.90f, 0.50f}, ""});
@@ -985,7 +1022,26 @@ private:
                 m_chatLog.push_back({"WEBOS", "No object selected. Click any 3D mesh in viewport first.", {0.9f, 0.8f, 0.3f}, ""});
             }
             return;
-        } else if (lower.find("color") != std::string::npos || lower.find("blue") != std::string::npos || lower.find("red") != std::string::npos || lower.find("green") != std::string::npos || lower.find("yellow") != std::string::npos) {
+        }
+
+        // 2. Actionable Request: Sun / Lighting
+        if (lower.find("sun") != std::string::npos || lower.find("add light") != std::string::npos || lower.find("sunlight") != std::string::npos) {
+            if (m_scene) {
+                m_proposedChange.active = true;
+                m_proposedChange.type = hse::ProposedMutationType::AddSunLight;
+                m_proposedChange.targetName = "sun_light_primary";
+                m_proposedChange.propertyName = "Directional Sun Light";
+                m_proposedChange.actionDescription = "Add Primary Directional Sun Light (1.0, 0.95, 0.85), Intensity 1.5";
+                m_proposedChange.confidence = 0.98f;
+
+                m_chatLog.push_back({"PROPOSAL", "Proposed adding Primary Directional Sun Light to " + m_scene->getName() + ". Press [ENTER] / click AUTHORIZE.", {0.95f, 0.80f, 0.20f}, ""});
+                m_webosStatus = "AWAITING AUTHORIZATION";
+            }
+            return;
+        }
+
+        // 3. Actionable Request: Material Color
+        if (lower.find("color") != std::string::npos || lower.find("blue") != std::string::npos || lower.find("red") != std::string::npos || lower.find("green") != std::string::npos || lower.find("yellow") != std::string::npos || lower.find("make") != std::string::npos) {
             if (m_scene && m_selectedObjectID != 0) {
                 auto obj = m_scene->findByID(m_selectedObjectID);
                 if (obj) {
@@ -997,17 +1053,61 @@ private:
                     else if (lower.find("yellow") != std::string::npos) { newColor = {0.95f, 0.85f, 0.20f}; colName = "Amber Yellow"; }
 
                     m_proposedChange.active = true;
+                    m_proposedChange.type = hse::ProposedMutationType::MaterialColor;
                     m_proposedChange.targetObjectID = obj->getID();
                     m_proposedChange.targetName = obj->getName();
                     m_proposedChange.propertyName = "Material Albedo";
+                    m_proposedChange.actionDescription = "Change material albedo to " + colName;
                     m_proposedChange.oldColor = obj->getColor();
                     m_proposedChange.newColor = newColor;
                     m_proposedChange.colorName = colName;
+                    m_proposedChange.confidence = 0.95f;
 
                     m_chatLog.push_back({"PROPOSAL", "Proposed material change for \"" + obj->getName() + "\" to " + colName + ". Press [ENTER] / click AUTHORIZE.", {0.95f, 0.80f, 0.20f}, ""});
+                    m_webosStatus = "AWAITING AUTHORIZATION";
                 }
             } else {
                 m_chatLog.push_back({"WEBOS", "Select an object in viewport first before changing color.", {0.9f, 0.8f, 0.3f}, ""});
+            }
+            return;
+        }
+
+        // 4. Actionable Request: Spatial Translation (Move)
+        if (lower.find("move") != std::string::npos || lower.find("left") != std::string::npos || lower.find("right") != std::string::npos || lower.find("up") != std::string::npos || lower.find("down") != std::string::npos || lower.find("shift") != std::string::npos) {
+            if (m_scene && m_selectedObjectID != 0) {
+                auto obj = m_scene->findByID(m_selectedObjectID);
+                if (obj) {
+                    hse::Vec3 curPos = obj->getPosition();
+                    hse::Vec3 delta{0.0f, 0.0f, 0.0f};
+
+                    float amount = 2.0f;
+                    if (lower.find("six") != std::string::npos || lower.find("6") != std::string::npos) amount = 6.0f;
+                    else if (lower.find("one") != std::string::npos || lower.find("1") != std::string::npos) amount = 1.0f;
+                    else if (lower.find("three") != std::string::npos || lower.find("3") != std::string::npos) amount = 3.0f;
+
+                    std::string dirStr = "left";
+                    if (lower.find("left") != std::string::npos) { delta.x = -amount; dirStr = std::to_string((int)amount) + " units left"; }
+                    else if (lower.find("right") != std::string::npos) { delta.x = amount; dirStr = std::to_string((int)amount) + " units right"; }
+                    else if (lower.find("up") != std::string::npos) { delta.y = amount; dirStr = std::to_string((int)amount) + " units up"; }
+                    else if (lower.find("down") != std::string::npos) { delta.y = -amount; dirStr = std::to_string((int)amount) + " units down"; }
+
+                    hse::Vec3 newPos = curPos + delta;
+
+                    m_proposedChange.active = true;
+                    m_proposedChange.type = hse::ProposedMutationType::SpatialTranslation;
+                    m_proposedChange.targetObjectID = obj->getID();
+                    m_proposedChange.targetName = obj->getName();
+                    m_proposedChange.propertyName = "Position Translation";
+                    m_proposedChange.actionDescription = "Translate position " + dirStr;
+                    m_proposedChange.oldPos = curPos;
+                    m_proposedChange.newPos = newPos;
+                    m_proposedChange.confidence = 0.95f;
+
+                    m_chatLog.push_back({"PROPOSAL", "Proposed spatial translation for \"" + obj->getName() + "\" (" + dirStr + "). Press [ENTER] / click AUTHORIZE.", {0.95f, 0.80f, 0.20f}, ""});
+                    m_webosStatus = "AWAITING AUTHORIZATION";
+                }
+            } else {
+                m_chatLog.push_back({"WEBOS", "Select an object in viewport first before moving.", {0.9f, 0.8f, 0.3f}, ""});
             }
             return;
         }
